@@ -40,6 +40,7 @@ import UserProfile from "../pages/Authentication/user-profile";
 import CategoryController from "../pages/CategoryController";
 import Roles from "../pages/Roles/Roles";
 import RedirectList from "../pages/Redirects";
+import PaymentOfContributors from "../pages/PaymentOfContributors";
 const authProtectedRoutes = [
   // { path: "/pages-starter", component: Starter },
   { path: "/dashboard-analytics", component: DashboardAnalytics },
@@ -56,6 +57,7 @@ const authProtectedRoutes = [
   { path: "/schemas", component: SchemaList },
   { path: "/schemas/:id", component: SchemaDetail },
   { path: "/redirect", component: RedirectList },
+  
   // {
   //   path: "/pages-management",
   //   component: PageList,
@@ -139,6 +141,7 @@ const publicRoutes = [
   // Authentication Page
   { path: "/login", component: Login },
   { path: "/logout", component: Logout },
+  { path: "/payment", component: PaymentOfContributors },
   // {
   //   path: "/pages-management",
   //   component: PageList
