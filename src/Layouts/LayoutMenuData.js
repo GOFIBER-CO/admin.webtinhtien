@@ -6,8 +6,10 @@ const Navdata = () => {
   //state data
   const [isDashboard, setIsDashboard] = useState(false);
   const [isUsers, setIsUsers] = useState(false);
+  const [isPayment, setIsPayment] = useState(false);
   const [isFAQs, setIsFAQs] = useState(false);
   const [isSchemas, setIsSchemas] = useState(false);
+  const [isDomains, setIsDomains] = useState(false);
   const [isTaxonomy, setIsTaxonomy] = useState(false);
   const [isRoles, setIsRoles] = useState(false);
   const [isCates, setisCates] = useState(false);
@@ -38,8 +40,8 @@ const Navdata = () => {
     if (iscurrentState !== "Dashboard") {
       setIsDashboard(false);
     }
-    if (iscurrentState !== "Users") {
-      setIsUsers(false);
+    if (iscurrentState !== "payments") {
+      setIsPayment(false);
     }
     if (iscurrentState !== "FAQs") {
       setIsFAQs(false);
@@ -71,11 +73,14 @@ const Navdata = () => {
     if (iscurrentState !== "Redirects") {
       setIsRedirect(false);
     }
+    if(iscurrentState !== "Domains"){
+      setIsDomains(false)
+    }
   }, [
     history,
     iscurrentState,
     isDashboard,
-    isUsers,
+    isPayment,
     isFAQs,
     isSchemas,
     isTaxonomy,
@@ -85,6 +90,7 @@ const Navdata = () => {
     isBanners,
     isStatistics,
     isRedirect,
+    isDomains
   ]);
 
   const menuItems = [
@@ -113,54 +119,54 @@ const Navdata = () => {
         // },
       ],
     },
-    // {
-    //   id: "users",
-    //   label: "QUẢN LÝ THÀNH VIÊN",
-    //   icon: "ri-user-2-line",
-    //   link: "/#",
-    //   stateVariables: isUsers,
-    //   click: function (e) {
-    //     e.preventDefault();
-    //     setIsUsers(!isUsers);
-    //     setIscurrentState("Users");
-    //     updateIconSidebar(e);
-    //   },
-    //   subItems: [
-    //     {
-    //       id: "user-management",
-    //       label: "Thành Viên",
-    //       link: "/users",
-    //       parentId: "users",
-    //     },
-    //     // {
-    //     //   id: "user-permission",
-    //     //   label: "Phân Quyền",
-    //     //   link: "/permission",
-    //     //   parentId: "users",
-    //     // },
-    //   ],
-    // },
-    // {
-    //   id: "schema-management",
-    //   label: "QUẢN LÝ SCHEMA",
-    //   icon: "ri-bookmark-line",
-    //   link: "/#",
-    //   stateVariables: isSchemas,
-    //   click: function (e) {
-    //     e.preventDefault();
-    //     setIsSchemas(!isSchemas);
-    //     setIscurrentState("Schemas");
-    //     updateIconSidebar(e);
-    //   },
-    //   subItems: [
-    //     {
-    //       id: "schemas",
-    //       label: "Schemas",
-    //       link: "/schemas",
-    //       parentId: "schema-management",
-    //     },
-    //   ],
-    // },
+    {
+      id: "payments",
+      label: "QUẢN LÝ PAYMENT",
+      icon: "ri-user-2-line",
+      link: "/#",
+      stateVariables: isPayment,
+      click: function (e) {
+        e.preventDefault();
+        setIsPayment(!isPayment);
+        setIscurrentState("payments");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "user-management",
+          label: "THANH TOÁN TIỀN CTV",
+          link: "/payment",
+          parentId: "payment",
+        },
+        // {
+        //   id: "user-permission",
+        //   label: "Phân Quyền",
+        //   link: "/permission",
+        //   parentId: "users",
+        // },
+      ],
+    },
+    {
+      id: "domain-management",
+      label: "QUẢN LÝ DOMAINS",
+      icon: "ri-bookmark-line",
+      link: "/#",
+      stateVariables: isDomains,
+      click: function (e) {
+        e.preventDefault();
+        setIsDomains(!isDomains);
+        setIscurrentState("Domains");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "domains",
+          label: "Domains",
+          link: "/domains",
+          parentId: "domain-management",
+        },
+      ],
+    },
     // {
     //   id: "roles",
     //   label: "QUẢN LÍ PHÂN QUYỀN",
@@ -249,27 +255,27 @@ const Navdata = () => {
     //     },
     //   ],
     // },
-    // {
-    //   id: "redirect-management",
-    //   label: "QUẢN LÝ REDIRECT",
-    //   icon: "ri-archive-line",
-    //   link: "/#",
-    //   stateVariables: isRedirect,
-    //   click: function (e) {
-    //     e.preventDefault();
-    //     setIsRedirect(!isRedirect);
-    //     setIscurrentState("Redirects");
-    //     updateIconSidebar(e);
-    //   },
-    //   subItems: [
-    //     {
-    //       id: "redirect",
-    //       label: "Quản lí Redirect",
-    //       link: "/redirect",
-    //       parentId: "redirect-management",
-    //     },
-    //   ],
-    // },
+    {
+      id: "redirect-management",
+      label: "QUẢN LÝ REDIRECT",
+      icon: "ri-archive-line",
+      link: "/#",
+      stateVariables: isRedirect,
+      click: function (e) {
+        e.preventDefault();
+        setIsRedirect(!isRedirect);
+        setIscurrentState("Redirects");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "redirect",
+          label: "Quản lí Redirect",
+          link: "/redirect",
+          parentId: "redirect-management",
+        },
+      ],
+    },
     // {
     //   id: "faqs-management",
     //   label: "QUẢN LÝ FAQs",

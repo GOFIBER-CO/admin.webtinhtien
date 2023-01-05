@@ -57,6 +57,7 @@ const authProtectedRoutes = [
   { path: "/schemas", component: SchemaList },
   { path: "/schemas/:id", component: SchemaDetail },
   { path: "/redirect", component: RedirectList },
+  { path: "/payment", component: PaymentOfContributors },
   
   // {
   //   path: "/pages-management",
@@ -141,7 +142,7 @@ const publicRoutes = [
   // Authentication Page
   { path: "/login", component: Login },
   { path: "/logout", component: Logout },
-  { path: "/payment", component: PaymentOfContributors },
+ 
   // {
   //   path: "/pages-management",
   //   component: PageList

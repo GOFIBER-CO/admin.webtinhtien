@@ -86,3 +86,6 @@ export const API_CATE = "/api/category";
 
 //redirect
 export const API_REDIRECT = "/api/redirect";
+
+//payment contributors
+export const API_PAYMENT = "/api/collaborators";
