@@ -113,163 +113,163 @@ const Navdata = () => {
         // },
       ],
     },
-    {
-      id: "users",
-      label: "QUẢN LÝ THÀNH VIÊN",
-      icon: "ri-user-2-line",
-      link: "/#",
-      stateVariables: isUsers,
-      click: function (e) {
-        e.preventDefault();
-        setIsUsers(!isUsers);
-        setIscurrentState("Users");
-        updateIconSidebar(e);
-      },
-      subItems: [
-        {
-          id: "user-management",
-          label: "Thành Viên",
-          link: "/users",
-          parentId: "users",
-        },
-        // {
-        //   id: "user-permission",
-        //   label: "Phân Quyền",
-        //   link: "/permission",
-        //   parentId: "users",
-        // },
-      ],
-    },
-    {
-      id: "schema-management",
-      label: "QUẢN LÝ SCHEMA",
-      icon: "ri-bookmark-line",
-      link: "/#",
-      stateVariables: isSchemas,
-      click: function (e) {
-        e.preventDefault();
-        setIsSchemas(!isSchemas);
-        setIscurrentState("Schemas");
-        updateIconSidebar(e);
-      },
-      subItems: [
-        {
-          id: "schemas",
-          label: "Schemas",
-          link: "/schemas",
-          parentId: "schema-management",
-        },
-      ],
-    },
-    {
-      id: "roles",
-      label: "QUẢN LÍ PHÂN QUYỀN",
-      icon: "ri-user-2-line",
-      link: "/#",
-      stateVariables: isRoles,
-      click: function (e) {
-        e.preventDefault();
-        setIsRoles(!isRoles);
-        setIscurrentState("Roles");
-      },
-      subItems: [
-        {
-          id: "roles-management",
-          label: "QUYỀN HẠN",
-          link: "/roles",
-          parentId: "roles",
-        },
-      ],
-    },
-    {
-      id: "taxonomy-management",
-      label: "CHUYÊN MỤC",
-      icon: "ri-price-tag-3-line",
-      link: "/#",
-      stateVariables: isTaxonomy,
-      click: function (e) {
-        e.preventDefault();
-        setIsTaxonomy(!isTaxonomy);
-        setIscurrentState("Taxonomy");
-      },
-      subItems: [
-        {
-          id: "taxonomy",
-          label: "Danh mục",
-          link: "/categories",
-          parentId: "taxonomy-management",
-        },
-        {
-          id: "taxonomy",
-          label: "Thẻ",
-          link: "/tags",
-          parentId: "taxonomy-management",
-        },
-      ],
-    },
-    {
-      id: "cate-management",
-      label: "QUẢN LÝ DANH MỤC",
-      icon: " ri-pages-line",
-      link: "/#",
-      stateVariables: isCates,
-      click: function (e) {
-        e.preventDefault();
-        setisCates(!isCates);
-        setIscurrentState("Categorys");
-        updateIconSidebar(e);
-      },
-      subItems: [
-        {
-          id: "cate",
-          label: "Category",
-          link: "/cate-management",
-          parentId: "cate-management",
-        },
-      ],
-    },
-    {
-      id: "post-management",
-      label: "QUẢN LÝ BÀI VIẾT",
-      icon: "ri-archive-line",
-      link: "/#",
-      stateVariables: isPosts,
-      click: function (e) {
-        e.preventDefault();
-        setIsPosts(!isPosts);
-        setIscurrentState("Posts");
-        updateIconSidebar(e);
-      },
-      subItems: [
-        {
-          id: "posts",
-          label: "Bài Viết",
-          link: "/posts",
-          parentId: "post-management",
-        },
-      ],
-    },
-    {
-      id: "redirect-management",
-      label: "QUẢN LÝ REDIRECT",
-      icon: "ri-archive-line",
-      link: "/#",
-      stateVariables: isRedirect,
-      click: function (e) {
-        e.preventDefault();
-        setIsRedirect(!isRedirect);
-        setIscurrentState("Redirects");
-        updateIconSidebar(e);
-      },
-      subItems: [
-        {
-          id: "redirect",
-          label: "Quản lí Redirect",
-          link: "/redirect",
-          parentId: "redirect-management",
-        },
-      ],
-    },
+    // {
+    //   id: "users",
+    //   label: "QUẢN LÝ THÀNH VIÊN",
+    //   icon: "ri-user-2-line",
+    //   link: "/#",
+    //   stateVariables: isUsers,
+    //   click: function (e) {
+    //     e.preventDefault();
+    //     setIsUsers(!isUsers);
+    //     setIscurrentState("Users");
+    //     updateIconSidebar(e);
+    //   },
+    //   subItems: [
+    //     {
+    //       id: "user-management",
+    //       label: "Thành Viên",
+    //       link: "/users",
+    //       parentId: "users",
+    //     },
+    //     // {
+    //     //   id: "user-permission",
+    //     //   label: "Phân Quyền",
+    //     //   link: "/permission",
+    //     //   parentId: "users",
+    //     // },
+    //   ],
+    // },
+    // {
+    //   id: "schema-management",
+    //   label: "QUẢN LÝ SCHEMA",
+    //   icon: "ri-bookmark-line",
+    //   link: "/#",
+    //   stateVariables: isSchemas,
+    //   click: function (e) {
+    //     e.preventDefault();
+    //     setIsSchemas(!isSchemas);
+    //     setIscurrentState("Schemas");
+    //     updateIconSidebar(e);
+    //   },
+    //   subItems: [
+    //     {
+    //       id: "schemas",
+    //       label: "Schemas",
+    //       link: "/schemas",
+    //       parentId: "schema-management",
+    //     },
+    //   ],
+    // },
+    // {
+    //   id: "roles",
+    //   label: "QUẢN LÍ PHÂN QUYỀN",
+    //   icon: "ri-user-2-line",
+    //   link: "/#",
+    //   stateVariables: isRoles,
+    //   click: function (e) {
+    //     e.preventDefault();
+    //     setIsRoles(!isRoles);
+    //     setIscurrentState("Roles");
+    //   },
+    //   subItems: [
+    //     {
+    //       id: "roles-management",
+    //       label: "QUYỀN HẠN",
+    //       link: "/roles",
+    //       parentId: "roles",
+    //     },
+    //   ],
+    // },
+    // {
+    //   id: "taxonomy-management",
+    //   label: "CHUYÊN MỤC",
+    //   icon: "ri-price-tag-3-line",
+    //   link: "/#",
+    //   stateVariables: isTaxonomy,
+    //   click: function (e) {
+    //     e.preventDefault();
+    //     setIsTaxonomy(!isTaxonomy);
+    //     setIscurrentState("Taxonomy");
+    //   },
+    //   subItems: [
+    //     {
+    //       id: "taxonomy",
+    //       label: "Danh mục",
+    //       link: "/categories",
+    //       parentId: "taxonomy-management",
+    //     },
+    //     {
+    //       id: "taxonomy",
+    //       label: "Thẻ",
+    //       link: "/tags",
+    //       parentId: "taxonomy-management",
+    //     },
+    //   ],
+    // },
+    // {
+    //   id: "cate-management",
+    //   label: "QUẢN LÝ DANH MỤC",
+    //   icon: " ri-pages-line",
+    //   link: "/#",
+    //   stateVariables: isCates,
+    //   click: function (e) {
+    //     e.preventDefault();
+    //     setisCates(!isCates);
+    //     setIscurrentState("Categorys");
+    //     updateIconSidebar(e);
+    //   },
+    //   subItems: [
+    //     {
+    //       id: "cate",
+    //       label: "Category",
+    //       link: "/cate-management",
+    //       parentId: "cate-management",
+    //     },
+    //   ],
+    // },
+    // {
+    //   id: "post-management",
+    //   label: "QUẢN LÝ BÀI VIẾT",
+    //   icon: "ri-archive-line",
+    //   link: "/#",
+    //   stateVariables: isPosts,
+    //   click: function (e) {
+    //     e.preventDefault();
+    //     setIsPosts(!isPosts);
+    //     setIscurrentState("Posts");
+    //     updateIconSidebar(e);
+    //   },
+    //   subItems: [
+    //     {
+    //       id: "posts",
+    //       label: "Bài Viết",
+    //       link: "/posts",
+    //       parentId: "post-management",
+    //     },
+    //   ],
+    // },
+    // {
+    //   id: "redirect-management",
+    //   label: "QUẢN LÝ REDIRECT",
+    //   icon: "ri-archive-line",
+    //   link: "/#",
+    //   stateVariables: isRedirect,
+    //   click: function (e) {
+    //     e.preventDefault();
+    //     setIsRedirect(!isRedirect);
+    //     setIscurrentState("Redirects");
+    //     updateIconSidebar(e);
+    //   },
+    //   subItems: [
+    //     {
+    //       id: "redirect",
+    //       label: "Quản lí Redirect",
+    //       link: "/redirect",
+    //       parentId: "redirect-management",
+    //     },
+    //   ],
+    // },
     // {
     //   id: "faqs-management",
     //   label: "QUẢN LÝ FAQs",
