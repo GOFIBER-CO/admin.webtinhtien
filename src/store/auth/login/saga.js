@@ -24,8 +24,8 @@ function* loginUser({ payload: { user, history } }) {
         password: user.password,
       });
 
-      if (response && response.status === 1) {
-        sessionStorage.setItem("authUser", JSON.stringify(response.data));
+      if (response && response.status !== 0) {
+        sessionStorage.setItem("authUser", JSON.stringify(response));
         yield put(loginSuccess(response));
         history.push("/dashboard");
       } else {
