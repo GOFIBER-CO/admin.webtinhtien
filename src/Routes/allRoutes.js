@@ -41,6 +41,7 @@ import CategoryController from "../pages/CategoryController";
 import Roles from "../pages/Roles/Roles";
 import RedirectList from "../pages/Redirects";
 import PaymentOfContributors from "../pages/PaymentOfContributors";
+import linkManagement from "../pages/linkManagement";
 import Domains from "../pages/Domains";
 import Brands from "../pages/Brands";
 
@@ -62,9 +63,10 @@ const authProtectedRoutes = [
   { path: "/schemas/:id", component: SchemaDetail },
   { path: "/redirect", component: RedirectList },
   { path: "/payment", component: PaymentOfContributors },
+
   { path: "/domains", component: Domains },
   { path: "/brand", component: Brands },
-  
+
   // {
   //   path: "/pages-management",
   //   component: PageList,
@@ -78,8 +80,8 @@ const authProtectedRoutes = [
     component: Roles,
   },
   {
-    path: "/linkposts",
-    component: LinkPosts,
+    path: "/postsLink",
+    component: linkManagement,
   },
   {
     path: "/",
@@ -92,7 +94,7 @@ const publicRoutes = [
   // Authentication Page
   { path: "/login", component: Login },
   { path: "/logout", component: Logout },
- 
+
   // {
   //   path: "/pages-management",
   //   component: PageList

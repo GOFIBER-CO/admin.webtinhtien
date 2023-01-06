@@ -277,6 +277,10 @@ export const getPagingRedirect = (data) =>
 //Payment of Contributors
 export const insertPaymentContributors = (data) =>
   api.create(`${url.API_PAYMENT}`, data);
+export const getPaymentByDomains = (id, pageSize, pageIndex, search) =>
+  api.get(
+    `${url.API_PAYMENT}?domainId=${id}&pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`
+  );
 
 //Domains 
 export const insertDomains = (data) =>api.create(`${url.API_DOMAINS}`, data)
@@ -286,8 +290,19 @@ export const updateDomains = (id, data)=> api.update(`${url.API_DOMAINS}/${id}`,
 
 //Brands
 
-export const insertBrands = (data)=>api.create(`${url.API_BRANDS}`, data)
-export const getPagingBrands = (pageSize,pageIndex,search) => api.get(`${url.API_BRANDS}?pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`)
-export const deleteBrands = (id) =>api.delete(`${url.API_BRANDS}/remove/${id}`)
-export const updateBrands = (id, data) => api.update(`${url.API_BRANDS}/${id}`,data)
-export const getAllBrands = () =>api.get(`${url.API_BRANDS}/getAll`)
+export const insertBrands = (data) => api.create(`${url.API_BRANDS}`, data);
+export const getPagingBrands = (pageSize, pageIndex, search) =>
+  api.get(
+    `${url.API_BRANDS}?pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`
+  );
+export const deleteBrands = (id) =>
+  api.delete(`${url.API_BRANDS}/remove/${id}`);
+export const updateBrands = (id, data) =>
+  api.update(`${url.API_BRANDS}/${id}`, data);
+export const getAllBrands = () => api.get(`${url.API_BRANDS}/getAll`);
+
+//link management
+
+export const createLinkManagement = (data) => {
+  api.create(`${url.API_LINK_MANAGEMENT}`, data);
+};

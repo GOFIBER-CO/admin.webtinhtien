@@ -90,11 +90,13 @@ export const API_REDIRECT = "/api/redirect";
 //payment contributors
 export const API_PAYMENT = "/api/collaborators";
 
+//link management
+
+export const API_LINK_MANAGEMENT = "/api/link-managements";
 //Domains
 
-export const API_DOMAINS = "/api/domains"
+export const API_DOMAINS = "/api/domains";
 
+//Brand
 
-//Brand 
-
-export const API_BRANDS = "/api/brands"
+export const API_BRANDS = "/api/brands";

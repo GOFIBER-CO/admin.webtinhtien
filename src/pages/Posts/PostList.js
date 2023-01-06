@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-undef */
 import React, { useState } from "react";
-import "antd/dist/antd.css";
+// import "antd/dist/antd.css";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {
   Col,
