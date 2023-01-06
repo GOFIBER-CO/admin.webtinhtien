@@ -16,7 +16,13 @@ import "./style.css";
 import { Select } from "antd";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImBin2, ImEye } from "react-icons/im";
-import { getPaymentByDomains } from "../../helpers/helper";
+import {
+  getPaymentByDomains,
+  getPagingBrands,
+  getPagingDomains,
+  getDomainsByBrand,
+  updatePayment,
+} from "../../helpers/helper";
 import { useHistory } from "react-router-dom";
 const { Search } = Input;
 const originData = [];
@@ -88,15 +94,24 @@ const PaymentOfContributors = () => {
   };
   const save = async (key) => {
     try {
+      console.log(key, "asdsadasdasd");
       const row = await form.validateFields();
       const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
+      const index = newData.findIndex((item) => key === item._id);
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, {
           ...item,
           ...row,
         });
+        let newReq = {
+          name: newData[index]?.name,
+          stk: newData[index]?.stk,
+          bank_name: newData[index]?.bank_name,
+          account_holder: newData[index]?.account_holder,
+          note: newData[index]?.note,
+        };
+        await updatePayment(newData[index]?._id, newReq);
         setData(newData);
         setEditingKey("");
       } else {
@@ -183,7 +198,7 @@ const PaymentOfContributors = () => {
         return editable ? (
           <span>
             <Typography.Link
-              onClick={() => save(record?.key)}
+              onClick={() => save(record?._id)}
               style={{
                 marginRight: 8,
               }}
@@ -244,15 +259,6 @@ const PaymentOfContributors = () => {
   const [count, setCount] = useState(2);
   const [addModal, setAddModal] = useState(false);
   const handleAdd = () => {
-    // const newData = {
-    //   key: count,
-    //   name: ``,
-    //   age: "",
-    //   address: ``,
-    // };
-    // setData([...data, newData]);
-    // setCount(count + 1);
-
     setAddModal(true);
   };
 
@@ -264,45 +270,40 @@ const PaymentOfContributors = () => {
   const [pageIndex, setPageIndex] = useState(1);
   const [search, setSearch] = useState("");
 
-  const getListDomains = () => {
-    const domainsList = [
-      {
-        key: "1",
-        value: "domains 1",
-      },
-      {
-        key: "2",
-        value: "domains 2",
-      },
-      {
-        key: "3",
-        value: "domains 3",
-      },
-    ];
-    setDomain(domainsList[0]);
+  const getDomainByBrand = async () => {
+    const listDomains = await getDomainsByBrand(
+      brand?.key || brandList[0]?.key
+    );
+    let domainListTemp = [];
+    listDomains?.data?.map((item) => {
+      let a = {
+        key: item?._id,
+        value: item?.name,
+      };
+      domainListTemp.push(a);
+    });
+
+    const domainsList = domainListTemp;
+    domain?.key === undefined && setDomain(domainsList[0]);
     setDomainList(domainsList);
   };
-  const getListBrand = () => {
-    const brandList = [
-      {
-        key: "1",
-        value: "brand 1",
-      },
-      {
-        key: "2",
-        value: "brand 2",
-      },
-      {
-        key: "3",
-        value: "brand 3",
-      },
-    ];
-    setBrand(brandList[0]);
+  const getListBrand = async () => {
+    const listBrand = await getPagingBrands(10000, 1, "");
+    let brandList = [];
+    listBrand?.data?.map((item) => {
+      let a = {
+        key: item?._id,
+        value: item?.name,
+      };
+      brandList.push(a);
+    });
+    brand?.key === undefined && setBrand(brandList[0]);
     setBrandList(brandList);
   };
   const getColapsByDomain = async () => {
+    console.log(domain, "asdsadas");
     const colaps = await getPaymentByDomains(
-      domain?.value,
+      domain?.key,
       pageSize,
       pageIndex,
       search
@@ -310,12 +311,16 @@ const PaymentOfContributors = () => {
     setData(colaps?.data);
   };
   useEffect(() => {
-    getListDomains();
     getListBrand();
+    getDomainByBrand();
     getColapsByDomain();
   }, []);
+  useEffect(() => {
+    getDomainByBrand();
+  }, [brand?.key]);
   const handleSelectBrand = (value) => {
     setBrand(value);
+    setDomain({});
   };
   const handleSelectDomain = (value) => {
     setDomain(value);
@@ -354,7 +359,11 @@ const PaymentOfContributors = () => {
             </Col>
             <Col lg="1">
               <br />
-              <Button style={{ height: 36, margin: "5px" }} type="primary">
+              <Button
+                style={{ height: 36, margin: "5px" }}
+                type="primary"
+                onClick={getColapsByDomain}
+              >
                 Lọc
               </Button>
             </Col>
@@ -386,6 +395,7 @@ const PaymentOfContributors = () => {
                 style={{
                   marginBottom: 16,
                 }}
+                disabled={!domain}
               >
                 Thêm CTV
               </Button>
@@ -420,7 +430,36 @@ const PaymentOfContributors = () => {
             onCancel={handleCloseModal}
             footer={false}
           >
-            <Row style={{ margin: 0 }}></Row>
+            <Row style={{ margin: 0 }}>
+              <Form
+                layout="vertical"
+                form={formAdd}
+                initialValues={{ layout: formAdd }}
+              >
+                <Form.Item label="Tên" name="name" required>
+                  <Input placeholder="Nhập tên CTV" />
+                </Form.Item>
+                <Form.Item label="Số tài khoản" name="stk" required>
+                  <Input placeholder="Nhập số tài khoản" />
+                </Form.Item>
+                <Form.Item label="Tên trên thẻ" name="account_holder" required>
+                  <Input placeholder="Nhập tên CTV" />
+                </Form.Item>
+                <Form.Item label="Tên" name="name" required>
+                  <Input placeholder="Nhập tên CTV" />
+                </Form.Item>
+                <Form.Item label="Ghi chú" name="note" required>
+                  <Input.TextArea />
+                </Form.Item>
+                <Form.Item label="Xác nhận" name="status">
+                  <Input placeholder="Xác nhận" />
+                </Form.Item>
+
+                <Form.Item>
+                  <Button type="primary">Submit</Button>
+                </Form.Item>
+              </Form>
+            </Row>
           </Modal>
         </Container>
       </div>

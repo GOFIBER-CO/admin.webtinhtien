@@ -63,6 +63,7 @@ const authProtectedRoutes = [
   { path: "/schemas/:id", component: SchemaDetail },
   { path: "/redirect", component: RedirectList },
   { path: "/payment", component: PaymentOfContributors },
+  { path: "/domains", component: Domains },
 
   { path: "/domains", component: Domains },
   { path: "/brand", component: Brands },

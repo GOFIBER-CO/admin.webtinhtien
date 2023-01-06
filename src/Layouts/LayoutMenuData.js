@@ -79,8 +79,9 @@ const Navdata = () => {
     }
     if (iscurrentState !== "PostsLink") {
       setIsPostsLink(false);
-    if(iscurrentState !== "Brand"){
-      setIsBrand(false)
+    }
+    if (iscurrentState !== "Brand") {
+      setIsBrand(false);
     }
   }, [
     history,
@@ -98,7 +99,7 @@ const Navdata = () => {
     isRedirect,
     isDomains,
     isPostsLink,
-    isBrand
+    isBrand,
   ]);
 
   const menuItems = [

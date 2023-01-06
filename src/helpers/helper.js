@@ -279,17 +279,22 @@ export const insertPaymentContributors = (data) =>
   api.create(`${url.API_PAYMENT}`, data);
 export const getPaymentByDomains = (id, pageSize, pageIndex, search) =>
   api.get(
-    `${url.API_PAYMENT}?domainId=${id}&pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`
+    `${url.API_PAYMENT}/getCollaboratorsByDomainId?domainId=${id}&pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`
   );
-
+export const updatePayment = (id, data) =>
+  api.update(`${url.API_PAYMENT}/${id}`, data);
 //Domains
 export const insertDomains = (data) => api.create(`${url.API_DOMAINS}`, data);
-export const getPagingDomains = () => api.get(`${url.API_DOMAINS}`);
+export const getPagingDomains = (pageSize, pageIndex, search) =>
+  api.get(
+    `${url.API_DOMAINS}?pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`
+  );
 export const deleteDomains = (id) =>
   api.delete(`${url.API_DOMAINS}/remove/${id}`);
 export const updateDomains = (id, data) =>
   api.update(`${url.API_DOMAINS}/${id}`, data);
-
+export const getDomainsByBrand = (id) =>
+  api.get(`${url.API_DOMAINS}/getAllDomainsByBrandId/${id}`);
 //Brands
 
 export const insertBrands = (data) => api.create(`${url.API_BRANDS}`, data);
