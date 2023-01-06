@@ -93,3 +93,10 @@ export const API_PAYMENT = "/api/collaborators";
 //link management
 
 export const API_LINK_MANAGEMENT = "/api/link-managements";
+//Domains
+
+export const API_DOMAINS = "/api/domains";
+
+//Brand
+
+export const API_BRANDS = "/api/brands";

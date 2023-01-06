@@ -11,6 +11,7 @@ const Navdata = () => {
   const [isSchemas, setIsSchemas] = useState(false);
   const [isDomains, setIsDomains] = useState(false);
   const [isTaxonomy, setIsTaxonomy] = useState(false);
+  const [isBrand, setIsBrand] = useState(false);
   const [isRoles, setIsRoles] = useState(false);
   const [isCates, setisCates] = useState(false);
   const [isPosts, setIsPosts] = useState(false);
@@ -78,6 +79,8 @@ const Navdata = () => {
     }
     if (iscurrentState !== "PostsLink") {
       setIsPostsLink(false);
+    if(iscurrentState !== "Brand"){
+      setIsBrand(false)
     }
   }, [
     history,
@@ -95,6 +98,7 @@ const Navdata = () => {
     isRedirect,
     isDomains,
     isPostsLink,
+    isBrand
   ]);
 
   const menuItems = [
@@ -192,6 +196,27 @@ const Navdata = () => {
         },
       ],
     },
+    {
+      id: "brand-management",
+      label: "QUẢN LÝ THƯƠNG HIỆU",
+      icon: "ri-bookmark-line",
+      link: "/#",
+      stateVariables: isBrand,
+      click: function (e) {
+        e.preventDefault();
+        setIsBrand(!isBrand);
+        setIscurrentState("Brand");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "brand",
+          label: "Thương hiệu",
+          link: "/brand",
+          parentId: "brand-management",
+        },
+      ],
+    },
     // {
     //   id: "roles",
     //   label: "QUẢN LÍ PHÂN QUYỀN",
@@ -280,27 +305,27 @@ const Navdata = () => {
     //     },
     //   ],
     // },
-    {
-      id: "redirect-management",
-      label: "QUẢN LÝ REDIRECT",
-      icon: "ri-archive-line",
-      link: "/#",
-      stateVariables: isRedirect,
-      click: function (e) {
-        e.preventDefault();
-        setIsRedirect(!isRedirect);
-        setIscurrentState("Redirects");
-        updateIconSidebar(e);
-      },
-      subItems: [
-        {
-          id: "redirect",
-          label: "Quản lí Redirect",
-          link: "/redirect",
-          parentId: "redirect-management",
-        },
-      ],
-    },
+    // {
+    //   id: "redirect-management",
+    //   label: "QUẢN LÝ REDIRECT",
+    //   icon: "ri-archive-line",
+    //   link: "/#",
+    //   stateVariables: isRedirect,
+    //   click: function (e) {
+    //     e.preventDefault();
+    //     setIsRedirect(!isRedirect);
+    //     setIscurrentState("Redirects");
+    //     updateIconSidebar(e);
+    //   },
+    //   subItems: [
+    //     {
+    //       id: "redirect",
+    //       label: "Quản lí Redirect",
+    //       link: "/redirect",
+    //       parentId: "redirect-management",
+    //     },
+    //   ],
+    // },
     // {
     //   id: "faqs-management",
     //   label: "QUẢN LÝ FAQs",
