@@ -19,21 +19,33 @@ import {
   Drawer,
   Tooltip,
   message,
+  Pagination,
 } from "antd";
 import Column from "antd/lib/table/Column";
-import { deleteDomains, getAllBrands, getPagingBrands, getPagingDomains, insertDomains, updateDomains } from './../../helpers/helper';
+import {
+  deleteDomains,
+  getAllBrands,
+  getPagingBrands,
+  getPagingDomains,
+  insertDomains,
+  updateDomains,
+} from "./../../helpers/helper";
 const { Option } = Select;
 const Domains = () => {
   const [form] = Form.useForm();
   const [visibleForm, setVisibleForm] = useState(false);
   const [drawerTitle, setDrawerTitle] = useState("");
   const [searchText, setSearchText] = useState("");
-  const [dataBrands, setDataBrands] = useState([])
+  const [dataBrands, setDataBrands] = useState([]);
   const [selectedCate, setSelectedCate] = useState("");
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(10)
-  const [count, setCount] = useState(1)
-  const [data, setData] = useState([])
+  const [pageSize, setPageSize] = useState(10);
+  const [count, setCount] = useState(1);
+  const [data, setData] = useState([]);
+  const [idEdit, setIdEdit] = useState("");
+  const [search, setSearch] = useState("")
+  
+  // console.log(pageSize, 'size', pageIndex ,'idnex');
   // console.log(dataBrands,'dataBrands');
   const onClose = () => {
     setVisibleForm(false);
@@ -44,82 +56,81 @@ const Domains = () => {
   const handleRefreshCreate = async () => {
     form.resetFields();
   };
-  const getDataDomains = () =>{
-    getPagingDomains().then((res)=>{
+  const getDataDomains = () => {
+    getPagingDomains(pageSize,pageIndex,search).then((res) => {
       // console.log(res, 'res');
-      setPageIndex(res.pageIndex)
-      setPageSize(res.pageSize)
-      setCount(res.count)
-      setData(res.data)
-    })
-  }
-  const getDataBrands = () =>{
-    getAllBrands().then((res)=>{
+      setPageIndex(res.pageIndex);
+      setPageSize(res.pageSize);
+      setCount(res.count);
+      setData(res.data);
+    
+    });
+  };
+  const getDataBrands = () => {
+    getAllBrands().then((res) => {
       // console.log(res,'res');
-      setDataBrands(res.data)
-    })
-  }
-  useEffect(()=>{
-    getDataBrands()
-    getDataDomains()
-  },[])
+      setDataBrands(res.data);
+    });
+  };
+  useEffect(() => {
+    getDataBrands();
+    getDataDomains();
+  }, [pageSize, pageIndex]);
 
   const onFinishFailed = () => {
     // message.error("Save failed!");
   };
-  const onFinish =async (data) => {
-    console.log(data,'data');
-    
+  const onFinish = async (data) => {
+    // console.log(data, "data");
     const dataDomains = {
-        name: data.host,
-        total:0,
-        brand_id: data.brand_id
-      };
-      if (!data._id) {
-         await insertDomains(dataDomains).then((res)=>{
-            // console.log(res,'res');
-            getDataDomains()
-            if(res.success === true){
-              return message.success(`Create Success! `)
-            }
-         }).catch((e)=>{
-            message.error(`Create Failed!`);
-         });
-  
-      }
-      // else{
-      //   await updateDomains(data._id, dataDomains).then((res)=>{
-      //     if(res.success === true){
-      //       return message.success(`Save Success! `)
-      //     }
-
-      //   })
-      // }
+      name: data.host,
+      total: 0,
+      brand_id: data.brand_id,
+    };
+    if (!data._id) {
+      await insertDomains(dataDomains)
+        .then((res) => {
+          // console.log(res,'res');
+          getDataDomains();
+          if (res.success === true) {
+            return message.success(`Create Success! `);
+          }
+        })
+        .catch((e) => {
+          message.error(`Create Failed!`);
+        });
+    }
+     else {
+      await updateDomains(data._id, dataDomains).then((res) => {
+        getDataDomains();
+        if (res.success === true) {
+          return message.success(`Save Success! `);
+        }
+      });
+    }
   };
 
-    const onSearch = () => {
-        
-      };
-      const onInputChange = (e) => {
-        
-      };
+  const onSearch = () => {
+    getDataDomains()
+  };
+  const onInputChange = (e) => {};
 
-      const handleSelectCate = (e) => {
-        setSelectedCate(e);
-      };
+  const handleSelectCate = (e) => {
+    setSelectedCate(e);
+  };
 
-    const onEdit = ( id) =>{
-     
-      const dataEdit = data.filter((item)=>item._id === id)
-      console.log(dataEdit, 'dataEdit');
-      form.setFieldsValue({
-        host: dataEdit[0].name,
-        id: dataEdit[0]._id,
-        brand_id: dataEdit[0].brand_id
-    })
+  const onEdit = (id) => {
+    const dataEdit = data.filter((item) => item._id === id);
+    // console.log(dataEdit, 'dataEdit');
+    setIdEdit(dataEdit[0]._id);
+    form.setFieldsValue({
+      host: dataEdit[0].name,
+      _id: dataEdit[0]._id,
+      brand_id: dataEdit[0].brand_id,
+    });
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Domains");
-    }
+  };
   return (
     <React.Fragment>
       <div className="page-content">
@@ -127,7 +138,7 @@ const Domains = () => {
           <BreadCrumb title="Domains" pageTitle="Quản lý domains"></BreadCrumb>
           <Row className="mb-3">
             <Drawer
-              // title={drawerTitle}
+              title={drawerTitle}
               placement={"right"}
               width={"30%"}
               onClose={onClose}
@@ -145,96 +156,104 @@ const Domains = () => {
                 autoComplete="off"
               >
                 <Col sm={4} hidden={true}>
-                    <Form.Item name="_id" label="Id">
-                      <Input name="_id" />
-                    </Form.Item>
-                  </Col>
-                  <Col>
-                    <Form.Item
+                  <Form.Item name="_id" label="Id">
+                    <Input name="_id" />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item
+                    name="host"
+                    label="Domains"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập Domains!",
+                      },
+                      {
+                        type: "Doamins",
+                      },
+                      {
+                        type: "string",
+                        min: 1,
+                      },
+                    ]}
+                  >
+                    <Input
+                      placeholder="Domains"
                       name="host"
-                      label="Domains"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Vui lòng nhập Domains!",
-                        },
-                        {
-                          type: "Doamins",
-                        },
-                        {
-                          type: "string",
-                          min: 1,
-                        },
-                      ]}
+                      allowClear={true}
+                      onChange={(e) =>
+                        form.setFieldsValue({
+                          host: e.target.value,
+                        })
+                      }
+                      // value={dataEdit}
+                      // defaultValue={dataEdit}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item
+                    name="brand_id"
+                    label="Thương hiệu"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập Thương hiệu!",
+                      },
+                      {
+                        type: "brand_id",
+                      },
+                      {
+                        type: "string",
+                        min: 1,
+                      },
+                    ]}
+                  >
+                    <Select
+                      showSearch
+                      placeholder="Select cate"
+                      optionFilterProp="children"
+                      style={{ width: "100%" }}
+                      value={selectedCate}
+                      onChange={(e) => handleSelectCate(e)}
                     >
-                      <Input
-                        placeholder="Domains"
-                        name="host"
-                        allowClear={true}
-                        onChange={(e) =>
-                          form.setFieldsValue({
-                            host: e.target.value,
-                          })
-                        }
-                        // value={dataEdit}
-                        // defaultValue={dataEdit}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col>
-                    <Form.Item
-                      name="brand_id"
-                      label="Thương hiệu"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Vui lòng nhập Thương hiệu!",
-                        },
-                        {
-                          type: "brand_id",
-                        },
-                        {
-                          type: "string",
-                          min: 1,
-                        },
-                      ]}
-                    >
-                      <Select
-                        showSearch
-                        placeholder="Select cate"
-                        optionFilterProp="children"
-                        style={{ width: "100%" }}
-                        value={selectedCate}
-                        onChange={(e) => handleSelectCate(e)}
-                      >
-                        {dataBrands &&
-                          dataBrands.map((item, index) => {
-                            return (
-                              <Option
-                                key={item?._id}
-                                value={item?._id}
-                                label={item?.name}
-                              >
-                                {item?.name}
-                              </Option>
-                            );
-                          })}
-                      </Select>
-                    </Form.Item>
-                  </Col>
+                      {dataBrands &&
+                        dataBrands.map((item, index) => {
+                          return (
+                            <Option
+                              key={item?._id}
+                              value={item?._id}
+                              label={item?.name}
+                            >
+                              {item?.name}
+                            </Option>
+                          );
+                        })}
+                    </Select>
+                  </Form.Item>
+                </Col>
                 <Form.Item>
                   <Space>
-                    <Button type="primary" htmlType="submit">
-                      Save
-                    </Button>
+                    {idEdit ? (
+                      <Button type="primary" htmlType="submit">
+                        Save
+                      </Button>
+                    ) : (
+                      <>
+                        <Button type="primary" htmlType="submit">
+                          Create
+                        </Button>
 
-                    <Button
-                      type="primary"
-                      htmlType="button"
-                      onClick={() => handleRefreshCreate()}
-                    >
-                      Refresh
-                    </Button>
+                        <Button
+                          type="primary"
+                          htmlType="button"
+                          onClick={() => handleRefreshCreate()}
+                        >
+                          Refresh
+                        </Button>
+                      </>
+                    )}
                   </Space>
                 </Form.Item>
               </Form>
@@ -243,19 +262,22 @@ const Domains = () => {
               <div>
                 <InputGroup>
                   <Input
-                    value={searchText}
+                    // value={searchText}
                     onChange={(e) => {
-                      onInputChange(e);
+                      // onInputChange(e);
+                      setSearch(e.target.value)
                     }}
                     placeholder="Tìm kiếm..."
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        console.log(e.target.value);
+                        // console.log(e.target.value);
+                        setSearch(e.target.value)
+                        getDataDomains()
                       }
                     }}
                   />
-                  <InputGroupText>
-                    <i className="ri-search-line" onClick={onSearch}></i>
+                  <InputGroupText onClick={onSearch} style={{cursor:'pointer'}}>
+                    <i className="ri-search-line" ></i>
                   </InputGroupText>
                 </InputGroup>
               </div>
@@ -281,6 +303,7 @@ const Domains = () => {
               <Table
                 rowKey="_id"
                 dataSource={data}
+                pagination={false}
                 // pagination={{
                 //   total: totalPage,
                 //   pageSize: pageSize,
@@ -295,16 +318,16 @@ const Domains = () => {
                   }}
                 />
                 <Column title="Domains" dataIndex="name" key="name" />
-                
+
                 <Column
                   title="Thương hiệu"
                   dataIndex="_id"
                   key="_id"
-                  render={(val, record)=>{
-                    const data =  dataBrands.filter((item)=>item._id === record.brand_id)
-                    return (
-                      <>{data[0]?.name}</>
-                    )
+                  render={(val, record) => {
+                    const data = dataBrands.filter(
+                      (item) => item._id === record.brand_id
+                    );
+                    return <>{data[0]?.name}</>;
                   }}
                 />
                 <Column
@@ -312,7 +335,6 @@ const Domains = () => {
                   key="action"
                   render={(val, record) => (
                     <Space size="middle">
-                      
                       <Tooltip title="Edit">
                         <i
                           className="ri-pencil-line action-icon"
@@ -320,7 +342,7 @@ const Domains = () => {
                           onClick={() => onEdit(val._id)}
                         ></i>
                       </Tooltip>
-                    
+
                       <Popconfirm
                         title="Are you sure to delete this user?"
                         onConfirm={() => {
@@ -337,6 +359,20 @@ const Domains = () => {
                   )}
                 />
               </Table>
+              <Pagination
+                  // showTotal={showTotal}
+                  style={{ marginTop: "30px" }}
+                  current={pageIndex}
+                  defaultCurrent={pageIndex}
+                  total={count}
+                  pageSize={pageSize}
+                  showSizeChanger
+                  onChange={(page, pageSize) => {
+                    // console.log(page,'page', pageSize,'size');
+                      setPageIndex(page);
+                      setPageSize(pageSize);
+                  }}
+              />
             </Col>
           </Row>
         </Container>

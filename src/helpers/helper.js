@@ -280,7 +280,7 @@ export const insertPaymentContributors = (data) =>
 
 //Domains 
 export const insertDomains = (data) =>api.create(`${url.API_DOMAINS}`, data)
-export const getPagingDomains = () => api.get(`${url.API_DOMAINS}`)
+export const getPagingDomains = (pageSize,pageIndex,search) => api.get(`${url.API_DOMAINS}?pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`)
 export const deleteDomains = (id) => api.delete(`${url.API_DOMAINS}/remove/${id}`)
 export const updateDomains = (id, data)=> api.update(`${url.API_DOMAINS}/${id}`, data)
 
