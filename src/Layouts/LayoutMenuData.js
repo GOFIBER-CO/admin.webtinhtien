@@ -18,7 +18,7 @@ const Navdata = () => {
   const [isBanners, setIsBanners] = useState(false);
   const [isStatistics, setIsStatistics] = useState(false);
   const [iscurrentState, setIscurrentState] = useState("Dashboard");
-
+  const [isLinkPosts, setIsLinkPosts] = useState(false);
   function updateIconSidebar(e) {
     if (e && e.target && e.target.getAttribute("subitems")) {
       const ul = document.getElementById("two-column-menu");
@@ -71,6 +71,9 @@ const Navdata = () => {
     if (iscurrentState !== "Redirects") {
       setIsRedirect(false);
     }
+    if (iscurrentState !== "LinkPosts") {
+      setIsLinkPosts(false);
+    }
   }, [
     history,
     iscurrentState,
@@ -85,6 +88,7 @@ const Navdata = () => {
     isBanners,
     isStatistics,
     isRedirect,
+    isLinkPosts,
   ]);
 
   const menuItems = [
@@ -140,6 +144,26 @@ const Navdata = () => {
     //     // },
     //   ],
     // },
+    {
+      id: "",
+      label: "QUẢN LÝ LINK BÀI VIẾT",
+      icon: "ri-user-2-line",
+      link: "/#",
+      stateVariables: isLinkPosts,
+      click: function (e) {
+        e.preventDefault();
+        setIsLinkPosts(!isLinkPosts);
+        setIscurrentState("LinkPosts");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "linkPosts-management",
+          label: "Quản lí link",
+          link: "/linkposts",
+        },
+      ],
+    },
     // {
     //   id: "schema-management",
     //   label: "QUẢN LÝ SCHEMA",

@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 //pages
 import DashboardAnalytics from "../pages/DashboardAnalytics";
@@ -41,6 +41,7 @@ import CategoryController from "../pages/CategoryController";
 import Roles from "../pages/Roles/Roles";
 import RedirectList from "../pages/Redirects";
 import PaymentOfContributors from "../pages/PaymentOfContributors";
+import LinkPosts from "../pages/LinkPosts";
 const authProtectedRoutes = [
   // { path: "/pages-starter", component: Starter },
   { path: "/dashboard-analytics", component: DashboardAnalytics },
@@ -50,18 +51,6 @@ const authProtectedRoutes = [
   { path: "/users/:id", component: UserDetail },
   { path: "/profile", component: UserProfile },
   { path: "/footer", component: FooterList },
-  { path: "/faqs/:id", component: FaqsDetail },
-  { path: "/taxonomy", component: TaxonomyList },
-  { path: "/taxonomy/add/:id", component: AddTaxonomy },
-  { path: "/taxonomy/:id", component: TaxonomyDetail },
-  { path: "/schemas", component: SchemaList },
-  { path: "/schemas/:id", component: SchemaDetail },
-  { path: "/redirect", component: RedirectList },
-  
-  // {
-  //   path: "/pages-management",
-  //   component: PageList,
-  // },
   {
     path: "/cate-management",
     component: CategoryController,
@@ -70,65 +59,9 @@ const authProtectedRoutes = [
     path: "/roles",
     component: Roles,
   },
-  // {
-  //   path: "/pages-management/create",
-  //   component: CreateEditPage,
-  // },
-  // {
-  //   path: "/pages-management/:id",
-  //   component: PageDetail,
-  // },
-  // {
-  //   path: "/pages-management/edit/:id",
-  //   component: CreateEditPage,
-  // },
   {
-    path: "/posts",
-    component: PostList,
-  },
-  {
-    path: "/posts/create",
-    component: CreateEditPost,
-  },
-  {
-    path: "/posts/:id",
-    component: PostDetail,
-  },
-  {
-    path: "/posts/edit/:slug",
-    component: CreateEditPost,
-  },
-  {
-    path: "/links",
-    component: LinksList,
-  },
-  {
-    path: "/links/:id",
-    component: LinksDetail,
-  },
-  {
-    path: "/media-management",
-    component: MediaList,
-  },
-  {
-    path: "/banners-management",
-    component: BannersList,
-  },
-  {
-    path: "/post-statistics",
-    component: PostStatisitcs,
-  },
-  {
-    path: "/user-statistics",
-    component: UserStatistics,
-  },
-  {
-    path: "/tags",
-    component: TagsList,
-  },
-  {
-    path: "/categories",
-    component: CategoriesList,
+    path: "/linkposts",
+    component: LinkPosts,
   },
   {
     path: "/",
