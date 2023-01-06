@@ -294,7 +294,8 @@ export const deleteDomains = (id) =>
   api.delete(`${url.API_DOMAINS}/remove/${id}`);
 export const updateDomains = (id, data) =>
   api.update(`${url.API_DOMAINS}/${id}`, data);
-
+export const getDomainsByBrand = (id) =>
+  api.get(`${url.API_DOMAINS}/getAllDomainsByBrandId/${id}`);
 //Brands
 
 export const insertBrands = (data) => api.create(`${url.API_BRANDS}`, data);
