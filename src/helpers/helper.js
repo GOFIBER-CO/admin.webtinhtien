@@ -283,6 +283,7 @@ export const getPaymentByDomains = (id, pageSize, pageIndex, search) =>
   );
 export const updatePayment = (id, data) =>
   api.update(`${url.API_PAYMENT}/${id}`, data);
+
 //Domains
 export const insertDomains = (data) => api.create(`${url.API_DOMAINS}`, data);
 export const getPagingDomains = (pageSize, pageIndex, search) =>
@@ -293,8 +294,7 @@ export const deleteDomains = (id) =>
   api.delete(`${url.API_DOMAINS}/remove/${id}`);
 export const updateDomains = (id, data) =>
   api.update(`${url.API_DOMAINS}/${id}`, data);
-export const getDomainsByBrand = (id) =>
-  api.get(`${url.API_DOMAINS}/getAllDomainsByBrandId/${id}`);
+
 //Brands
 
 export const insertBrands = (data) => api.create(`${url.API_BRANDS}`, data);
