@@ -89,3 +89,12 @@ export const API_REDIRECT = "/api/redirect";
 
 //payment contributors
 export const API_PAYMENT = "/api/collaborators";
+
+//Domains
+
+export const API_DOMAINS = "/api/domains"
+
+
+//Brand 
+
+export const API_BRANDS = "/api/brands"

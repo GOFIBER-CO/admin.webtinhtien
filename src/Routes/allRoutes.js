@@ -41,6 +41,9 @@ import CategoryController from "../pages/CategoryController";
 import Roles from "../pages/Roles/Roles";
 import RedirectList from "../pages/Redirects";
 import PaymentOfContributors from "../pages/PaymentOfContributors";
+import Domains from "../pages/Domains";
+import Brands from "../pages/Brands";
+
 const authProtectedRoutes = [
   // { path: "/pages-starter", component: Starter },
   { path: "/dashboard-analytics", component: DashboardAnalytics },
@@ -58,6 +61,8 @@ const authProtectedRoutes = [
   { path: "/schemas/:id", component: SchemaDetail },
   { path: "/redirect", component: RedirectList },
   { path: "/payment", component: PaymentOfContributors },
+  { path: "/domains", component: Domains },
+  { path: "/brand", component: Brands },
   
   // {
   //   path: "/pages-management",
