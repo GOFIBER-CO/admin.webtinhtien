@@ -20,7 +20,7 @@ const Navdata = () => {
   const [isBanners, setIsBanners] = useState(false);
   const [isStatistics, setIsStatistics] = useState(false);
   const [iscurrentState, setIscurrentState] = useState("Dashboard");
-  const [isLinkPosts, setIsLinkPosts] = useState(false);
+  const [isPostsLink, setIsPostsLink] = useState(false);
   function updateIconSidebar(e) {
     if (e && e.target && e.target.getAttribute("subitems")) {
       const ul = document.getElementById("two-column-menu");
@@ -76,6 +76,9 @@ const Navdata = () => {
     if (iscurrentState !== "Domains") {
       setIsDomains(false);
     }
+    if (iscurrentState !== "PostsLink") {
+      setIsPostsLink(false);
+    }
   }, [
     history,
     iscurrentState,
@@ -91,6 +94,7 @@ const Navdata = () => {
     isStatistics,
     isRedirect,
     isDomains,
+    isPostsLink,
   ]);
 
   const menuItems = [
@@ -121,7 +125,7 @@ const Navdata = () => {
     },
     {
       id: "payments",
-      label: "QUẢN LÝ PAYMENT",
+      label: "QUẢN LÝ THANH TOÁN",
       icon: "ri-user-2-line",
       link: "/#",
       stateVariables: isPayment,
@@ -144,6 +148,27 @@ const Navdata = () => {
         //   link: "/permission",
         //   parentId: "users",
         // },
+      ],
+    },
+    {
+      id: "postsLink-management",
+      label: "QUẢN LÝ BÀI VIẾT",
+      icon: "ri-bookmark-line",
+      link: "/#",
+      stateVariables: isPostsLink,
+      click: function (e) {
+        e.preventDefault();
+        setIsPostsLink(!isPostsLink);
+        setIscurrentState("PostsLink");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "postsLink",
+          label: "Quản lý bài viết",
+          link: "/postsLink",
+          parentId: "postsLink-management",
+        },
       ],
     },
     {

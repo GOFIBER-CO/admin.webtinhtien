@@ -41,7 +41,7 @@ import CategoryController from "../pages/CategoryController";
 import Roles from "../pages/Roles/Roles";
 import RedirectList from "../pages/Redirects";
 import PaymentOfContributors from "../pages/PaymentOfContributors";
-import LinkPosts from "../pages/LinkPosts";
+import linkManagement from "../pages/linkManagement";
 const authProtectedRoutes = [
   // { path: "/pages-starter", component: Starter },
   { path: "/dashboard-analytics", component: DashboardAnalytics },
@@ -51,8 +51,6 @@ const authProtectedRoutes = [
   { path: "/users/:id", component: UserDetail },
   { path: "/profile", component: UserProfile },
   { path: "/footer", component: FooterList },
-<<<<<<< HEAD
-=======
   { path: "/faqs/:id", component: FaqsDetail },
   { path: "/taxonomy", component: TaxonomyList },
   { path: "/taxonomy/add/:id", component: AddTaxonomy },
@@ -61,12 +59,11 @@ const authProtectedRoutes = [
   { path: "/schemas/:id", component: SchemaDetail },
   { path: "/redirect", component: RedirectList },
   { path: "/payment", component: PaymentOfContributors },
-  
+
   // {
   //   path: "/pages-management",
   //   component: PageList,
   // },
->>>>>>> 814e70b9a05eab64d6884e3d6b84c60af65beab0
   {
     path: "/cate-management",
     component: CategoryController,
@@ -76,8 +73,8 @@ const authProtectedRoutes = [
     component: Roles,
   },
   {
-    path: "/linkposts",
-    component: LinkPosts,
+    path: "/postsLink",
+    component: linkManagement,
   },
   {
     path: "/",
@@ -90,7 +87,7 @@ const publicRoutes = [
   // Authentication Page
   { path: "/login", component: Login },
   { path: "/logout", component: Logout },
- 
+
   // {
   //   path: "/pages-management",
   //   component: PageList

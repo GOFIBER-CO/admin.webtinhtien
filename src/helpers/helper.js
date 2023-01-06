@@ -277,3 +277,13 @@ export const getPagingRedirect = (data) =>
 //Payment of Contributors
 export const insertPaymentContributors = (data) =>
   api.create(`${url.API_PAYMENT}`, data);
+export const getPaymentByDomains = (id, pageSize, pageIndex, search) =>
+  api.get(
+    `${url.API_PAYMENT}?domainId=${id}&pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`
+  );
+
+//link management
+
+export const createLinkManagement = (data) => {
+  api.create(`${url.API_LINK_MANAGEMENT}`, data);
+};
