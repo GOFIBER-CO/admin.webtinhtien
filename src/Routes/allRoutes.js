@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 //pages
 import DashboardAnalytics from "../pages/DashboardAnalytics";
@@ -44,6 +44,7 @@ import PaymentOfContributors from "../pages/PaymentOfContributors";
 import Domains from "../pages/Domains";
 import Brands from "../pages/Brands";
 
+import LinkPosts from "../pages/LinkPosts";
 const authProtectedRoutes = [
   // { path: "/pages-starter", component: Starter },
   { path: "/dashboard-analytics", component: DashboardAnalytics },
@@ -76,65 +77,9 @@ const authProtectedRoutes = [
     path: "/roles",
     component: Roles,
   },
-  // {
-  //   path: "/pages-management/create",
-  //   component: CreateEditPage,
-  // },
-  // {
-  //   path: "/pages-management/:id",
-  //   component: PageDetail,
-  // },
-  // {
-  //   path: "/pages-management/edit/:id",
-  //   component: CreateEditPage,
-  // },
   {
-    path: "/posts",
-    component: PostList,
-  },
-  {
-    path: "/posts/create",
-    component: CreateEditPost,
-  },
-  {
-    path: "/posts/:id",
-    component: PostDetail,
-  },
-  {
-    path: "/posts/edit/:slug",
-    component: CreateEditPost,
-  },
-  {
-    path: "/links",
-    component: LinksList,
-  },
-  {
-    path: "/links/:id",
-    component: LinksDetail,
-  },
-  {
-    path: "/media-management",
-    component: MediaList,
-  },
-  {
-    path: "/banners-management",
-    component: BannersList,
-  },
-  {
-    path: "/post-statistics",
-    component: PostStatisitcs,
-  },
-  {
-    path: "/user-statistics",
-    component: UserStatistics,
-  },
-  {
-    path: "/tags",
-    component: TagsList,
-  },
-  {
-    path: "/categories",
-    component: CategoriesList,
+    path: "/linkposts",
+    component: LinkPosts,
   },
   {
     path: "/",

@@ -21,7 +21,7 @@ const Navdata = () => {
   const [isBanners, setIsBanners] = useState(false);
   const [isStatistics, setIsStatistics] = useState(false);
   const [iscurrentState, setIscurrentState] = useState("Dashboard");
-
+  const [isLinkPosts, setIsLinkPosts] = useState(false);
   function updateIconSidebar(e) {
     if (e && e.target && e.target.getAttribute("subitems")) {
       const ul = document.getElementById("two-column-menu");
@@ -74,8 +74,8 @@ const Navdata = () => {
     if (iscurrentState !== "Redirects") {
       setIsRedirect(false);
     }
-    if(iscurrentState !== "Domains"){
-      setIsDomains(false)
+    if (iscurrentState !== "Domains") {
+      setIsDomains(false);
     }
     if(iscurrentState !== "Brand"){
       setIsBrand(false)
