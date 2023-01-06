@@ -273,3 +273,7 @@ export const getPagingRedirect = (data) =>
   api.get(
     `${url.API_REDIRECT}/getPaging?pageSize=${data.pageSize}&pageIndex=${data.pageIndex}&search=${data.search}`
   );
+
+//Payment of Contributors
+export const insertPaymentContributors = (data) =>
+  api.create(`${url.API_PAYMENT}`, data);

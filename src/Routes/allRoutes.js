@@ -51,6 +51,22 @@ const authProtectedRoutes = [
   { path: "/users/:id", component: UserDetail },
   { path: "/profile", component: UserProfile },
   { path: "/footer", component: FooterList },
+<<<<<<< HEAD
+=======
+  { path: "/faqs/:id", component: FaqsDetail },
+  { path: "/taxonomy", component: TaxonomyList },
+  { path: "/taxonomy/add/:id", component: AddTaxonomy },
+  { path: "/taxonomy/:id", component: TaxonomyDetail },
+  { path: "/schemas", component: SchemaList },
+  { path: "/schemas/:id", component: SchemaDetail },
+  { path: "/redirect", component: RedirectList },
+  { path: "/payment", component: PaymentOfContributors },
+  
+  // {
+  //   path: "/pages-management",
+  //   component: PageList,
+  // },
+>>>>>>> 814e70b9a05eab64d6884e3d6b84c60af65beab0
   {
     path: "/cate-management",
     component: CategoryController,
@@ -74,7 +90,7 @@ const publicRoutes = [
   // Authentication Page
   { path: "/login", component: Login },
   { path: "/logout", component: Logout },
-  { path: "/payment", component: PaymentOfContributors },
+ 
   // {
   //   path: "/pages-management",
   //   component: PageList
