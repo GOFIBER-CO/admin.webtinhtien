@@ -22,8 +22,10 @@ import {
   getPagingDomains,
   getDomainsByBrand,
   updatePayment,
+  createPayment,
 } from "../../helpers/helper";
 import { useHistory } from "react-router-dom";
+import { format } from "echarts";
 const { Search } = Input;
 const originData = [];
 for (let i = 0; i < 4; i++) {
@@ -327,7 +329,18 @@ const PaymentOfContributors = () => {
   };
   const onSearch = (value) => console.log(value);
   const handleCloseModal = () => {
+    formAdd.resetFields();
     setAddModal(false);
+  };
+  const handleFormAdd = async (value) => {
+    let newColab = value;
+    newColab.domain_id = domain?.key;
+    const res = await createPayment(newColab);
+    if (res.success === true) {
+      handleCloseModal();
+    } else {
+      alert("Có lỗi kìa");
+    }
   };
   return (
     <React.Fragment>
@@ -435,6 +448,7 @@ const PaymentOfContributors = () => {
                 layout="vertical"
                 form={formAdd}
                 initialValues={{ layout: formAdd }}
+                onFinish={handleFormAdd}
               >
                 <Form.Item label="Tên" name="name" required>
                   <Input placeholder="Nhập tên CTV" />
@@ -445,18 +459,20 @@ const PaymentOfContributors = () => {
                 <Form.Item label="Tên trên thẻ" name="account_holder" required>
                   <Input placeholder="Nhập tên CTV" />
                 </Form.Item>
-                <Form.Item label="Tên" name="name" required>
-                  <Input placeholder="Nhập tên CTV" />
+                <Form.Item label="Tên ngân hàng" name="bank_name" required>
+                  <Input placeholder="Nhập tên ngân hàng" />
                 </Form.Item>
                 <Form.Item label="Ghi chú" name="note" required>
                   <Input.TextArea />
                 </Form.Item>
-                <Form.Item label="Xác nhận" name="status">
+                <Form.Item label="Xác nhận" name="owner_confirm">
                   <Input placeholder="Xác nhận" />
                 </Form.Item>
 
                 <Form.Item>
-                  <Button type="primary">Submit</Button>
+                  <Button type="primary" htmlType="submit">
+                    Thêm
+                  </Button>
                 </Form.Item>
               </Form>
             </Row>
