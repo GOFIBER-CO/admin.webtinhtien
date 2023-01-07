@@ -280,6 +280,7 @@ export const getPaymentByDomains = (id, pageSize, pageIndex, search) =>
   api.get(
     `${url.API_PAYMENT}/getCollaboratorsByDomainId?domainId=${id}&pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`
   );
+
 export const updatePayment = (id, data) =>
   api.update(`${url.API_PAYMENT}/${id}`, data);
 
@@ -310,6 +311,15 @@ export const getAllBrands = () => api.get(`${url.API_BRANDS}/getAll`);
 
 //link management
 
-export const createLinkManagement = (data) => {
+export const createLinkManagement = (data) =>
   api.create(`${url.API_LINK_MANAGEMENT}`, data);
-};
+
+export const updateLinkManagement = (id, data) =>
+  api.update(`${url.API_LINK_MANAGEMENT}/${id}`, data);
+export const deleteLinkManagement = (id) =>
+  api.delete(`${url.API_LINK_MANAGEMENT}/remove/${id}`);
+
+export const getLinkPostByColab = (colabId, pageSize, pageIndex, search) =>
+  api.get(
+    `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?collaboratorId=${colabId}&pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}`
+  );
