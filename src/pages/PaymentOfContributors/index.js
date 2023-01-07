@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "antd/es/style/index";
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   Table,
   Typography,
   Modal,
+  message,
 } from "antd";
 import { Container, Row, Col } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -23,6 +24,7 @@ import {
   getDomainsByBrand,
   updatePayment,
   createPayment,
+  deletePayment,
 } from "../../helpers/helper";
 import { useHistory } from "react-router-dom";
 import { format } from "echarts";
@@ -85,6 +87,7 @@ const PaymentOfContributors = () => {
   const [editingKey, setEditingKey] = useState("");
 
   const isEditing = (record) => record._id === editingKey;
+
   const edit = (record) => {
     form.setFieldsValue({
       ...record,
@@ -94,9 +97,10 @@ const PaymentOfContributors = () => {
   const cancel = () => {
     setEditingKey("");
   };
+
   const save = async (key) => {
     try {
-      console.log(key, "asdsadasdasd");
+      
       const row = await form.validateFields();
       const newData = [...data];
       const index = newData.findIndex((item) => key === item._id);
@@ -126,9 +130,14 @@ const PaymentOfContributors = () => {
     }
   };
 
-  const handleDelete = (key) => {
-    const newData = data.filter((item) => item.key !== key);
-    setData(newData);
+  const handleDelete = async (key) => {
+    await deletePayment(key._id).then((res) => {
+      getColapsByDomain();
+      if (res.success === true) {
+        return message.success("Xóa thành công");
+      }
+    });
+    // setData(newData);
   };
 
   const columns = [
@@ -222,12 +231,13 @@ const PaymentOfContributors = () => {
             <Typography.Link
               disabled={editingKey !== ""}
               onClick={() => edit(record)}
+              style={{marginRight:'7px', marginLeft:'7px'}}
             >
               <AiOutlineEdit />
             </Typography.Link>
             <Popconfirm
               title="Sure to delete?"
-              onConfirm={() => handleDelete(record.key)}
+              onConfirm={() => handleDelete(record)}
             >
               <ImBin2
                 style={{
@@ -258,7 +268,6 @@ const PaymentOfContributors = () => {
     };
   });
 
-  const [count, setCount] = useState(2);
   const [addModal, setAddModal] = useState(false);
   const handleAdd = () => {
     setAddModal(true);
@@ -271,6 +280,7 @@ const PaymentOfContributors = () => {
   const [pageSize, setPageSize] = useState(10);
   const [pageIndex, setPageIndex] = useState(1);
   const [search, setSearch] = useState("");
+  const [count, setCount] = useState(1)
 
   const getDomainByBrand = async () => {
     const listDomains = await getDomainsByBrand(
@@ -289,6 +299,7 @@ const PaymentOfContributors = () => {
     domain?.key === undefined && setDomain(domainsList[0]);
     setDomainList(domainsList);
   };
+
   const getListBrand = async () => {
     const listBrand = await getPagingBrands(10000, 1, "");
     let brandList = [];
@@ -302,46 +313,70 @@ const PaymentOfContributors = () => {
     brand?.key === undefined && setBrand(brandList[0]);
     setBrandList(brandList);
   };
+
   const getColapsByDomain = async () => {
-    console.log(domain, "asdsadas");
     const colaps = await getPaymentByDomains(
       domain?.key,
       pageSize,
       pageIndex,
       search
     );
+    console.log(colaps , 'data');
     setData(colaps?.data);
+    setPageIndex(colaps?.pageIndex);
+    setPageSize(colaps?.pageSize);
+    setCount(colaps?.count);
   };
+
   useEffect(() => {
     getListBrand();
     getDomainByBrand();
     getColapsByDomain();
-  }, []);
+  }, [pageIndex, pageSize]);
+
   useEffect(() => {
     getDomainByBrand();
   }, [brand?.key]);
+
   const handleSelectBrand = (value) => {
     setBrand(value);
     setDomain({});
   };
+
   const handleSelectDomain = (value) => {
     setDomain(value);
   };
-  const onSearch = (value) => console.log(value);
+
+  const onSearch = (value) => {
+    setSearch(value);
+    getColapsByDomain();
+  };
+
   const handleCloseModal = () => {
     formAdd.resetFields();
     setAddModal(false);
   };
+
   const handleFormAdd = async (value) => {
     let newColab = value;
     newColab.domain_id = domain?.key;
     const res = await createPayment(newColab);
+    getColapsByDomain();
     if (res.success === true) {
+      message.success("Thêm thành công!");
       handleCloseModal();
     } else {
-      alert("Có lỗi kìa");
+      alert("Có lỗi kìa!");
     }
   };
+  const ref = useRef();
+  const handleKeyUp = (event) =>{
+    // console.log(event, 'event');
+    if (event.keyCode === 'Enter') {
+      // console.log(ref,'re');
+      ref.current.input();
+    }
+  }
   return (
     <React.Fragment>
       <div className="page-content">
@@ -352,7 +387,7 @@ const PaymentOfContributors = () => {
               <p className="custom-label">Tên thương hiệu</p>
               <Select
                 showSearch
-                style={{ width: 200 }}
+                style={{ width: "100%" }}
                 placeholder="Search to Select"
                 value={brand}
                 onSelect={(key, value) => handleSelectBrand(value)}
@@ -363,7 +398,7 @@ const PaymentOfContributors = () => {
               <p className="custom-label">Đường dẫn</p>
               <Select
                 showSearch
-                style={{ width: 200 }}
+                style={{ width: "100%" }}
                 placeholder="Search to Select"
                 value={domain}
                 onSelect={(key, value) => handleSelectDomain(value)}
@@ -382,7 +417,7 @@ const PaymentOfContributors = () => {
             </Col>
           </Row>
           <Row>
-            <Col lg="2">
+            <Col lg="3">
               <p className="custom-label">Tìm kiếm</p>
               <Search
                 placeholder="input search text"
@@ -390,6 +425,8 @@ const PaymentOfContributors = () => {
                 enterButton="Search"
                 size="medium"
                 onSearch={onSearch}
+                onKeyDown={handleKeyUp}
+                ref={ref}
               />
             </Col>
 
@@ -422,6 +459,7 @@ const PaymentOfContributors = () => {
 
           <Form form={form} component={false}>
             <Table
+              scroll={{ x: 1300 , y: 600 }}
               components={{
                 body: {
                   cell: EditableCell,
@@ -432,9 +470,19 @@ const PaymentOfContributors = () => {
               columns={mergedColumns}
               rowClassName="editable-row"
               pagination={{
-                onChange: cancel,
+                current: pageIndex,
+                total: count,
+                defaultCurrent:pageIndex,
+                pageSize: pageSize,
+                showSizeChanger: true,
+                onChange: ((page,pageSize)=>{
+                  setPageIndex(page);
+                  setPageSize(pageSize);
+                })
               }}
+             
             />
+           
           </Form>
           <Modal
             title="Thêm Cộng tác viên"

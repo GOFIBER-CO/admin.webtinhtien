@@ -45,7 +45,7 @@ const Domains = () => {
   const [search, setSearch] = useState("")
   
   // console.log(pageSize, 'size', pageIndex ,'idnex');
-  console.log(data,'data');
+  
   const onClose = () => {
     setVisibleForm(false);
   };

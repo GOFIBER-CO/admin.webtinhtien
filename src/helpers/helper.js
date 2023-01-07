@@ -282,6 +282,7 @@ export const getPaymentByDomains = (id, pageSize, pageIndex, search) =>
   );
 export const updatePayment = (id, data) =>
   api.update(`${url.API_PAYMENT}/${id}`, data);
+export const deletePayment = (id) => api.delete(`${url.API_PAYMENT}/remove/${id}`)
 
 //Domains
 export const insertDomains = (data) => api.create(`${url.API_DOMAINS}`, data);
