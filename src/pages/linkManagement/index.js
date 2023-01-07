@@ -361,33 +361,57 @@ const LinkManagement = (props) => {
               slug="domains"
             />
             <Row>
-              <Col lg="2">
+              <Col lg={2}>
                 <p className="custom-label">Tên thương hiệu</p>
                 <Select
                   showSearch
-                  style={{ width: 200 }}
+                  style={{ width: "100%" }}
                   placeholder="Search to Select"
                   value={brand}
                   onSelect={(key, value) => handleSelectBrand(value)}
-                  options={brandList}
-                />
+                >
+                  {brandList &&
+                    brandList.map((item, index) => {
+                      return (
+                        <Option
+                          key={item._id}
+                          label={item?.name}
+                          value={item?._id}
+                        >
+                          {item?.name}
+                        </Option>
+                      );
+                    })}
+                </Select>
               </Col>
-              <Col lg="2">
+              <Col lg={2}>
                 <p className="custom-label">Đường dẫn</p>
                 <Select
                   showSearch
-                  style={{ width: 200 }}
+                  style={{ width: "100%" }}
                   placeholder="Search to Select"
                   value={domain}
                   onSelect={(key, value) => handleSelectDomain(value)}
-                  options={domainList}
-                />
+                >
+                  {domainList &&
+                    domainList.map((item) => {
+                      return (
+                        <Option
+                          key={item._id}
+                          label={item?.name}
+                          value={item?._id}
+                        >
+                          {item?.name}
+                        </Option>
+                      );
+                    })}
+                </Select>
               </Col>
-              <Col lg="2">
+              <Col lg={2}>
                 <p className="custom-label">Cộng tác viên</p>
                 <Select
                   showSearch
-                  style={{ width: 200 }}
+                  style={{ width: "100%" }}
                   placeholder="Search to Select"
                   value={colab}
                   onSelect={(key, value) => handleSelectColaps(value)}
@@ -406,7 +430,7 @@ const LinkManagement = (props) => {
               </Col> */}
             </Row>
             <Row>
-              <Col lg="2">
+              <Col lg="3">
                 <p className="custom-label">Tìm kiếm theo bài viết</p>
                 <Search
                   placeholder="input search text"
