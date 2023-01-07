@@ -295,6 +295,7 @@ export const updateDomains = (id, data) =>
   api.update(`${url.API_DOMAINS}/${id}`, data);
 export const getDomainsByBrand = (id) =>
   api.get(`${url.API_DOMAINS}/getAllDomainsByBrandId/${id}`);
+  export const getAllDomains = () => api.get(`${url.API_DOMAINS}/getAll`)
 //Brands
 
 export const insertBrands = (data) => api.create(`${url.API_BRANDS}`, data);

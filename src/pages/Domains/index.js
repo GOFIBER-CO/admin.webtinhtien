@@ -35,7 +35,6 @@ const Domains = () => {
   const [form] = Form.useForm();
   const [visibleForm, setVisibleForm] = useState(false);
   const [drawerTitle, setDrawerTitle] = useState("");
-  const [searchText, setSearchText] = useState("");
   const [dataBrands, setDataBrands] = useState([]);
   const [selectedCate, setSelectedCate] = useState("");
   const [pageIndex, setPageIndex] = useState(1);
@@ -46,7 +45,7 @@ const Domains = () => {
   const [search, setSearch] = useState("")
   
   // console.log(pageSize, 'size', pageIndex ,'idnex');
-  // console.log(dataBrands,'dataBrands');
+  console.log(data,'data');
   const onClose = () => {
     setVisibleForm(false);
   };
@@ -346,8 +345,13 @@ const Domains = () => {
                       <Popconfirm
                         title="Are you sure to delete this user?"
                         onConfirm={() => {
-                          deleteDomains(val._id).then(() => {
+                          deleteDomains(val._id).then((res) => {
                             getDataDomains();
+                            // console.log(res, 'ress');
+                            if(res.success === true){
+                              return message.success(`Delete Success! `);
+                            }
+                            
                           });
                         }}
                         okText="Yes"
