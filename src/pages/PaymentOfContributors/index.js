@@ -336,11 +336,6 @@ const PaymentOfContributors = () => {
       pageIndex,
       search
     );
-<<<<<<< HEAD
-    console.log(colaps, "data");
-=======
-    // console.log(colaps , 'data');
->>>>>>> 66810820c4eb3d0adee889cdcb87c7dbfa60faca
     setData(colaps?.data);
     setPageIndex(colaps?.pageIndex);
     setPageSize(colaps?.pageSize);

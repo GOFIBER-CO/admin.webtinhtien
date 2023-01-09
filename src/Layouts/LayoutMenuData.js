@@ -111,7 +111,7 @@ const Navdata = () => {
       id: "dashboard",
       label: "BẢNG ĐIỀU KHIỂN",
       icon: "ri-dashboard-2-line",
-      link: "/#",
+      link: "/dashboard",
       stateVariables: isDashboard,
       click: function (e) {
         e.preventDefault();
@@ -120,12 +120,54 @@ const Navdata = () => {
         updateIconSidebar(e);
       },
       subItems: [
-        // {
-        //   id: "analytics",
-        //   label: "Analytics",
-        //   link: "/dashboard-analytics",
-        //   parentId: "dashboard",
-        // },
+        {
+          id: "analytics",
+          label: "Analytics",
+          link: "/dashboard-analytics",
+          parentId: "dashboard",
+        },
+      ],
+    },
+    {
+      id: "brand-management",
+      label: "QUẢN LÝ THƯƠNG HIỆU",
+      icon: "ri-bookmark-line",
+      link: "/#",
+      stateVariables: isBrand,
+      click: function (e) {
+        e.preventDefault();
+        setIsBrand(!isBrand);
+        setIscurrentState("Brand");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "brand",
+          label: "Thương hiệu",
+          link: "/brand",
+          parentId: "brand-management",
+        },
+      ],
+    },
+    {
+      id: "domain-management",
+      label: "QUẢN LÝ DOMAINS",
+      icon: "ri-bookmark-line",
+      link: "/#",
+      stateVariables: isDomains,
+      click: function (e) {
+        e.preventDefault();
+        setIsDomains(!isDomains);
+        setIscurrentState("Domains");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "domains",
+          label: "Domains",
+          link: "/domains",
+          parentId: "domain-management",
+        },
       ],
     },
     {
@@ -157,7 +199,7 @@ const Navdata = () => {
     },
     {
       id: "postsLink-management",
-      label: "QUẢN LÝ BÀI VIẾT",
+      label: "QUẢN LÝ LINK",
       icon: "ri-bookmark-line",
       link: "/#",
       stateVariables: isPostsLink,
@@ -170,54 +212,13 @@ const Navdata = () => {
       subItems: [
         {
           id: "postsLink",
-          label: "Quản lý bài viết",
+          label: "Quản lý link",
           link: "/postsLink",
           parentId: "postsLink-management",
         },
       ],
     },
-    {
-      id: "domain-management",
-      label: "QUẢN LÝ DOMAINS",
-      icon: "ri-bookmark-line",
-      link: "/#",
-      stateVariables: isDomains,
-      click: function (e) {
-        e.preventDefault();
-        setIsDomains(!isDomains);
-        setIscurrentState("Domains");
-        updateIconSidebar(e);
-      },
-      subItems: [
-        {
-          id: "domains",
-          label: "Domains",
-          link: "/domains",
-          parentId: "domain-management",
-        },
-      ],
-    },
-    {
-      id: "brand-management",
-      label: "QUẢN LÝ THƯƠNG HIỆU",
-      icon: "ri-bookmark-line",
-      link: "/#",
-      stateVariables: isBrand,
-      click: function (e) {
-        e.preventDefault();
-        setIsBrand(!isBrand);
-        setIscurrentState("Brand");
-        updateIconSidebar(e);
-      },
-      subItems: [
-        {
-          id: "brand",
-          label: "Thương hiệu",
-          link: "/brand",
-          parentId: "brand-management",
-        },
-      ],
-    },
+
     // {
     //   id: "roles",
     //   label: "QUẢN LÍ PHÂN QUYỀN",
