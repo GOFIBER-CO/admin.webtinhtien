@@ -56,6 +56,7 @@ const Brands = () => {
         if (!data.id) {
             await insertBrands(dataBrands).then((res) => {
                 getdata()
+                setVisibleForm(false);
                 if (res.success === true) {
                     return message.success(`Create Success! `);
                 }
@@ -69,6 +70,7 @@ const Brands = () => {
             //update
             await updateBrands(data.id, dataBrands).then((res) => {
                 getdata()
+                setVisibleForm(false);
                 if (res.success === true) {
                     return message.success(`Save Success! `);
                 }
@@ -119,7 +121,7 @@ const Brands = () => {
                             placement={"right"}
                             width={"30%"}
                             onClose={onClose}
-                            visible={visibleForm}
+                            open={visibleForm}
                             bodyStyle={{
                                 paddingBottom: 80,
                             }}
