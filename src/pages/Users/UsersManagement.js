@@ -23,6 +23,7 @@ import {
   addUser,
   deleteUser,
   getAllUsers,
+  getPagingUsers,
   searchUser,
 } from "../../helpers/helper";
 const { Option } = Select;
@@ -97,13 +98,15 @@ const UsersManagement = () => {
       pageIndex: pageIndex,
       search: searchInput,
     };
-    getAllUsers(dataReq).then((res) => {
-      let userList = res.docs;
-      userList.map((item) => {
-        item.role = item.role.roleName;
-      });
-      setUsers(userList);
-      setTotals(res.totalDocs);
+    getPagingUsers().then((res) => {
+      console.log(res, 'res');
+      setUsers(res)
+      // let userList = res.docs;
+      // userList.map((item) => {
+      //   item.role = item.role.roleName;
+      // });
+      // setUsers(userList);
+      // setTotals(res.totalDocs);
     });
   };
 

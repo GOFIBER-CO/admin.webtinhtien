@@ -100,3 +100,7 @@ export const API_DOMAINS = "/api/domains";
 //Brand
 
 export const API_BRANDS = "/api/brands";
+
+//quản lý users
+export const API_USERS = "/api/users"
+export const GET_ALL_ROLE = "/api/roles";

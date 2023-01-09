@@ -372,6 +372,8 @@ const PaymentOfContributors = () => {
   };
 
   const handleFormAdd = async (value) => {
+    console.log(value, "aaa");
+    // return ;
     let newColab = value;
     newColab.domain_id = domain?.key;
     const res = await createPayment(newColab);
@@ -436,12 +438,13 @@ const PaymentOfContributors = () => {
               <p className="custom-label">Tìm kiếm</p>
               <Search
                 placeholder="input search text"
-                allowClear
                 enterButton="Search"
                 size="medium"
                 onSearch={onSearch}
                 onKeyDown={handleKeyUp}
                 ref={ref}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
             </Col>
 
@@ -501,6 +504,9 @@ const PaymentOfContributors = () => {
                   setPageSize(pageSize);
                 },
               }}
+              initialValues={{
+                remember: true,
+              }}
             />
           </Form>
           <Modal
@@ -517,23 +523,84 @@ const PaymentOfContributors = () => {
                 initialValues={{ layout: formAdd }}
                 onFinish={handleFormAdd}
               >
-                <Form.Item label="Tên" name="name" required>
+                <Form.Item
+                  label="Tên"
+                  name="name"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: "không được bỏ trống tên!",
+                    },
+                  ]}
+                >
                   <Input placeholder="Nhập tên CTV" />
                 </Form.Item>
-                <Form.Item label="Số tài khoản" name="stk" required>
+                <Form.Item
+                  label="Số tài khoản"
+                  name="stk"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: "không được bỏ trống số tài khoản!",
+                    },
+                  ]}
+                >
                   <Input placeholder="Nhập số tài khoản" />
                 </Form.Item>
-                <Form.Item label="Tên trên thẻ" name="account_holder" required>
+                <Form.Item
+                  label="Tên trên thẻ"
+                  name="account_holder"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: "không được bỏ trống tên trên thẻ!",
+                    },
+                  ]}
+                >
                   <Input placeholder="Nhập tên CTV" />
                 </Form.Item>
-                <Form.Item label="Tên ngân hàng" name="bank_name" required>
+                <Form.Item
+                  label="Tên ngân hàng"
+                  name="bank_name"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: "không được bỏ trống tên ngân hàng!",
+                    },
+                  ]}
+                >
                   <Input placeholder="Nhập tên ngân hàng" />
                 </Form.Item>
                 <Form.Item label="Ghi chú" name="note" required>
                   <Input.TextArea />
                 </Form.Item>
-                <Form.Item label="Xác nhận" name="owner_confirm">
-                  <Input placeholder="Xác nhận" />
+
+                <Form.Item label="Xác nhận" name="owner_confirm" 
+                   rules={[
+                    {
+                      required: true,
+                      message: 'không được bỏ trống trạng thái!',
+                    },
+                  ]}
+                >
+                  {/* <Input placeholder="Xác nhận" /> */}
+                  <Select
+                    placeholder="chọn trạng thái"
+                    options={[
+                      {
+                        value: 1,
+                        label: "Xác nhận",
+                      },
+                      {
+                        value: 2,
+                        label: "Đang chờ",
+                      },
+                    ]}
+                  />
                 </Form.Item>
 
                 <Form.Item>

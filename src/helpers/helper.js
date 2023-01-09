@@ -330,3 +330,7 @@ export const getLinkPostByColab = (colabId, pageSize, pageIndex, search) =>
   api.get(
     `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?collaboratorId=${colabId}&pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}`
   );
+
+//Quản lý users
+export const getPagingUsers = () => api.get(`${url.API_USERS}`)
+export const getAllRoles = () => api.get(`${url.GET_ALL_ROLE}/getRoles`);
