@@ -100,7 +100,6 @@ const PaymentOfContributors = () => {
 
   const save = async (key) => {
     try {
-      
       const row = await form.validateFields();
       const newData = [...data];
       const index = newData.findIndex((item) => key === item._id);
@@ -116,6 +115,7 @@ const PaymentOfContributors = () => {
           bank_name: newData[index]?.bank_name,
           account_holder: newData[index]?.account_holder,
           note: newData[index]?.note,
+          owner_confirm: newData[index]?.owner_confirm,
         };
         await updatePayment(newData[index]?._id, newReq);
         setData(newData);
@@ -185,6 +185,14 @@ const PaymentOfContributors = () => {
       dataIndex: "total",
       width: "10%",
       editable: false,
+      render: (value) => {
+        return (
+          value?.toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+          }) || 0
+        );
+      },
     },
     {
       title: "Ghi chú",
@@ -237,7 +245,7 @@ const PaymentOfContributors = () => {
             <Typography.Link
               disabled={editingKey !== ""}
               onClick={() => edit(record)}
-              style={{marginRight:'7px', marginLeft:'7px'}}
+              style={{ marginRight: "7px", marginLeft: "7px" }}
             >
               <AiOutlineEdit />
             </Typography.Link>
@@ -286,7 +294,7 @@ const PaymentOfContributors = () => {
   const [pageSize, setPageSize] = useState(10);
   const [pageIndex, setPageIndex] = useState(1);
   const [search, setSearch] = useState("");
-  const [count, setCount] = useState(1)
+  const [count, setCount] = useState(1);
 
   const getDomainByBrand = async () => {
     const listDomains = await getDomainsByBrand(
@@ -297,6 +305,7 @@ const PaymentOfContributors = () => {
       let a = {
         key: item?._id,
         value: item?.name,
+        total: item?.total,
       };
       domainListTemp.push(a);
     });
@@ -327,7 +336,7 @@ const PaymentOfContributors = () => {
       pageIndex,
       search
     );
-    console.log(colaps , 'data');
+    console.log(colaps, "data");
     setData(colaps?.data);
     setPageIndex(colaps?.pageIndex);
     setPageSize(colaps?.pageSize);
@@ -376,13 +385,13 @@ const PaymentOfContributors = () => {
     }
   };
   const ref = useRef();
-  const handleKeyUp = (event) =>{
+  const handleKeyUp = (event) => {
     // console.log(event, 'event');
-    if (event.keyCode === 'Enter') {
+    if (event.keyCode === "Enter") {
       // console.log(ref,'re');
       ref.current.input();
     }
-  }
+  };
   return (
     <React.Fragment>
       <div className="page-content">
@@ -392,6 +401,7 @@ const PaymentOfContributors = () => {
             <Col lg="2">
               <p className="custom-label">Tên thương hiệu</p>
               <Select
+                className="search-payment"
                 showSearch
                 style={{ width: "100%" }}
                 placeholder="Search to Select"
@@ -458,14 +468,20 @@ const PaymentOfContributors = () => {
             </Col>
             <Col lg="2">
               <p className="custom-label">
-                Tổng số tiền : {domain ? domain?.total || 0 : 0}
+                Tổng số tiền :{" "}
+                {domain
+                  ? domain?.total?.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    }) || 0
+                  : 0}
               </p>
             </Col>
           </Row>
 
           <Form form={form} component={false}>
             <Table
-              scroll={{ x: 1300 , y: 600 }}
+              scroll={{ x: 1300, y: 600 }}
               components={{
                 body: {
                   cell: EditableCell,
@@ -478,17 +494,15 @@ const PaymentOfContributors = () => {
               pagination={{
                 current: pageIndex,
                 total: count,
-                defaultCurrent:pageIndex,
+                defaultCurrent: pageIndex,
                 pageSize: pageSize,
                 showSizeChanger: true,
-                onChange: ((page,pageSize)=>{
+                onChange: (page, pageSize) => {
                   setPageIndex(page);
                   setPageSize(pageSize);
-                })
+                },
               }}
-             
             />
-           
           </Form>
           <Modal
             title="Thêm Cộng tác viên"

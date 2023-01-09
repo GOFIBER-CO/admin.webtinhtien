@@ -13,6 +13,7 @@ import {
   Modal,
   Checkbox,
   notification,
+  Spin,
   Pagination,
 } from "antd";
 import { Container, Row, Col } from "reactstrap";
@@ -54,6 +55,7 @@ const LinkManagement = (props) => {
   const [edit, setEdit] = useState("");
   const [total, setTotal] = useState(0);
   const [error, setError] = useState("");
+  const [loading, setIsLoading] = useState(false);
   const columns = [
     {
       title: "Tiêu đề",
@@ -102,6 +104,19 @@ const LinkManagement = (props) => {
       key: "number_images",
       dataIndex: "number_images",
       render: (value) => <>{value}</>,
+    },
+    {
+      title: "Số tiền",
+      key: "total",
+      dataIndex: "total",
+      render: (value) => (
+        <>
+          {value?.toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </>
+      ),
     },
     {
       title: "Trạng thái",
@@ -178,7 +193,6 @@ const LinkManagement = (props) => {
       props?.location?.state
         ? setBrand(props?.location?.state[2])
         : brand?.key === undefined && setBrand(brandList[0]);
-
       setBrandList(brandList);
     }
   };
@@ -238,9 +252,9 @@ const LinkManagement = (props) => {
   }, [colab?.key, pageSize, pageIndex]);
 
   const handleSelectBrand = (value) => {
-    setSearch("");
-
     history.replace("/postsLink");
+    setData([]);
+    setSearch("");
     setBrand(value);
     setDomain({});
     setColabList([]);
@@ -248,12 +262,15 @@ const LinkManagement = (props) => {
   };
   const handleSelectDomain = (value) => {
     setSearch("");
+    setData([]);
 
     setDomain(value);
     setColabList([]);
     setColab({});
   };
   const handleSelectColaps = (value) => {
+    setData([]);
+
     setSearch("");
     setColab(value);
   };
@@ -280,11 +297,13 @@ const LinkManagement = (props) => {
         pageIndex,
         search
       );
+      console.log(linkPost);
       setTotal(linkPost?.count);
       setData(linkPost?.data);
     }
   };
   const onFinish = async (values) => {
+    setIsLoading(true);
     const dataReq = {
       link_post: values?.link_post,
       link_posted: values?.link_posted,
@@ -313,6 +332,7 @@ const LinkManagement = (props) => {
           duration: 2,
         });
       }
+      setIsLoading(false);
     } else {
       let dataUpdate = {
         link_posted: values?.link_posted || "",
@@ -340,6 +360,7 @@ const LinkManagement = (props) => {
           duration: 2,
         });
       }
+      setIsLoading(false);
     }
   };
   const handleEdit = (value) => {
@@ -369,19 +390,16 @@ const LinkManagement = (props) => {
                   placeholder="Search to Select"
                   value={brand}
                   onSelect={(key, value) => handleSelectBrand(value)}
+                  options={brandList}
                 >
-                  {brandList &&
-                    brandList.map((item, index) => {
+                  {/* {brandList &&
+                    brandList?.map((item, index) => {
                       return (
-                        <Option
-                          key={item._id}
-                          label={item?.name}
-                          value={item?._id}
-                        >
-                          {item?.name}
+                        <Option key={item?.key} label={item?.value}>
+                          {item?.value}
                         </Option>
                       );
-                    })}
+                    })} */}
                 </Select>
               </Col>
               <Col lg={2}>
@@ -392,19 +410,16 @@ const LinkManagement = (props) => {
                   placeholder="Search to Select"
                   value={domain}
                   onSelect={(key, value) => handleSelectDomain(value)}
+                  options={domainList}
                 >
-                  {domainList &&
+                  {/* {domainList &&
                     domainList.map((item) => {
                       return (
-                        <Option
-                          key={item._id}
-                          label={item?.name}
-                          value={item?._id}
-                        >
-                          {item?.name}
+                        <Option key={item?.key} label={item?.value}>
+                          {item?.value}
                         </Option>
                       );
-                    })}
+                    })} */}
                 </Select>
               </Col>
               <Col lg={2}>
@@ -499,6 +514,7 @@ const LinkManagement = (props) => {
             form={form}
             onFinish={onFinish}
             // onFinishFailed={onFinishFailed}
+            onLoad={<Spin delay={500}></Spin>}
             autoComplete="off"
           >
             {!edit && (
@@ -540,8 +556,10 @@ const LinkManagement = (props) => {
               >
                 Quay về
               </Button>
-              <Button type="primary" htmlType="submit">
-                {edit ? "Chỉnh sửa" : <>Thêm</>}
+              <Button type="primary" htmlType="submit" disabled={loading}>
+                <span>
+                  {loading ? <Spin /> : edit ? "Chỉnh sửa" : <>Thêm</>}
+                </span>
               </Button>
             </Form.Item>
           </Form>
