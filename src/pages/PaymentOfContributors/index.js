@@ -224,7 +224,13 @@ const PaymentOfContributors = () => {
           <>
             <Typography.Link
               disabled={editingKey !== ""}
-              onClick={() => history.push(`/postsLink`, record?._id)}
+              onClick={() =>
+                history.push(`/postsLink`, [
+                  { key: record?._id, value: record?.name },
+                  domain,
+                  brand,
+                ])
+              }
             >
               <ImEye />
             </Typography.Link>
