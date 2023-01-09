@@ -2,7 +2,7 @@ import { Col, Container, Row } from "reactstrap";
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Link, useParams } from "react-router-dom";
-import { getUser } from "../../helpers/helper";
+import { getPagingUsers } from "../../helpers/helper";
 import UserProfile from "../Authentication/user-profile";
 
 const UserDetail = () => {
@@ -10,9 +10,9 @@ const UserDetail = () => {
   const [user, setUser] = useState();
   // console.log("params: ", params);
   useEffect(() => {
-    getUser(params["id"]).then((res) => {
-      console.log(res);
-      setUser(res);
+    getPagingUsers().then((res) => {
+      console.log(res, 'res');
+      // setUser(res);
     });
   }, []);
 

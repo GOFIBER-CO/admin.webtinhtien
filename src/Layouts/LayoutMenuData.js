@@ -12,6 +12,7 @@ const Navdata = () => {
   const [isDomains, setIsDomains] = useState(false);
   const [isTaxonomy, setIsTaxonomy] = useState(false);
   const [isBrand, setIsBrand] = useState(false);
+  const [isUser, setIsUser] = useState(false);
   const [isRoles, setIsRoles] = useState(false);
   const [isCates, setisCates] = useState(false);
   const [isPosts, setIsPosts] = useState(false);
@@ -83,6 +84,9 @@ const Navdata = () => {
     if (iscurrentState !== "Brand") {
       setIsBrand(false);
     }
+    if(iscurrentState !== "User"){
+      setIsUser(false);
+    }
   }, [
     history,
     iscurrentState,
@@ -100,6 +104,7 @@ const Navdata = () => {
     isDomains,
     isPostsLink,
     isBrand,
+    isUser
   ]);
 
   const menuItems = [
@@ -215,6 +220,27 @@ const Navdata = () => {
           label: "Thương hiệu",
           link: "/brand",
           parentId: "brand-management",
+        },
+      ],
+    },
+    {
+      id: "user-management",
+      label: "QUẢN LÝ USER",
+      icon: "ri-bookmark-line",
+      link: "/#",
+      stateVariables: isUser,
+      click: function (e) {
+        e.preventDefault();
+        setIsUser(!isUser);
+        setIscurrentState("User");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "user",
+          label: "Users",
+          link: "/users",
+          parentId: "user-management",
         },
       ],
     },

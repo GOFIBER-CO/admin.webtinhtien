@@ -15,7 +15,7 @@ import {
 
 import { message, Badge, Space, Table, Modal, Select } from "antd";
 import { Link, useParams, useHistory } from "react-router-dom";
-import { addUser, getUser, updateUser, getAllRole } from "../../helpers/helper";
+import { addUser, getUser, updateUser, getAllRoles } from "../../helpers/helper";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 const { Option } = Select;
 const { Column } = Table;
@@ -36,14 +36,16 @@ function AddUser() {
   const history = useHistory();
   const [formVal, setFormVal] = useState({
     username: "",
-    name: "",
-    password: "",
+    firstName: "",
+    passwordHash: "",
+    lastName: "",
+    status: "",
     role: "",
   });
   const getRole = async () => {
-    let roleList = await getAllRole();
-    console.log(roleList, "asdsadsadas");
-    setRoleList(roleList.docs);
+    let roleList = await getAllRoles();
+    console.log(roleList, "data");
+    setRoleList(roleList);
   };
   useEffect(() => {
     if (id && id !== "new") {
@@ -136,7 +138,7 @@ function AddUser() {
                           name="username"
                           placeholder="Nhập tên đăng nhập"
                           type="text"
-                          disabled={id !== "new" ? true : false}
+                          // disabled={id !== "new" ? true : false}
                           value={formVal.username}
                           onChange={onInputChange}
                           invalid={
@@ -167,7 +169,7 @@ function AddUser() {
                         </Label>
                         <Input
                           id="name"
-                          name="name"
+                          name="firstName"
                           placeholder="First name"
                           value={formVal.name}
                           onChange={onInputChange}
@@ -183,7 +185,7 @@ function AddUser() {
                         </Label>
                         <Input
                           id="password"
-                          name="password"
+                          name="passwordHash"
                           placeholder="password"
                           value={formVal.password}
                           onChange={onInputChange}
@@ -211,6 +213,21 @@ function AddUser() {
                     </Col>
                     <Col lg={6}>
                       <FormGroup>
+                        <Label className="mb-1" for="name">
+                          Họ
+                        </Label>
+                        <Input
+                          id="name"
+                          name="lastName"
+                          placeholder="last name"
+                          value={formVal.name}
+                          onChange={onInputChange}
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col >
+                    <Col lg={6}>
+                      <FormGroup>
                         <Label className="mb-1" for="role">
                           Phân quyền
                         </Label>
@@ -223,17 +240,45 @@ function AddUser() {
                           placeholder="Role"
                           style={{ width: "100%" }}
                         >
-                          {roleList &&
+                          {/* {roleList &&
                             roleList.map((item, index) => {
                               return (
                                 <Option value={item._id} key={item._id}>
                                   {item.roleName}
                                 </Option>
                               );
-                            })}
-                          {/* <Option value="Admin">Quản lý</Option>
-                          <Option value="Editor">Biên tập viên </Option>
-                          <Option value="Collaborators">Cộng tác viên</Option> */}
+                            })} */}
+                          <Option value="Admin">Admin</Option>
+                          <Option value="Leader">Leader </Option>
+                          <Option value="Member">Member</Option>
+                        </Select>
+                      </FormGroup>
+                    </Col>
+                    <Col lg={6}>
+                      <FormGroup>
+                        <Label className="mb-1" for="status">
+                          Trạng thái
+                        </Label>
+                        <Select
+                          size="large"
+                          name="status"
+                          id="status"
+                          value={formVal.role}
+                          onChange={onRoleChange}
+                          placeholder="Trạng thái"
+                          style={{ width: "100%" }}
+                        >
+                          {/* {roleList &&
+                            roleList.map((item, index) => {
+                              return (
+                                <Option value={item._id} key={item._id}>
+                                  {item.roleName}
+                                </Option>
+                              );
+                            })} */}
+                          <Option value={1}>Hoạt động</Option>
+                          <Option value={2}>không hoạt động</Option>
+                          {/* <Option value="Collaborators">Cộng tác viên</Option> */}
                         </Select>
                       </FormGroup>
                     </Col>
