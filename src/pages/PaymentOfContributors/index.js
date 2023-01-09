@@ -321,7 +321,7 @@ const PaymentOfContributors = () => {
       pageIndex,
       search
     );
-    console.log(colaps , 'data');
+    // console.log(colaps , 'data');
     setData(colaps?.data);
     setPageIndex(colaps?.pageIndex);
     setPageSize(colaps?.pageSize);

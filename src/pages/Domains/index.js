@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {
   Button,
@@ -43,8 +43,7 @@ const Domains = () => {
   const [data, setData] = useState([]);
   const [idEdit, setIdEdit] = useState("");
   const [search, setSearch] = useState("")
-  
-  // console.log(pageSize, 'size', pageIndex ,'idnex');
+  const ref = createRef();
   
   const onClose = () => {
     setVisibleForm(false);
@@ -57,7 +56,6 @@ const Domains = () => {
   };
   const getDataDomains = () => {
     getPagingDomains(pageSize,pageIndex,search).then((res) => {
-      // console.log(res, 'res');
       setPageIndex(res.pageIndex);
       setPageSize(res.pageSize);
       setCount(res.count);
@@ -67,7 +65,6 @@ const Domains = () => {
   };
   const getDataBrands = () => {
     getAllBrands().then((res) => {
-      // console.log(res,'res');
       setDataBrands(res.data);
     });
   };
@@ -80,7 +77,6 @@ const Domains = () => {
     // message.error("Save failed!");
   };
   const onFinish = async (data) => {
-    // console.log(data, "data");
     const dataDomains = {
       name: data.host,
       total: 0,
@@ -89,11 +85,12 @@ const Domains = () => {
     if (!data._id) {
       await insertDomains(dataDomains)
         .then((res) => {
-          // console.log(res,'res');
           getDataDomains();
+          setVisibleForm(false)
           if (res.success === true) {
             return message.success(`Create Success! `);
           }
+          
         })
         .catch((e) => {
           message.error(`Create Failed!`);
@@ -102,6 +99,7 @@ const Domains = () => {
      else {
       await updateDomains(data._id, dataDomains).then((res) => {
         getDataDomains();
+        setVisibleForm(false)
         if (res.success === true) {
           return message.success(`Save Success! `);
         }
@@ -120,7 +118,6 @@ const Domains = () => {
 
   const onEdit = (id) => {
     const dataEdit = data.filter((item) => item._id === id);
-    // console.log(dataEdit, 'dataEdit');
     setIdEdit(dataEdit[0]._id);
     form.setFieldsValue({
       host: dataEdit[0].name,
@@ -141,11 +138,12 @@ const Domains = () => {
               placement={"right"}
               width={"30%"}
               onClose={onClose}
-              visible={visibleForm}
+              open={visibleForm}
               bodyStyle={{
                 paddingBottom: 80,
               }}
               style={{ marginTop: "70px" }}
+              
             >
               <Form
                 form={form}
@@ -153,6 +151,7 @@ const Domains = () => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
+                
               >
                 <Col sm={4} hidden={true}>
                   <Form.Item name="_id" label="Id">
@@ -211,7 +210,7 @@ const Domains = () => {
                   >
                     <Select
                       showSearch
-                      placeholder="Select cate"
+                      placeholder="Thương hiệu"
                       optionFilterProp="children"
                       style={{ width: "100%" }}
                       value={selectedCate}
@@ -269,7 +268,6 @@ const Domains = () => {
                     placeholder="Tìm kiếm..."
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        // console.log(e.target.value);
                         setSearch(e.target.value)
                         getDataDomains()
                       }
@@ -288,9 +286,10 @@ const Domains = () => {
                   onClick={() => {
                     setDrawerTitle("Thêm Redirect Mới");
                     showDrawer();
-                    console.log(visibleForm);
+                    // console.log(visibleForm);
                     form.resetFields();
                   }}
+                  
                 >
                   Thêm mới
                 </Button>
@@ -347,7 +346,6 @@ const Domains = () => {
                         onConfirm={() => {
                           deleteDomains(val._id).then((res) => {
                             getDataDomains();
-                            // console.log(res, 'ress');
                             if(res.success === true){
                               return message.success(`Delete Success! `);
                             }
@@ -364,7 +362,6 @@ const Domains = () => {
                 />
               </Table>
               <Pagination
-                  // showTotal={showTotal}
                   style={{ marginTop: "30px" }}
                   current={pageIndex}
                   defaultCurrent={pageIndex}
@@ -372,7 +369,6 @@ const Domains = () => {
                   pageSize={pageSize}
                   showSizeChanger
                   onChange={(page, pageSize) => {
-                    // console.log(page,'page', pageSize,'size');
                       setPageIndex(page);
                       setPageSize(pageSize);
                   }}
