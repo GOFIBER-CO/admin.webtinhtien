@@ -86,6 +86,14 @@ const Dashboard = (props) => {
             );
           },
         },
+        {
+          title: "Action",
+          dataIndex: "name",
+          key: "Action",
+          render: (value, record) => {
+            console.log(record, "aaaa");
+          },
+        },
       ];
       return (
         <div>
