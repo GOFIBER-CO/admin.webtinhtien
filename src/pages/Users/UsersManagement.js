@@ -22,9 +22,10 @@ import { Link } from "react-router-dom";
 import {
   addUser,
   deleteUser,
+  deleteUsers,
   getAllUsers,
   getPagingUsers,
-  searchUser,
+
 } from "../../helpers/helper";
 const { Option } = Select;
 const { Column } = Table;
@@ -46,8 +47,9 @@ const UsersManagement = () => {
   const [pageIndex, setPageIndex] = useState(1);
 
   const confirm = (user) => {
-    if (user.id) {
-      deleteUser(user.id)
+    // console.log(user, 'user');
+    if (user?.id) {
+      deleteUsers(user.id)
         .then((res) => {
           getUsers();
           success();
@@ -78,18 +80,20 @@ const UsersManagement = () => {
     setIsModalVisible(false);
   };
 
-  const onSearchUser = async () => {
+  const onSearchUser =  () => {
     // setSearchInput(e.target.value);
-    let dataSearch = {
-      search: searchInput,
-    };
+   
     // console.log(dataSearch);
-    searchUser(searchInput).then((data) => setUsers(data));
+   
+    // .then((data) => setUsers(data));
     // console.log(a, "dasdasd");
+    getUsers()
+   
   };
-
+  
   useEffect(() => {
     getUsers();
+   
   }, [pageIndex, pageSize]);
 
   const getUsers = () => {
@@ -98,8 +102,8 @@ const UsersManagement = () => {
       pageIndex: pageIndex,
       search: searchInput,
     };
-    getPagingUsers().then((res) => {
-      console.log(res, 'res');
+    getPagingUsers(searchInput).then((res) => {
+      // console.log(res, 'res');
       setUsers(res)
       // let userList = res.docs;
       // userList.map((item) => {
@@ -124,7 +128,7 @@ const UsersManagement = () => {
                     onChange={(e) => setSearchInput(e.target.value)}
                     placeholder="Tìm kiếm thành viên..."
                   />
-                  <Button onClick={() => getUsers()}>
+                  <Button onClick={() => onSearchUser()}>
                     <i className="ri-search-line"></i>
                   </Button>
                 </InputGroup>
@@ -148,7 +152,7 @@ const UsersManagement = () => {
                     return index + 1;
                   }}
                 />
-                <Column title="Tên" dataIndex="name" key="name" />
+                <Column title="Tên" dataIndex="lastName" key="lastName" />
                 <Column
                   title="Tên đăng nhập"
                   dataIndex="username"
@@ -159,13 +163,24 @@ const UsersManagement = () => {
                   title="Tình trạng"
                   dataIndex="status"
                   key="status"
-                  render={() => {
-                    return (
-                      <span>
-                        <Badge status="success" />
-                        Active
-                      </span>
-                    );
+                  render={(_, record) => {
+                    console.log(record, 'record');
+                    if(record?.status === 1){
+                      return (
+                        <span>
+                          <Badge status="success" />
+                          Hoạt động
+                        </span>
+                      );
+                    }else{
+                      return (
+                        <span>
+                          <Badge status="error" />
+                         không hoạt động
+                        </span>
+                      );
+                    }
+                    
                   }}
                 />
                 <Column
@@ -174,10 +189,10 @@ const UsersManagement = () => {
                   render={(val, record) => (
                     <Space size="middle">
                       {/* <Link to={{ pathname: "/users/" + val.id }}>View</Link> */}
-                      <Link to={{ pathname: "/users/" + val._id }}>
+                      {/* <Link to={{ pathname: "/users/" + val.id }}>
                         <i className="ri-eye-line action-icon"></i>
-                      </Link>
-                      <Link to={{ pathname: "/user/add/" + val._id }}>
+                      </Link> */}
+                      <Link to={{ pathname: "/user/add/" + val.id }}>
                         <i className="ri-pencil-line action-icon"></i>
                       </Link>
 
