@@ -76,7 +76,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start:production":"serve build -l 5820",
-    "build": "PORT=5820 GENERATE_SOURCEMAP=false react-scripts build --max_old_space_size=8000 build",
+    "build": "PORT=3001 GENERATE_SOURCEMAP=false react-scripts build --max_old_space_size=8000 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint .",

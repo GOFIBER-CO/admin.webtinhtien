@@ -30,6 +30,8 @@ import {
   insertDomains,
   updateDomains,
 } from "./../../helpers/helper";
+import * as XLSX from "xlsx";
+import * as FileSaver from "file-saver";
 const { Option } = Select;
 const Domains = () => {
   const [form] = Form.useForm();
@@ -42,9 +44,9 @@ const Domains = () => {
   const [count, setCount] = useState(1);
   const [data, setData] = useState([]);
   const [idEdit, setIdEdit] = useState("");
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState("");
   const ref = createRef();
-  
+
   const onClose = () => {
     setVisibleForm(false);
   };
@@ -55,12 +57,11 @@ const Domains = () => {
     form.resetFields();
   };
   const getDataDomains = () => {
-    getPagingDomains(pageSize,pageIndex,search).then((res) => {
+    getPagingDomains(pageSize, pageIndex, search).then((res) => {
       setPageIndex(res.pageIndex);
       setPageSize(res.pageSize);
       setCount(res.count);
       setData(res.data);
-    
     });
   };
   const getDataBrands = () => {
@@ -86,20 +87,18 @@ const Domains = () => {
       await insertDomains(dataDomains)
         .then((res) => {
           getDataDomains();
-          setVisibleForm(false)
+          setVisibleForm(false);
           if (res.success === true) {
             return message.success(`Create Success! `);
           }
-          
         })
         .catch((e) => {
           message.error(`Create Failed!`);
         });
-    }
-     else {
+    } else {
       await updateDomains(data._id, dataDomains).then((res) => {
         getDataDomains();
-        setVisibleForm(false)
+        setVisibleForm(false);
         if (res.success === true) {
           return message.success(`Save Success! `);
         }
@@ -108,7 +107,7 @@ const Domains = () => {
   };
 
   const onSearch = () => {
-    getDataDomains()
+    getDataDomains();
   };
   const onInputChange = (e) => {};
 
@@ -127,6 +126,34 @@ const Domains = () => {
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Domains");
   };
+  const exportExcel = async () => {
+    const dataReq = {
+      pageSize: 10000,
+      pageIndex: 1,
+      search: "",
+    };
+    const listColab = await getPagingBrands(10000, 1, "");
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const whitelistExcel = listColab?.data?.map((item, index) => {
+      return {
+        STT: index + 1,
+        "Tên Domains": item?.name,
+        "Tổng tiền":
+          item?.total?.toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+          }) || 0,
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, "Domains" + fileExtension);
+  };
   return (
     <React.Fragment>
       <div className="page-content">
@@ -143,7 +170,6 @@ const Domains = () => {
                 paddingBottom: 80,
               }}
               style={{ marginTop: "70px" }}
-              
             >
               <Form
                 form={form}
@@ -151,7 +177,6 @@ const Domains = () => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
-                
               >
                 <Col sm={4} hidden={true}>
                   <Form.Item name="_id" label="Id">
@@ -263,18 +288,21 @@ const Domains = () => {
                     // value={searchText}
                     onChange={(e) => {
                       // onInputChange(e);
-                      setSearch(e.target.value)
+                      setSearch(e.target.value);
                     }}
                     placeholder="Tìm kiếm..."
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        setSearch(e.target.value)
-                        getDataDomains()
+                        setSearch(e.target.value);
+                        getDataDomains();
                       }
                     }}
                   />
-                  <InputGroupText onClick={onSearch} style={{cursor:'pointer'}}>
-                    <i className="ri-search-line" ></i>
+                  <InputGroupText
+                    onClick={onSearch}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <i className="ri-search-line"></i>
                   </InputGroupText>
                 </InputGroup>
               </div>
@@ -283,13 +311,33 @@ const Domains = () => {
             <Col lg="7">
               <div className="text-right">
                 <Button
+                  style={
+                    data?.length !== 0
+                      ? {
+                          backgroundColor: "#026e39",
+                          border: "none",
+                          color: "white",
+                          marginRight: "10px",
+                        }
+                      : {
+                          backgroundColor: "gray",
+                          border: "none",
+                          color: "black",
+                          marginRight: "10px",
+                        }
+                  }
+                  onClick={() => exportExcel()}
+                  disabled={data?.length === 0}
+                >
+                  Xuất excel
+                </Button>
+                <Button
                   onClick={() => {
                     setDrawerTitle("Thêm Redirect Mới");
                     showDrawer();
                     // console.log(visibleForm);
                     form.resetFields();
                   }}
-                  
                 >
                   Thêm mới
                 </Button>
@@ -346,10 +394,9 @@ const Domains = () => {
                         onConfirm={() => {
                           deleteDomains(val._id).then((res) => {
                             getDataDomains();
-                            if(res.success === true){
+                            if (res.success === true) {
                               return message.success(`Delete Success! `);
                             }
-                            
                           });
                         }}
                         okText="Yes"
@@ -362,16 +409,16 @@ const Domains = () => {
                 />
               </Table>
               <Pagination
-                  style={{ marginTop: "30px" }}
-                  current={pageIndex}
-                  defaultCurrent={pageIndex}
-                  total={count}
-                  pageSize={pageSize}
-                  showSizeChanger
-                  onChange={(page, pageSize) => {
-                      setPageIndex(page);
-                      setPageSize(pageSize);
-                  }}
+                style={{ marginTop: "30px" }}
+                current={pageIndex}
+                defaultCurrent={pageIndex}
+                total={count}
+                pageSize={pageSize}
+                showSizeChanger
+                onChange={(page, pageSize) => {
+                  setPageIndex(page);
+                  setPageSize(pageSize);
+                }}
               />
             </Col>
           </Row>

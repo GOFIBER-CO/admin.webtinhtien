@@ -28,6 +28,8 @@ import {
   updateLinkManagement,
   deleteLinkManagement,
 } from "../../helpers/helper";
+import * as XLSX from "xlsx";
+import * as FileSaver from "file-saver";
 import { createLinkManagement } from "../../helpers/helper";
 import { useHistory } from "react-router-dom";
 import { AiFillEdit } from "react-icons/ai";
@@ -369,6 +371,42 @@ const LinkManagement = (props) => {
     setEdit(value?._id);
     handleOpenModal();
   };
+
+  const exportExcel = async () => {
+    const dataReq = {
+      pageSize: 10000,
+      pageIndex: 1,
+      search: "",
+    };
+    const listColab = await getLinkPostByColab(colab?.key, 10000, 1, "");
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const whitelistExcel = listColab?.data?.map((item, index) => {
+      return {
+        STT: index + 1,
+        "Tiêu đề": item?.title,
+        "Từ khóa": item?.keyword,
+        "Chuyên mục": item?.category,
+        "Link bài viết": item?.link_post,
+        "Link bài đăng": item?.link_posted,
+        "Số lượng từ": item?.number_words,
+        "Số lượng ảnh": item?.number_images,
+
+        "Tổng tiền": item?.total?.toLocaleString("it-IT", {
+          style: "currency",
+          currency: "VND",
+        }),
+        "Xác nhận": item?.status,
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, "Link" + fileExtension);
+  };
+
   return (
     <>
       {contextHolder}
@@ -480,6 +518,29 @@ const LinkManagement = (props) => {
                       })
                     : 0}
                 </p>
+              </Col>
+              <Col style={{ width: "130px" }} lg="2">
+                <div>
+                  <Button
+                    style={
+                      data?.length !== 0
+                        ? {
+                            backgroundColor: "#026e39",
+                            border: "none",
+                            color: "white",
+                          }
+                        : {
+                            backgroundColor: "gray",
+                            border: "none",
+                            color: "black",
+                          }
+                    }
+                    onClick={() => exportExcel()}
+                    disabled={data?.length === 0}
+                  >
+                    Xuất excel
+                  </Button>
+                </div>
               </Col>
             </Row>
             <Row>

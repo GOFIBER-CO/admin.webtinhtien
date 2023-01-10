@@ -28,6 +28,8 @@ import {
 } from "../../helpers/helper";
 import { useHistory } from "react-router-dom";
 import { format } from "echarts";
+import * as XLSX from "xlsx";
+import * as FileSaver from "file-saver";
 const { Search } = Input;
 const originData = [];
 for (let i = 0; i < 4; i++) {
@@ -393,6 +395,39 @@ const PaymentOfContributors = () => {
       ref.current.input();
     }
   };
+  const exportExcel = async () => {
+    const dataReq = {
+      pageSize: 10000,
+      pageIndex: 1,
+      search: "",
+    };
+    const listColab = await getPaymentByDomains(domain?.key, 10000, 1, "");
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const whitelistExcel = listColab?.data?.map((item, index) => {
+      return {
+        STT: index + 1,
+        "Tên CTV": item?.name,
+        "Số tài khoản": item?.stk,
+        "Tên ngân hàng": item?.bank_name,
+        "Tên trên thẻ": item?.account_holder,
+        "Số lượng từ": item?.number_words,
+        "Tổng số bài": item?.link_management_ids?.length || 0,
+
+        "Tổng tiền": item?.total?.toLocaleString("it-IT", {
+          style: "currency",
+          currency: "VND",
+        }),
+        "Xác nhận": item?.owner_confirm,
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, "CTV" + fileExtension);
+  };
   return (
     <React.Fragment>
       <div className="page-content">
@@ -478,6 +513,29 @@ const PaymentOfContributors = () => {
                     }) || 0
                   : 0}
               </p>
+            </Col>
+            <Col style={{ width: "130px" }} lg="2">
+              <div>
+                <Button
+                  style={
+                    data?.length !== 0
+                      ? {
+                          backgroundColor: "#026e39",
+                          border: "none",
+                          color: "white",
+                        }
+                      : {
+                          backgroundColor: "gray",
+                          border: "none",
+                          color: "black",
+                        }
+                  }
+                  onClick={() => exportExcel()}
+                  disabled={data?.length === 0}
+                >
+                  Xuất excel
+                </Button>
+              </div>
             </Col>
           </Row>
 
@@ -575,15 +633,17 @@ const PaymentOfContributors = () => {
                 >
                   <Input placeholder="Nhập tên ngân hàng" />
                 </Form.Item>
-                <Form.Item label="Ghi chú" name="note" required>
+                <Form.Item label="Ghi chú" name="note">
                   <Input.TextArea />
                 </Form.Item>
 
-                <Form.Item label="Xác nhận" name="owner_confirm" 
-                   rules={[
+                <Form.Item
+                  label="Xác nhận"
+                  name="owner_confirm"
+                  rules={[
                     {
                       required: true,
-                      message: 'không được bỏ trống trạng thái!',
+                      message: "không được bỏ trống trạng thái!",
                     },
                   ]}
                 >

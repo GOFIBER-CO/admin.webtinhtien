@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { Select, Table, Input, Row, Col } from "antd";
+import { Select, Table, Input, Row, Col, Button } from "antd";
 import {
   getPagingBrands,
   getColabByBrand,
   getPagingDomains,
 } from "../../helpers/helper";
+import * as XLSX from "xlsx";
+import * as FileSaver from "file-saver";
 const { Search } = Input;
 const styles = () => ({
   root: {
@@ -47,7 +49,6 @@ const Dashboard = (props) => {
     let dataTemp = res?.data?.map((item, index) => {
       return { ...item, key: index };
     });
-    console.log(dataTemp);
     setData(dataTemp);
   };
 
@@ -90,9 +91,7 @@ const Dashboard = (props) => {
           title: "Action",
           dataIndex: "name",
           key: "Action",
-          render: (value, record) => {
-            console.log(record, "aaaa");
-          },
+          render: (value, record) => {},
         },
       ];
       return (
@@ -165,19 +164,70 @@ const Dashboard = (props) => {
       setDataSearch(searchList);
     }
   };
+  const exportExcel = async () => {
+    const dataReq = {
+      pageSize: 10000,
+      pageIndex: 1,
+      search: "",
+    };
+    const listColab = await getColabByBrand("");
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const whitelistExcel = listColab?.data?.map((item, index) => {
+      return {
+        STT: index + 1,
+        "Tên thương hiệu": item?.name,
+        "Tổng tiền":
+          item?.total?.toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+          }) || 0,
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, "Link" + fileExtension);
+  };
   return (
     <div className={classes.root}>
       <Row>
         <Col lg="3">
           <p style={{ fontSize: "16px", fontWeight: "bold" }}>Tìm kiếm theo</p>
-          <Search
-            placeholder="input search text"
-            enterButton="Search"
-            size="medium"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onSearch={onSearch}
-          />
+          <div style={{ display: "flex" }}>
+            <Search
+              placeholder="input search text"
+              enterButton="Search"
+              size="medium"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onSearch={onSearch}
+            />
+            <div>
+              <Button
+                style={
+                  data?.length !== 0
+                    ? {
+                        backgroundColor: "#026e39",
+                        border: "none",
+                        color: "white",
+                      }
+                    : {
+                        backgroundColor: "gray",
+                        border: "none",
+                        color: "black",
+                      }
+                }
+                onClick={() => exportExcel()}
+                disabled={data?.length === 0}
+              >
+                Xuất excel
+              </Button>
+            </div>
+          </div>
         </Col>
       </Row>
       <Table
