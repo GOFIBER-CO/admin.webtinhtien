@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
-  Col,
-  Container,
-  Input,
-  InputGroup,
-  InputGroupText,
-  Row,
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  FormFeedback,
+  Button, Col,
+  Container, Form, FormFeedback, FormGroup, Input, Label, Row
 } from "reactstrap";
 
-import { message, Badge, Space, Table, Modal, Select } from "antd";
-import { Link, useParams, useHistory } from "react-router-dom";
-import { addUser, getUser, updateUser, getAllRoles } from "../../helpers/helper";
+import { message, Select, Table } from "antd";
+import { Link, useHistory, useParams } from "react-router-dom";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
+import { getAllRoles, getUserId, newUser, updateUsers } from "../../helpers/helper";
 const { Option } = Select;
 const { Column } = Table;
 
@@ -41,17 +32,16 @@ function AddUser() {
     lastName: "",
     status: "",
     role: "",
+    // avatar:"",
   });
   const getRole = async () => {
     let roleList = await getAllRoles();
-    console.log(roleList, "data");
-    setRoleList(roleList);
+    setRoleList(roleList.roles);
   };
   useEffect(() => {
     if (id && id !== "new") {
-      getUser(id).then((res) => {
+      getUserId(id).then((res) => {
         setUser(res);
-        res.role = res.role._id;
         setFormVal(res);
       });
     }
@@ -79,15 +69,19 @@ function AddUser() {
     setFormVal({ ...formVal, role: e });
   };
 
-  const addNewUser = () => {
+  const onStatusChange = (e) => {
+    setFormVal({ ...formVal, status: e });
+  };
+  const addNewUser = async () => {
     setSubmitted(true);
+ 
     if (formVal.password?.length < 6) {
       return;
     }
-    if (user) {
-      updateUser(id, formVal)
+    if (user?.id) {
+      let a = await updateUsers(id, formVal)
         .then((res) => {
-          // reset();
+          reset();
           success();
           history.push("/users");
         })
@@ -95,9 +89,9 @@ function AddUser() {
           error();
         });
     } else {
-      addUser(formVal)
+      newUser(formVal)
         .then((res) => {
-          // reset();
+          reset();
           history.push("/users");
           success();
         })
@@ -138,7 +132,7 @@ function AddUser() {
                           name="username"
                           placeholder="Nhập tên đăng nhập"
                           type="text"
-                          // disabled={id !== "new" ? true : false}
+                          disabled={id !== "new" ? true : false}
                           value={formVal.username}
                           onChange={onInputChange}
                           invalid={
@@ -164,20 +158,20 @@ function AddUser() {
                     </Col>
                     <Col lg={6}>
                       <FormGroup>
-                        <Label className="mb-1" for="name">
+                        <Label className="mb-1" for="firstName">
                           Tên
                         </Label>
                         <Input
-                          id="name"
+                          id="firstName"
                           name="firstName"
                           placeholder="First name"
-                          value={formVal.name}
+                          value={formVal.firstName}
                           onChange={onInputChange}
                           type="text"
                         />
                       </FormGroup>
                     </Col>
-                    <Col lg={6}>
+                    {user.id ? <></> : <Col lg={6}>
                       <FormGroup>
                         <Label className="mb-1" for="password">
                           {" "}
@@ -187,12 +181,13 @@ function AddUser() {
                           id="password"
                           name="passwordHash"
                           placeholder="password"
-                          value={formVal.password}
+                          value={formVal.passwordHash}
                           onChange={onInputChange}
+                          // disabled
                           type="password"
                           invalid={
                             submitted
-                              ? formVal.password?.length >= 6
+                              ? formVal.passwordHash?.length >= 6
                                 ? false
                                 : true
                               : false
@@ -201,7 +196,7 @@ function AddUser() {
                         <FormFeedback
                           invalid={
                             submitted
-                              ? formVal.password?.length >= 6
+                              ? formVal.passwordHash?.length >= 6
                                 ? false
                                 : true
                               : false
@@ -210,7 +205,8 @@ function AddUser() {
                           Mật khẩu chứa ít nhất có 6 kí tự
                         </FormFeedback>
                       </FormGroup>
-                    </Col>
+                    </Col>}
+                    
                     <Col lg={6}>
                       <FormGroup>
                         <Label className="mb-1" for="name">
@@ -220,7 +216,7 @@ function AddUser() {
                           id="name"
                           name="lastName"
                           placeholder="last name"
-                          value={formVal.name}
+                          value={formVal.lastName}
                           onChange={onInputChange}
                           type="text"
                         />
@@ -236,21 +232,21 @@ function AddUser() {
                           name="role"
                           id="role"
                           value={formVal.role}
-                          onChange={onRoleChange}
+                          onChange={(e)=>onRoleChange(e)}
                           placeholder="Role"
                           style={{ width: "100%" }}
                         >
-                          {/* {roleList &&
-                            roleList.map((item, index) => {
+                          {roleList &&
+                            roleList?.map((item, index) => {
                               return (
                                 <Option value={item._id} key={item._id}>
-                                  {item.roleName}
+                                  {item.name}
                                 </Option>
                               );
-                            })} */}
-                          <Option value="Admin">Admin</Option>
+                            })}
+                          {/* <Option value="Admin">Admin</Option>
                           <Option value="Leader">Leader </Option>
-                          <Option value="Member">Member</Option>
+                          <Option value="Member">Member</Option> */}
                         </Select>
                       </FormGroup>
                     </Col>
@@ -263,8 +259,8 @@ function AddUser() {
                           size="large"
                           name="status"
                           id="status"
-                          value={formVal.role}
-                          onChange={onRoleChange}
+                          value={formVal.status}
+                          onChange={onStatusChange}
                           placeholder="Trạng thái"
                           style={{ width: "100%" }}
                         >
@@ -282,6 +278,15 @@ function AddUser() {
                         </Select>
                       </FormGroup>
                     </Col>
+                    {/* <Col lg={6}>
+                      <FormGroup>
+                        <Label className="mb-1" for="status">
+                        avatar
+                        </Label>
+                        <Input  value={formVal.avatar}
+                          onChange={onInputChange}  name="avatar"/>
+                      </FormGroup>
+                    </Col> */}
                   </Row>
                 </Form>
               </div>
@@ -291,7 +296,7 @@ function AddUser() {
                     Quay lại
                   </Button>
                 </Link>
-                <Button size="large" onClick={() => addNewUser()}>
+                <Button size="large" onClick={addNewUser}>
                   Lưu
                 </Button>
               </div>

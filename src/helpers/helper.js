@@ -327,5 +327,12 @@ export const getLinkPostByColab = (colabId, pageSize, pageIndex, search) =>
   );
 
 //Quản lý users
-export const getPagingUsers = () => api.get(`${url.API_USERS}`)
+export const getPagingUsers = (search) => api.get(`${url.API_USERS}?search=${search}`)
 export const getAllRoles = () => api.get(`${url.GET_ALL_ROLE}/getRoles`);
+export const newUser = (body) => api.create(`${url.API_USERS}/signup`, body);
+export const deleteUsers = (id) => api.delete(`${url.API_USERS}/delete/${id}`);
+export const getUserId = (id) => api.get(`${url.API_USERS}/${id}`);
+export const updateUsers = (id, body) =>{ 
+  return api.update(`${url.API_USERS}/${id}`, body);}
+
+
