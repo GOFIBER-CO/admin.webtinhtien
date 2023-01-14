@@ -369,3 +369,5 @@ export const updateTeam = (id, data) =>
   api.update(`${url.API_TEAMS}/${id}`, data);
 
 export const deleteTeam = (id) => api.delete(`${url.API_TEAMS}/${id}`);
+
+export const getTeamAll = () => api.get(`${url.API_TEAMS}/all`);

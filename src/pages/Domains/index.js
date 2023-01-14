@@ -27,6 +27,7 @@ import {
   getAllBrands,
   getPagingBrands,
   getPagingDomains,
+  getTeamAll,
   insertDomains,
   updateDomains,
 } from "./../../helpers/helper";
@@ -37,7 +38,7 @@ const Domains = () => {
   const [form] = Form.useForm();
   const [visibleForm, setVisibleForm] = useState(false);
   const [drawerTitle, setDrawerTitle] = useState("");
-  const [dataBrands, setDataBrands] = useState([]);
+  const [dataTeam, setDataTeam] = useState([]);
   const [selectedCate, setSelectedCate] = useState("");
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -64,13 +65,13 @@ const Domains = () => {
       setData(res.data);
     });
   };
-  const getDataBrands = () => {
-    getAllBrands().then((res) => {
-      setDataBrands(res.data);
+  const getDataTeams = () => {
+    getTeamAll().then((res) => {
+      setDataTeam(res.data);
     });
   };
   useEffect(() => {
-    getDataBrands();
+    getDataTeams();
     getDataDomains();
   }, [pageSize, pageIndex]);
 
@@ -78,10 +79,11 @@ const Domains = () => {
     // message.error("Save failed!");
   };
   const onFinish = async (data) => {
+
     const dataDomains = {
       name: data.host,
       total: 0,
-      brand_id: data.brand_id,
+      team: data.team_id,
     };
     if (!data._id) {
       await insertDomains(dataDomains)
@@ -117,11 +119,12 @@ const Domains = () => {
 
   const onEdit = (id) => {
     const dataEdit = data.filter((item) => item._id === id);
+    console.log(dataEdit,'data');
     setIdEdit(dataEdit[0]._id);
     form.setFieldsValue({
       host: dataEdit[0].name,
       _id: dataEdit[0]._id,
-      brand_id: dataEdit[0].brand_id,
+      team_id: dataEdit[0]?.team?._id,
     });
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Domains");
@@ -217,15 +220,15 @@ const Domains = () => {
                 </Col>
                 <Col>
                   <Form.Item
-                    name="brand_id"
-                    label="Thương hiệu"
+                    name="team_id"
+                    label="Teams"
                     rules={[
                       {
                         required: true,
                         message: "Vui lòng nhập Thương hiệu!",
                       },
                       {
-                        type: "brand_id",
+                        type: "team_id",
                       },
                       {
                         type: "string",
@@ -235,14 +238,14 @@ const Domains = () => {
                   >
                     <Select
                       showSearch
-                      placeholder="Thương hiệu"
+                      placeholder="Teams"
                       optionFilterProp="children"
                       style={{ width: "100%" }}
                       value={selectedCate}
                       onChange={(e) => handleSelectCate(e)}
                     >
-                      {dataBrands &&
-                        dataBrands.map((item, index) => {
+                      {dataTeam &&
+                        dataTeam.map((item, index) => {
                           return (
                             <Option
                               key={item?._id}
@@ -333,7 +336,7 @@ const Domains = () => {
                 </Button>
                 <Button
                   onClick={() => {
-                    setDrawerTitle("Thêm Redirect Mới");
+                    setDrawerTitle("Thêm Domains Mới");
                     showDrawer();
                     // console.log(visibleForm);
                     form.resetFields();
@@ -366,14 +369,11 @@ const Domains = () => {
                 <Column title="Domains" dataIndex="name" key="name" />
 
                 <Column
-                  title="Thương hiệu"
-                  dataIndex="_id"
-                  key="_id"
+                  title="Teams"
+                  dataIndex="team"
+                  key="team"
                   render={(val, record) => {
-                    const data = dataBrands.filter(
-                      (item) => item._id === record.brand_id
-                    );
-                    return <>{data[0]?.name}</>;
+                    return <>{val?.name}</>;
                   }}
                 />
                 <Column

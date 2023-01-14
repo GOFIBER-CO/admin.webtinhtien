@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { Select, Table, Input, Row, Col, Button, DatePicker } from "antd";
+import {
+  Select,
+  Table,
+  Input,
+  Row,
+  Col,
+  Button,
+  DatePicker,
+  Space,
+} from "antd";
 import {
   getPagingBrands,
   getColabByBrand,
@@ -255,7 +264,13 @@ const Dashboard = (props) => {
       <Row>
         <Col lg="3">
           <p style={{ fontSize: "16px", fontWeight: "bold" }}>Tìm kiếm theo</p>
-          <div style={{ display: "flex" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Search
               placeholder="input search text"
               enterButton="Search"
@@ -264,7 +279,17 @@ const Dashboard = (props) => {
               onChange={(e) => setSearch(e.target.value)}
               onSearch={onSearch}
             />
-            <div>
+            <Space size={15}>
+              <RangePicker
+                defaultValue={dateRange}
+                allowClear={false}
+                onChange={onDateRangeChange}
+              />
+            </Space>
+            <Button type="primary" onClick={handleChangeDateRange}>
+              Lọc
+            </Button>
+            <div style={{ marginLeft: "10px" }}>
               <Button
                 style={
                   data?.length !== 0
@@ -286,16 +311,6 @@ const Dashboard = (props) => {
               </Button>
             </div>
           </div>
-          <Row>
-            <RangePicker
-              defaultValue={dateRange}
-              allowClear={false}
-              onChange={onDateRangeChange}
-            />
-            <Button type="primary" onClick={handleChangeDateRange}>
-              Lọc
-            </Button>
-          </Row>
         </Col>
       </Row>
       <Table
