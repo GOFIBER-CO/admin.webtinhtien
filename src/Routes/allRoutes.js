@@ -20,6 +20,7 @@ import PaymentOfContributors from "../pages/PaymentOfContributors";
 import linkManagement from "../pages/linkManagement";
 import Brands from "../pages/Brands";
 import Domains from "../pages/Domains";
+import Teams from "../pages/Teams";
 const authProtectedRoutes = [
   // { path: "/pages-starter", component: Starter },
   { path: "/dashboard-analytics", component: DashboardAnalytics },
@@ -29,7 +30,10 @@ const authProtectedRoutes = [
   { path: "/users/:id", component: UserDetail },
   { path: "/profile", component: UserProfile },
   { path: "/payment", component: PaymentOfContributors },
-
+  {
+    path: "/teams",
+    component: Teams,
+  },
   { path: "/domains", component: Domains },
   { path: "/brand", component: Brands },
 

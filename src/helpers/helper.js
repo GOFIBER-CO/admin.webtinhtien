@@ -280,9 +280,13 @@ export const getPaymentByDomains = (id, pageSize, pageIndex, search) =>
   api.get(
     `${url.API_PAYMENT}/getCollaboratorsByDomainId?domainId=${id}&pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`
   );
-export const getColabByBrand = (brandId = "") =>
+export const getColabByBrand = (
+  brandId = "",
+  dateFrom = new Date(Date.now()).toLocaleDateString(),
+  dateTo = new Date(Date.now()).toLocaleDateString()
+) =>
   api.get(
-    `${url.API_PAYMENT}/getCollaboratorsByBrand?brandId=${brandId}&pageSize=10000&pageIndex=1`
+    `${url.API_PAYMENT}/getCollaboratorsByBrand?brandId=${brandId}&pageSize=10000&pageIndex=1&dateFrom=${dateFrom}&dateTo=${dateTo}`
   );
 
 export const updatePayment = (id, data) =>
@@ -332,12 +336,27 @@ export const getLinkPostByColab = (colabId, pageSize, pageIndex, search) =>
   );
 
 //Quản lý users
-export const getPagingUsers = (search) => api.get(`${url.API_USERS}?search=${search}`)
+export const getPagingUsers = (search) =>
+  api.get(`${url.API_USERS}?search=${search}`);
 export const getAllRoles = () => api.get(`${url.GET_ALL_ROLE}/getRoles`);
 export const newUser = (body) => api.create(`${url.API_USERS}/signup`, body);
 export const deleteUsers = (id) => api.delete(`${url.API_USERS}/delete/${id}`);
 export const getUserId = (id) => api.get(`${url.API_USERS}/${id}`);
-export const updateUsers = (id, body) =>{ 
-  return api.update(`${url.API_USERS}/${id}`, body);}
+export const updateUsers = (id, body) => {
+  return api.update(`${url.API_USERS}/${id}`, body);
+};
 
+//Teams
 
+export const getPagingTeams = (pageSize, pageIndex, search) =>
+  api.get(
+    `${url.API_TEAMS}?search=${search}&pageSize=${pageSize}&pageIndex=${pageIndex}`
+  );
+
+export const getTeamById = (id) => api.get(`${url.API_TEAMS}/getById/${id}`);
+
+export const createTeam = (data) => api.post(`${url.API_TEAMS}`, data);
+
+export const updateTeam = (id, data) => api.put(`${url.API_TEAMS}/${id}`, data);
+
+export const deleteTeam = (id) => api.delete(`${url.API_TEAMS}/${id}`);

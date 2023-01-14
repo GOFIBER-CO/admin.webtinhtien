@@ -313,7 +313,9 @@ const PaymentOfContributors = () => {
     });
 
     const domainsList = domainListTemp;
+    console.log(domain?.key, domainsList[0]?.key);
     domain?.key === undefined && setDomain(domainsList[0]);
+    domain?.key === undefined && getColapsByDomain(domainsList[0]?.key);
     setDomainList(domainsList);
   };
 
@@ -331,9 +333,10 @@ const PaymentOfContributors = () => {
     setBrandList(brandList);
   };
 
-  const getColapsByDomain = async () => {
+  const getColapsByDomain = async (key) => {
+    console.log(key);
     const colaps = await getPaymentByDomains(
-      domain?.key,
+      key || domain?.key,
       pageSize,
       pageIndex,
       search
@@ -347,7 +350,6 @@ const PaymentOfContributors = () => {
   useEffect(() => {
     getListBrand();
     getDomainByBrand();
-    getColapsByDomain();
   }, [pageIndex, pageSize]);
 
   useEffect(() => {
@@ -447,7 +449,7 @@ const PaymentOfContributors = () => {
               />
             </Col>
             <Col lg="2">
-              <p className="custom-label">Đường dẫn</p>
+              <p className="custom-label">Domains</p>
               <Select
                 showSearch
                 style={{ width: "100%" }}

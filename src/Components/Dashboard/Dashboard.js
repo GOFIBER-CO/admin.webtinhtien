@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { Select, Table, Input, Row, Col, Button } from "antd";
+import { Select, Table, Input, Row, Col, Button, DatePicker } from "antd";
 import {
   getPagingBrands,
   getColabByBrand,
   getPagingDomains,
 } from "../../helpers/helper";
+import dayjs from "dayjs";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
 const { Search } = Input;
+const { RangePicker } = DatePicker;
+
 const styles = () => ({
   root: {
     flexGrow: 1,
@@ -44,6 +47,7 @@ const Dashboard = (props) => {
   const [dataSearch, setDataSearch] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [pageIndex, setPageIndex] = useState(1);
+  const [dateRange, setDateRange] = useState([dayjs(), dayjs()]);
   const getColabByBrandId = async () => {
     const res = await getColabByBrand("");
     let dataTemp = res?.data?.map((item, index) => {
@@ -192,6 +196,9 @@ const Dashboard = (props) => {
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "Link" + fileExtension);
   };
+  const onDateRangeChange = (dates, dateStrings) => {
+    console.log(dateStrings);
+  };
   return (
     <div className={classes.root}>
       <Row>
@@ -228,6 +235,14 @@ const Dashboard = (props) => {
               </Button>
             </div>
           </div>
+          <Row>
+            <RangePicker
+              defaultValue={dateRange}
+              allowClear={false}
+              onChange={onDateRangeChange}
+            />
+            <Button type="primary">Lọc</Button>
+          </Row>
         </Col>
       </Row>
       <Table

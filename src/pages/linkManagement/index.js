@@ -15,6 +15,7 @@ import {
   notification,
   Spin,
   Pagination,
+  Tooltip,
 } from "antd";
 import { Container, Row, Col } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -63,17 +64,34 @@ const LinkManagement = (props) => {
       title: "Tiêu đề",
       dataIndex: "title",
       key: "title",
+      ellipsis: true,
+      render: (value) => {
+        return (
+          <Tooltip placement="Top" title={value}>
+            {value}
+          </Tooltip>
+        );
+      },
+      width: "15%",
     },
     {
       title: "Từ khóa",
       dataIndex: "keyword",
       key: "keyword",
-      render: (text) => <a>{text}</a>,
+      render: (value) => (
+        <a>
+          <Tooltip placement="Top" title={value}>
+            {value}
+          </Tooltip>
+        </a>
+      ),
+      ellipsis: true,
     },
     {
       title: "Chuyên mục",
       dataIndex: "category",
       key: "address",
+      ellipsis: true,
     },
     {
       title: "Link bài viết",
@@ -84,6 +102,7 @@ const LinkManagement = (props) => {
           <a href={value}>{value}</a>
         </>
       ),
+      ellipsis: true,
     },
     {
       title: "Link bài đăng",
@@ -94,18 +113,23 @@ const LinkManagement = (props) => {
           <a href={value}>{value}</a>
         </>
       ),
+      ellipsis: true,
     },
     {
       title: "Số từ",
       key: "number_words",
       dataIndex: "number_words",
       render: (value) => <>{value}</>,
+      width: "5%",
+      ellipsis: true,
     },
     {
       title: "Số ảnh",
       key: "number_images",
       dataIndex: "number_images",
       render: (value) => <>{value}</>,
+      width: "5%",
+      ellipsis: true,
     },
     {
       title: "Số tiền",
@@ -119,6 +143,7 @@ const LinkManagement = (props) => {
           })}
         </>
       ),
+      ellipsis: true,
     },
     {
       title: "Trạng thái",
@@ -313,6 +338,7 @@ const LinkManagement = (props) => {
       category: values?.category,
       status: values?.status || 1,
       collaboratorId: colab?.key || "",
+      price_per_words: values?.price_per_words,
     };
     if (!edit) {
       const res = await createLinkManagement(dataReq).catch((error) => {
@@ -441,7 +467,7 @@ const LinkManagement = (props) => {
                 </Select>
               </Col>
               <Col lg={2}>
-                <p className="custom-label">Đường dẫn</p>
+                <p className="custom-label">Domains</p>
                 <Select
                   showSearch
                   style={{ width: "100%" }}
@@ -579,13 +605,22 @@ const LinkManagement = (props) => {
             autoComplete="off"
           >
             {!edit && (
-              <Form.Item
-                label="Link bài viết"
-                name="link_post"
-                rules={[{ required: true, message: "Nhập link bài viết" }]}
-              >
-                <Input />
-              </Form.Item>
+              <>
+                <Form.Item
+                  label="Link bài viết"
+                  name="link_post"
+                  rules={[{ required: true, message: "Nhập link bài viết" }]}
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  label="Số tiền mỗi từ"
+                  name="price_per_words"
+                  rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
+                >
+                  <InputNumber />
+                </Form.Item>
+              </>
             )}
             <Form.Item label="Link đã đăng" name="link_posted">
               <Input />

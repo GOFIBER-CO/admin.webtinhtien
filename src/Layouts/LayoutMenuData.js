@@ -18,6 +18,7 @@ const Navdata = () => {
   const [isPosts, setIsPosts] = useState(false);
   const [isLinks, setIsLinks] = useState(false);
   const [isMedia, setIsMedia] = useState(false);
+  const [isTeam, setIsTeam] = useState(false);
   const [isRedirect, setIsRedirect] = useState(false);
   const [isBanners, setIsBanners] = useState(false);
   const [isStatistics, setIsStatistics] = useState(false);
@@ -87,6 +88,9 @@ const Navdata = () => {
     if (iscurrentState !== "User") {
       setIsUser(false);
     }
+    if (iscurrentState !== "Team") {
+      setIsTeam(false);
+    }
   }, [
     history,
     iscurrentState,
@@ -105,6 +109,7 @@ const Navdata = () => {
     isPostsLink,
     isBrand,
     isUser,
+    isTeam,
   ]);
 
   const menuItems = [
@@ -151,6 +156,27 @@ const Navdata = () => {
           label: "Thương hiệu",
           link: "/brand",
           parentId: "brand-management",
+        },
+      ],
+    },
+    {
+      id: "team-management",
+      label: "QUẢN LÝ TEAMS",
+      icon: "ri-bookmark-line",
+      link: "/#",
+      stateVariables: isTeam,
+      click: function (e) {
+        e.preventDefault();
+        setIsTeam(!isTeam);
+        setIscurrentState("Team");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "team",
+          label: "Teams",
+          link: "/teams",
+          parentId: "team-management",
         },
       ],
     },
