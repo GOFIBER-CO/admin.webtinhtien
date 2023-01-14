@@ -355,8 +355,10 @@ export const getPagingTeams = (pageSize, pageIndex, search) =>
 
 export const getTeamById = (id) => api.get(`${url.API_TEAMS}/getById/${id}`);
 
-export const createTeam = (data) => api.post(`${url.API_TEAMS}`, data);
+export const createTeam = (data) => api.create(`${url.API_TEAMS}`, data);
 
-export const updateTeam = (id, data) => api.put(`${url.API_TEAMS}/${id}`, data);
+export const updateTeam = (id, data) => api.update(`${url.API_TEAMS}/${id}`, data);
 
 export const deleteTeam = (id) => api.delete(`${url.API_TEAMS}/${id}`);
+
+export const getTeamAll = () => api.get(`${url.API_TEAMS}/all`)

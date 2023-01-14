@@ -24,14 +24,10 @@ import {
 import Column from "antd/lib/table/Column";
 import {
   createTeam,
-  deleteDomains,
   getAllBrands,
-  getPagingBrands,
-  getPagingDomains,
   getPagingTeams,
-  insertDomains,
-  updateDomains,
   updateTeam,
+  deleteTeam
 } from "./../../helpers/helper";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
@@ -79,8 +75,10 @@ const Teams = () => {
     // message.error("Save failed!");
   };
   const onFinish = async (data) => {
+    // console.log(data ,'daa');
+    // return ;
     const dataTeams = {
-      name: data.host,
+      name: data.name,
       total: 0,
       brand: data.brand,
     };
@@ -117,11 +115,12 @@ const Teams = () => {
 
   const onEdit = (id) => {
     const dataEdit = data.filter((item) => item._id === id);
+    console.log(dataEdit, 'dataEdit');
     setIdEdit(dataEdit[0]._id);
     form.setFieldsValue({
       name: dataEdit[0].name,
       _id: dataEdit[0]._id,
-      brand: dataEdit[0].brand,
+      brand: dataEdit[0].brand?._id,
     });
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Teams");
@@ -328,7 +327,7 @@ const Teams = () => {
                 </Button>
                 <Button
                   onClick={() => {
-                    setDrawerTitle("Thêm Redirect Mới");
+                    setDrawerTitle("Thêm Teams Mới");
                     showDrawer();
                     // console.log(visibleForm);
                     form.resetFields();
@@ -362,13 +361,11 @@ const Teams = () => {
 
                 <Column
                   title="Thương hiệu"
-                  dataIndex="_id"
-                  key="_id"
+                  dataIndex="brand"
+                  key="brand"
                   render={(val, record) => {
-                    const data = dataBrands.filter(
-                      (item) => item._id === record.brand
-                    );
-                    return <>{data[0]?.name}</>;
+                    
+                    return <>{val?.name}</>
                   }}
                 />
                 <Column
@@ -387,7 +384,7 @@ const Teams = () => {
                       <Popconfirm
                         title="Are you sure to delete this user?"
                         onConfirm={() => {
-                          deleteDomains(val._id).then((res) => {
+                          deleteTeam(val._id).then((res) => {
                             getDataTeams();
                             if (res.success === true) {
                               return message.success(`Delete Success! `);
