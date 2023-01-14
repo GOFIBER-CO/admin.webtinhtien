@@ -279,16 +279,7 @@ const Dashboard = (props) => {
               onChange={(e) => setSearch(e.target.value)}
               onSearch={onSearch}
             />
-            <Space size={15}>
-              <RangePicker
-                defaultValue={dateRange}
-                allowClear={false}
-                onChange={onDateRangeChange}
-              />
-            </Space>
-            <Button type="primary" onClick={handleChangeDateRange}>
-              Lọc
-            </Button>
+
             <div style={{ marginLeft: "10px" }}>
               <Button
                 style={
@@ -311,6 +302,24 @@ const Dashboard = (props) => {
               </Button>
             </div>
           </div>
+          <Row
+            style={{ marginTop: "10px", display: "flex", alignItems: "center" }}
+          >
+            <Space size={15}>
+              <RangePicker
+                defaultValue={dateRange}
+                allowClear={false}
+                onChange={onDateRangeChange}
+              />
+            </Space>
+            <Button
+              type="primary"
+              onClick={handleChangeDateRange}
+              style={{ marginLeft: "10px" }}
+            >
+              Lọc
+            </Button>
+          </Row>
         </Col>
       </Row>
       <Table
