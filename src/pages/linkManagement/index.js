@@ -28,6 +28,8 @@ import {
   getLinkPostByColab,
   updateLinkManagement,
   deleteLinkManagement,
+  getTeamByBrand,
+  getDomainByTeam,
 } from "../../helpers/helper";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
@@ -46,9 +48,11 @@ const LinkManagement = (props) => {
   const [domainList, setDomainList] = useState([]);
   const [brandList, setBrandList] = useState([]);
   const [colabList, setColabList] = useState([]);
+  const [teamList, setTeamList] = useState([]);
   const [colab, setColab] = useState({});
   const [brand, setBrand] = useState({});
   const [domain, setDomain] = useState({});
+  const [team, setTeam] = useState({});
   const [data, setData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [form] = Form.useForm();
@@ -188,10 +192,8 @@ const LinkManagement = (props) => {
         });
       });
   };
-  const getDomainByBrand = async () => {
-    const listDomains = await getDomainsByBrand(
-      brand?.key || brandList[0]?.key
-    );
+  const getDomainListByTeam = async () => {
+    const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
     let domainListTemp = [];
     listDomains?.data?.map((item) => {
       let a = {
@@ -202,10 +204,24 @@ const LinkManagement = (props) => {
     });
 
     const domainsList = domainListTemp;
-    domain?.key === undefined && setDomain(domainsList[0]);
+    setDomain(domainsList[0]);
     setDomainList(domainsList);
   };
-
+  const getTeamListByBrand = async () => {
+    const listTeam = await getTeamByBrand(brand?.key || brandList[0]?.key);
+    let teamListTemp = [];
+    listTeam?.data?.map((item) => {
+      let a = {
+        key: item?._id,
+        value: item?.name,
+        total: item?.total,
+      };
+      teamListTemp.push(a);
+    });
+    const teamList1 = teamListTemp;
+    setTeam(teamList1[0]);
+    setTeamList(teamList1);
+  };
   const getListBrand = async () => {
     if (!brand?.key) {
       const listBrand = await getPagingBrands(10000, 1, "");
@@ -225,79 +241,67 @@ const LinkManagement = (props) => {
   };
 
   const getColapsByDomain = async (key) => {
-    setSearch("");
-    if (domain?.key) {
-      const listColaps = await getPaymentByDomains(
-        domain?.key || domainList[0]?.key,
-        10000,
-        1,
-        ""
-      );
-      let colabList = [];
-      listColaps?.data?.map((item) => {
-        let a = {
-          key: item?._id,
-          value: item?.name,
-          total: item?.total,
-        };
-        colabList.push(a);
-      });
-      if (listColaps?.data?.length !== 0) {
-        setColabList(colabList);
-        if (props?.location?.state) {
-          setColab(props?.location?.state?.[0]);
-        } else {
-          if (!key) {
-            setColab(colabList[0]);
-          } else {
-            const colab1 = colabList.find((item) => item?.key === key);
-            setColab(colab1);
-          }
-        }
+    const listColaps = await getPaymentByDomains(
+      domain?.key || domainList[0]?.key,
+      10000,
+      1,
+      ""
+    );
+    let colabList = [];
+    listColaps?.data?.map((item) => {
+      let a = {
+        key: item?._id,
+        value: item?.name,
+        total: item?.total,
+      };
+      colabList.push(a);
+    });
+    setColabList(colabList);
+    if (props?.location?.state) {
+      setColab(props?.location?.state?.[0]);
+    } else {
+      if (!key) {
+        setColab(colabList[0]);
+      } else {
+        const colab1 = colabList.find((item) => item?.key === key);
+        setColab(colab1);
       }
     }
   };
 
   useEffect(() => {
     getListBrand();
-    getDomainByBrand();
-    getColapsByDomain();
-    handleGetLinkPostByColaps();
   }, []);
   useEffect(() => {
-    getDomainByBrand();
-    getColapsByDomain();
-    handleGetLinkPostByColaps();
+    getTeamListByBrand();
   }, [brand?.key]);
 
   useEffect(() => {
+    getDomainListByTeam();
+  }, [team?.key]);
+
+  useEffect(() => {
     getColapsByDomain();
-    handleGetLinkPostByColaps();
   }, [domain?.key]);
+
   useEffect(() => {
     handleGetLinkPostByColaps();
   }, [colab?.key, pageSize, pageIndex]);
 
   const handleSelectBrand = (value) => {
     history.replace("/postsLink");
-    setData([]);
-    setSearch("");
-    setBrand(value);
-    setDomain({});
-    setColabList([]);
-    setColab({});
-  };
-  const handleSelectDomain = (value) => {
-    setSearch("");
-    setData([]);
 
+    setBrand(value);
+  };
+  const handleSelectTeam = (value) => {
+    setTeam(value);
+  };
+
+  const handleSelectDomain = (value) => {
     setDomain(value);
-    setColabList([]);
-    setColab({});
   };
   const handleSelectColaps = (value) => {
     setData([]);
-
     setSearch("");
     setColab(value);
   };
@@ -317,17 +321,14 @@ const LinkManagement = (props) => {
     setOpenModal(false);
   };
   const handleGetLinkPostByColaps = async () => {
-    if (colab?.key) {
-      const linkPost = await getLinkPostByColab(
-        colab?.key || colabList?.[0]?.key,
-        pageSize,
-        pageIndex,
-        search
-      );
-      console.log(linkPost);
-      setTotal(linkPost?.count);
-      setData(linkPost?.data);
-    }
+    const linkPost = await getLinkPostByColab(
+      colab?.key || colabList?.[0]?.key,
+      pageSize,
+      pageIndex,
+      search
+    );
+    setTotal(linkPost?.count);
+    setData(linkPost?.data);
   };
   const onFinish = async (values) => {
     setIsLoading(true);
@@ -455,16 +456,18 @@ const LinkManagement = (props) => {
                   value={brand}
                   onSelect={(key, value) => handleSelectBrand(value)}
                   options={brandList}
-                >
-                  {/* {brandList &&
-                    brandList?.map((item, index) => {
-                      return (
-                        <Option key={item?.key} label={item?.value}>
-                          {item?.value}
-                        </Option>
-                      );
-                    })} */}
-                </Select>
+                ></Select>
+              </Col>
+              <Col lg={2}>
+                <p className="custom-label">Team</p>
+                <Select
+                  showSearch
+                  style={{ width: "100%" }}
+                  placeholder="Search to Select"
+                  value={team}
+                  onSelect={(key, value) => handleSelectTeam(value)}
+                  options={teamList}
+                ></Select>
               </Col>
               <Col lg={2}>
                 <p className="custom-label">Domains</p>
@@ -475,16 +478,7 @@ const LinkManagement = (props) => {
                   value={domain}
                   onSelect={(key, value) => handleSelectDomain(value)}
                   options={domainList}
-                >
-                  {/* {domainList &&
-                    domainList.map((item) => {
-                      return (
-                        <Option key={item?.key} label={item?.value}>
-                          {item?.value}
-                        </Option>
-                      );
-                    })} */}
-                </Select>
+                ></Select>
               </Col>
               <Col lg={2}>
                 <p className="custom-label">Cộng tác viên</p>

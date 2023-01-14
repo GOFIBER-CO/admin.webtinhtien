@@ -6,6 +6,7 @@ import {
   getPagingBrands,
   getColabByBrand,
   getPagingDomains,
+  getStatisticByBrand,
 } from "../../helpers/helper";
 import dayjs from "dayjs";
 import * as XLSX from "xlsx";
@@ -47,34 +48,82 @@ const Dashboard = (props) => {
   const [dataSearch, setDataSearch] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [pageIndex, setPageIndex] = useState(1);
-  const [dateRange, setDateRange] = useState([dayjs(), dayjs()]);
-  const getColabByBrandId = async () => {
-    const res = await getColabByBrand("");
+  const [dateRange, setDateRange] = useState([
+    dayjs().subtract(30, "days"),
+    dayjs(),
+  ]);
+  // const getColabByBrandId = async () => {
+  //   const res = await getColabByBrand("");
+  //   let dataTemp = res?.data?.map((item, index) => {
+  //     return { ...item, key: index };
+  //   });
+  //   setData(dataTemp);
+  // };
+  const getStatistic = async () => {
+    const res = await getStatisticByBrand("", dateRange);
     let dataTemp = res?.data?.map((item, index) => {
       return { ...item, key: index };
     });
     setData(dataTemp);
   };
-
   useEffect(() => {
-    getColabByBrandId();
+    getStatistic();
   }, []);
 
   const expandedRowRender = (data) => {
-    const dataTemp = data?.domains?.map((item, index) => {
+    const dataTemp = data?.team?.map((item, index) => {
       return { ...item, key: index };
     });
-    const expandedRowRender = (dataColab) => {
-      const dataColabTemp = dataColab?.collaborators?.map((item, index) => {
+    const expandedRowRender = (dataTeam) => {
+      const dataDomains = dataTeam?.domains?.map((item, index) => {
         return { ...item, key: index };
       });
+      const expandedRowRender = (dataColab) => {
+        const dataColabTemp = dataColab?.collaborators?.map((item, index) => {
+          return { ...item, key: index };
+        });
+        const columns = [
+          {
+            title: "STT",
+            dataIndex: "key",
+          },
+          {
+            title: "Tên CTV",
+            dataIndex: "name",
+            key: "name",
+          },
+          {
+            title: "Tổng số tiền",
+            dataIndex: "total",
+            key: "total",
+            render: (value) => {
+              return (
+                value?.toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                }) || 0
+              );
+            },
+          },
+        ];
+        return (
+          <div>
+            <Table
+              style={{ marginLeft: "50px" }}
+              columns={columns}
+              dataSource={dataColabTemp}
+              pagination={false}
+            />
+          </div>
+        );
+      };
       const columns = [
         {
           title: "STT",
           dataIndex: "key",
         },
         {
-          title: "Tên CTV",
+          title: "Tên Domains",
           dataIndex: "name",
           key: "name",
         },
@@ -91,31 +140,29 @@ const Dashboard = (props) => {
             );
           },
         },
-        {
-          title: "Action",
-          dataIndex: "name",
-          key: "Action",
-          render: (value, record) => {},
-        },
       ];
       return (
         <div>
           <Table
             style={{ marginLeft: "50px" }}
             columns={columns}
-            dataSource={dataColabTemp}
+            expandable={{
+              expandedRowRender,
+            }}
+            dataSource={dataDomains}
             pagination={false}
           />
         </div>
       );
     };
+
     const columns = [
       {
         title: "STT",
         dataIndex: "key",
       },
       {
-        title: "Tên domain",
+        title: "Team",
         dataIndex: "name",
         key: "name",
       },
@@ -197,7 +244,11 @@ const Dashboard = (props) => {
     FileSaver.saveAs(data, "Link" + fileExtension);
   };
   const onDateRangeChange = (dates, dateStrings) => {
-    console.log(dateStrings);
+    const date = [dates[0].toISOString(), dates[1].toISOString()];
+    setDateRange(date);
+  };
+  const handleChangeDateRange = () => {
+    getStatistic();
   };
   return (
     <div className={classes.root}>
@@ -241,7 +292,9 @@ const Dashboard = (props) => {
               allowClear={false}
               onChange={onDateRangeChange}
             />
-            <Button type="primary">Lọc</Button>
+            <Button type="primary" onClick={handleChangeDateRange}>
+              Lọc
+            </Button>
           </Row>
         </Col>
       </Row>

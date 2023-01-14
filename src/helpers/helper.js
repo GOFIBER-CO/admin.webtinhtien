@@ -306,6 +306,8 @@ export const updateDomains = (id, data) =>
   api.update(`${url.API_DOMAINS}/${id}`, data);
 export const getDomainsByBrand = (id) =>
   api.get(`${url.API_DOMAINS}/getAllDomainsByBrandId/${id}`);
+export const getDomainByTeam = (id) =>
+  api.get(`${url.API_DOMAINS}/getByTeamId/${id}`);
 export const getAllDomains = () => api.get(`${url.API_DOMAINS}/getAll`);
 //Brands
 
@@ -329,6 +331,10 @@ export const updateLinkManagement = (id, data) =>
   api.update(`${url.API_LINK_MANAGEMENT}/${id}`, data);
 export const deleteLinkManagement = (id) =>
   api.delete(`${url.API_LINK_MANAGEMENT}/remove/${id}`);
+export const getStatisticByBrand = (id, dateRange) =>
+  api.get(
+    `${url.API_LINK_MANAGEMENT}/getStatisticByBrand?brandId=${id}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
+  );
 
 export const getLinkPostByColab = (colabId, pageSize, pageIndex, search) =>
   api.get(
@@ -354,9 +360,12 @@ export const getPagingTeams = (pageSize, pageIndex, search) =>
   );
 
 export const getTeamById = (id) => api.get(`${url.API_TEAMS}/getById/${id}`);
+export const getTeamByBrand = (brandid) =>
+  api.get(`${url.API_TEAMS}/getTeamByBrand/${brandid}`);
 
-export const createTeam = (data) => api.post(`${url.API_TEAMS}`, data);
+export const createTeam = (data) => api.create(`${url.API_TEAMS}`, data);
 
-export const updateTeam = (id, data) => api.put(`${url.API_TEAMS}/${id}`, data);
+export const updateTeam = (id, data) =>
+  api.update(`${url.API_TEAMS}/${id}`, data);
 
 export const deleteTeam = (id) => api.delete(`${url.API_TEAMS}/${id}`);

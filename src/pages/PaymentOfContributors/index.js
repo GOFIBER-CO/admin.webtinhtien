@@ -25,6 +25,8 @@ import {
   updatePayment,
   createPayment,
   deletePayment,
+  getTeamByBrand,
+  getDomainByTeam,
 } from "../../helpers/helper";
 import { useHistory } from "react-router-dom";
 import { format } from "echarts";
@@ -291,17 +293,33 @@ const PaymentOfContributors = () => {
 
   const [domainList, setDomainList] = useState([]);
   const [brandList, setBrandList] = useState([]);
+  const [teamList, setTeamList] = useState([]);
   const [brand, setBrand] = useState({});
   const [domain, setDomain] = useState({});
+  const [team, setTeam] = useState({});
   const [pageSize, setPageSize] = useState(10);
   const [pageIndex, setPageIndex] = useState(1);
   const [search, setSearch] = useState("");
   const [count, setCount] = useState(1);
 
-  const getDomainByBrand = async () => {
-    const listDomains = await getDomainsByBrand(
-      brand?.key || brandList[0]?.key
-    );
+  const getTeamListByBrand = async () => {
+    const listTeam = await getTeamByBrand(brand?.key || brandList[0]?.key);
+    let teamListTemp = [];
+    listTeam?.data?.map((item) => {
+      let a = {
+        key: item?._id,
+        value: item?.name,
+        total: item?.total,
+      };
+      teamListTemp.push(a);
+    });
+    const teamList1 = teamListTemp;
+    setTeam(teamList1[0]);
+    setTeamList(teamList1);
+  };
+
+  const getDomainListByTeam = async () => {
+    const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
     let domainListTemp = [];
     listDomains?.data?.map((item) => {
       let a = {
@@ -313,7 +331,6 @@ const PaymentOfContributors = () => {
     });
 
     const domainsList = domainListTemp;
-    console.log(domain?.key, domainsList[0]?.key);
     domain?.key === undefined && setDomain(domainsList[0]);
     domain?.key === undefined && getColapsByDomain(domainsList[0]?.key);
     setDomainList(domainsList);
@@ -334,9 +351,8 @@ const PaymentOfContributors = () => {
   };
 
   const getColapsByDomain = async (key) => {
-    console.log(key);
     const colaps = await getPaymentByDomains(
-      key || domain?.key,
+      domain?.key || "",
       pageSize,
       pageIndex,
       search
@@ -349,12 +365,16 @@ const PaymentOfContributors = () => {
 
   useEffect(() => {
     getListBrand();
-    getDomainByBrand();
   }, [pageIndex, pageSize]);
 
   useEffect(() => {
-    getDomainByBrand();
+    getTeamListByBrand();
   }, [brand?.key]);
+
+  useEffect(() => {
+    setDomain({});
+    getDomainListByTeam();
+  }, [team?.key]);
 
   const handleSelectBrand = (value) => {
     setBrand(value);
@@ -364,7 +384,9 @@ const PaymentOfContributors = () => {
   const handleSelectDomain = (value) => {
     setDomain(value);
   };
-
+  const handleSelectTeam = (value) => {
+    setTeam(value);
+  };
   const onSearch = (value) => {
     setSearch(value);
     getColapsByDomain();
@@ -376,7 +398,6 @@ const PaymentOfContributors = () => {
   };
 
   const handleFormAdd = async (value) => {
-    console.log(value, "aaa");
     // return ;
     let newColab = value;
     newColab.domain_id = domain?.key;
@@ -391,9 +412,7 @@ const PaymentOfContributors = () => {
   };
   const ref = useRef();
   const handleKeyUp = (event) => {
-    // console.log(event, 'event');
     if (event.keyCode === "Enter") {
-      // console.log(ref,'re');
       ref.current.input();
     }
   };
@@ -446,6 +465,17 @@ const PaymentOfContributors = () => {
                 value={brand}
                 onSelect={(key, value) => handleSelectBrand(value)}
                 options={brandList}
+              />
+            </Col>
+            <Col lg="2">
+              <p className="custom-label">Team</p>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Search to Select"
+                value={team}
+                onSelect={(key, value) => handleSelectTeam(value)}
+                options={teamList}
               />
             </Col>
             <Col lg="2">
