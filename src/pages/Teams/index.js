@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {
   Button,
@@ -44,7 +44,6 @@ const Teams = () => {
   const [data, setData] = useState([]);
   const [idEdit, setIdEdit] = useState("");
   const [search, setSearch] = useState("");
-  const ref = createRef();
 
   const onClose = () => {
     setVisibleForm(false);
@@ -75,13 +74,14 @@ const Teams = () => {
     // message.error("Save failed!");
   };
   const onFinish = async (data) => {
-    // console.log(data ,'daa');
+    
     // return ;
     const dataTeams = {
       name: data.name,
       total: 0,
       brand: data.brand,
     };
+    console.log(dataTeams ,'daa');
     if (!data._id) {
       await createTeam(dataTeams)
         .then((res) => {
@@ -115,12 +115,11 @@ const Teams = () => {
 
   const onEdit = (id) => {
     const dataEdit = data.filter((item) => item._id === id);
-    console.log(dataEdit, 'dataEdit');
     setIdEdit(dataEdit[0]._id);
     form.setFieldsValue({
       name: dataEdit[0].name,
       _id: dataEdit[0]._id,
-      brand: dataEdit[0].brand?._id,
+      brand: dataEdit[0].brand?.map((item)=>item._id),
     });
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Teams");
@@ -222,12 +221,13 @@ const Teams = () => {
                         type: "brand",
                       },
                       {
-                        type: "string",
+                        type: "array",
                         min: 1,
                       },
                     ]}
                   >
                     <Select
+                    mode="multiple"
                       showSearch
                       placeholder="Thương hiệu"
                       optionFilterProp="children"
@@ -363,10 +363,11 @@ const Teams = () => {
                   title="Thương hiệu"
                   dataIndex="brand"
                   key="brand"
-                  render={(val, record) => {
-                    
-                    return <>{val?.name}</>
-                  }}
+                  render={(val, record) => (
+                    val?.map((item, index)=>{
+                      return <span key={index}>{item?.name} , </span>
+                    })
+                  )}
                 />
                 <Column
                   title="Hoạt động"
