@@ -193,34 +193,40 @@ const LinkManagement = (props) => {
       });
   };
   const getDomainListByTeam = async () => {
-    const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
-    let domainListTemp = [];
-    listDomains?.data?.map((item) => {
-      let a = {
-        key: item?._id,
-        value: item?.name,
-      };
-      domainListTemp.push(a);
-    });
-
-    const domainsList = domainListTemp;
-    setDomain(domainsList[0]);
-    setDomainList(domainsList);
+    if(team?.key || teamList[0]?.key){
+      const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
+      let domainListTemp = [];
+      listDomains?.data?.map((item) => {
+        let a = {
+          key: item?._id,
+          value: item?.name,
+        };
+        domainListTemp.push(a);
+      });
+  
+      const domainsList = domainListTemp;
+      setDomain(domainsList[0]);
+      setDomainList(domainsList);
+    }
+   
   };
   const getTeamListByBrand = async () => {
-    const listTeam = await getTeamByBrand(brand?.key || brandList[0]?.key);
-    let teamListTemp = [];
-    listTeam?.data?.map((item) => {
-      let a = {
-        key: item?._id,
-        value: item?.name,
-        total: item?.total,
-      };
-      teamListTemp.push(a);
-    });
-    const teamList1 = teamListTemp;
-    setTeam(teamList1[0]);
-    setTeamList(teamList1);
+    if( brand?.key || brandList[0]?.key){
+      const listTeam = await getTeamByBrand(brand?.key || brandList[0]?.key);
+      let teamListTemp = [];
+      listTeam?.data?.map((item) => {
+        let a = {
+          key: item?._id,
+          value: item?.name,
+          total: item?.total,
+        };
+        teamListTemp.push(a);
+      });
+      const teamList1 = teamListTemp;
+      setTeam(teamList1[0]);
+      setTeamList(teamList1);
+    }
+    
   };
   const getListBrand = async () => {
     if (!brand?.key) {
@@ -241,32 +247,36 @@ const LinkManagement = (props) => {
   };
 
   const getColapsByDomain = async (key) => {
-    const listColaps = await getPaymentByDomains(
-      domain?.key || domainList[0]?.key,
-      10000,
-      1,
-      ""
-    );
-    let colabList = [];
-    listColaps?.data?.map((item) => {
-      let a = {
-        key: item?._id,
-        value: item?.name,
-        total: item?.total,
-      };
-      colabList.push(a);
-    });
-    setColabList(colabList);
-    if (props?.location?.state) {
-      setColab(props?.location?.state?.[0]);
-    } else {
-      if (!key) {
-        setColab(colabList[0]);
+    if(domain?.key || domainList[0]?.key) {
+      const listColaps = await getPaymentByDomains(
+        domain?.key || domainList[0]?.key,
+        10000,
+        1,
+        ""
+      );
+      let colabList = [];
+      listColaps?.data?.map((item) => {
+        let a = {
+          key: item?._id,
+          value: item?.name,
+          total: item?.total,
+        };
+        colabList.push(a);
+      });
+      setColabList(colabList);
+      if (props?.location?.state) {
+        setColab(props?.location?.state?.[0]);
       } else {
-        const colab1 = colabList.find((item) => item?.key === key);
-        setColab(colab1);
+        if (!key) {
+          setColab(colabList[0]);
+        } else {
+          const colab1 = colabList.find((item) => item?.key === key);
+          setColab(colab1);
+        }
       }
     }
+
+    
   };
 
   useEffect(() => {
@@ -289,21 +299,47 @@ const LinkManagement = (props) => {
   }, [colab?.key, pageSize, pageIndex]);
 
   const handleSelectBrand = (value) => {
-    history.replace("/postsLink");
-
-    setBrand(value);
+    if(value?.key !== brand?.key) {
+      history.replace("/postsLink");
+      setDomain({})
+      setDomainList([])
+      setTeam({})
+      setTeamList([])
+      setColab({})
+      setColabList([])
+      setData([])
+      setBrand(value);
+    }
+   
   };
   const handleSelectTeam = (value) => {
-    setTeam(value);
+    if(value?.key !== team?.key){
+      setDomain({})
+      setDomainList([])
+      setColab({})
+      setColabList([])
+      setData([])
+      setTeam(value);
+    }
+   
   };
 
   const handleSelectDomain = (value) => {
-    setDomain(value);
+    if(value?.key !== domain?.key){
+      setColab({})
+      setData([])
+      setColabList([])
+      setDomain(value);
+    }
+   
   };
   const handleSelectColaps = (value) => {
-    setData([]);
-    setSearch("");
-    setColab(value);
+    if(value?.key !== colab?.key){
+      setData([]);
+      setSearch("");
+      setColab(value);
+    }
+   
   };
   const onSearch = (value) => {
     if (value) {

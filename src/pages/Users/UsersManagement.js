@@ -164,7 +164,6 @@ const UsersManagement = () => {
                   dataIndex="status"
                   key="status"
                   render={(_, record) => {
-                    console.log(record, 'record');
                     if(record?.status === 1){
                       return (
                         <span>

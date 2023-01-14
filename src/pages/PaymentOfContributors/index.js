@@ -45,7 +45,6 @@ for (let i = 0; i < 4; i++) {
     wordCount: 0,
     postCount: 0,
     totalMoney: 0,
-    note: "bach đẹp trai !",
     confirm: "Đã xác nhận",
   });
 }
@@ -170,15 +169,15 @@ const PaymentOfContributors = () => {
       editable: true,
     },
     {
-      title: "Tổng số từ",
+      title: "Số từ",
       dataIndex: "number_words",
-      width: "5%",
+      width: "7%",
       editable: false,
     },
     {
-      title: "Tổng số bài viết",
+      title: "Số bài viết",
       dataIndex: "link_management_ids",
-      width: "5%",
+      width: "7%",
       editable: false,
       render: (value) => {
         return <>{value?.length}</>;
@@ -201,7 +200,7 @@ const PaymentOfContributors = () => {
     {
       title: "Ghi chú",
       dataIndex: "note",
-      width: "20%",
+      width: "10%",
       editable: true,
     },
     {
@@ -303,38 +302,43 @@ const PaymentOfContributors = () => {
   const [count, setCount] = useState(1);
 
   const getTeamListByBrand = async () => {
-    const listTeam = await getTeamByBrand(brand?.key || brandList[0]?.key);
-    console.log(listTeam);
-    let teamListTemp = [];
-    listTeam?.data?.map((item) => {
-      let a = {
-        key: item?._id,
-        value: item?.name,
-        total: item?.total,
-      };
-      teamListTemp.push(a);
-    });
-    const teamList1 = teamListTemp;
-    team?.key === undefined && setTeam(teamList1[0]);
-    setTeamList(teamList1);
+    if(brand?.key){
+      const listTeam = await getTeamByBrand(brand?.key || brandList[0]?.key);
+      let teamListTemp = [];
+      listTeam?.data?.map((item) => {
+        let a = {
+          key: item?._id,
+          value: item?.name,
+          total: item?.total,
+        };
+        teamListTemp.push(a);
+      });
+      const teamList1 = teamListTemp;
+      team?.key === undefined && setTeam(teamList1[0]);
+      setTeamList(teamList1);
+    }
+   
   };
 
   const getDomainListByTeam = async () => {
-    const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
-    let domainListTemp = [];
-    listDomains?.data?.map((item) => {
-      let a = {
-        key: item?._id,
-        value: item?.name,
-        total: item?.total,
-      };
-      domainListTemp.push(a);
-    });
-
-    const domainsList = domainListTemp;
-    domain?.key === undefined && setDomain(domainsList[0]);
-    domain?.key === undefined && getColapsByDomain(domainsList[0]?.key);
-    setDomainList(domainsList);
+    if(team?.key){
+      const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
+      let domainListTemp = [];
+      listDomains?.data?.map((item) => {
+        let a = {
+          key: item?._id,
+          value: item?.name,
+          total: item?.total,
+        };
+        domainListTemp.push(a);
+      });
+  
+      const domainsList = domainListTemp;
+      domain?.key === undefined && setDomain(domainsList[0]);
+      data === originData && getColapsByDomain(domainsList[0]);
+      setDomainList(domainsList);
+    }
+    
   };
 
   const getListBrand = async () => {
@@ -351,9 +355,9 @@ const PaymentOfContributors = () => {
     setBrandList(brandList);
   };
 
-  const getColapsByDomain = async (key) => {
+  const getColapsByDomain = async (value) => {
     const colaps = await getPaymentByDomains(
-      domain?.key || "",
+      domain?.key || value?.key,
       pageSize,
       pageIndex,
       search
@@ -377,21 +381,28 @@ const PaymentOfContributors = () => {
   }, [team?.key]);
 
   const handleSelectBrand = (value) => {
-    setTeam({});
-    setTeamList([]);
-    setDomain({});
-    setDomainList([]);
-    setBrand(value);
+    if(value?.key !== brand?.key){
+      setTeam({});
+      setTeamList([]);
+      setDomain({});
+      setDomainList([]);
+      setBrand(value);
+    }
+   
   };
 
   const handleSelectDomain = (value) => {
-    setDomain(value);
+    if(value?.key !== domain?.key){
+      setDomain(value);
+    }
   };
   const handleSelectTeam = (value) => {
-    setDomain({});
-    setDomainList([]);
-
-    setTeam(value);
+    if(value?.key !== team?.key){
+      setDomain({});
+      setDomainList([]);
+      setTeam(value);
+    }
+    
   };
   const onSearch = (value) => {
     setSearch(value);
