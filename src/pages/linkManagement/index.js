@@ -339,7 +339,7 @@ const LinkManagement = (props) => {
       category: values?.category,
       status: values?.status || 1,
       collaboratorId: colab?.key || "",
-      price_per_words: values?.price_per_words,
+      price_per_word: values?.price_per_word,
     };
     if (!edit) {
       const res = await createLinkManagement(dataReq).catch((error) => {
@@ -609,7 +609,7 @@ const LinkManagement = (props) => {
                 </Form.Item>
                 <Form.Item
                   label="Số tiền mỗi từ"
-                  name="price_per_words"
+                  name="price_per_word"
                   rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
                 >
                   <InputNumber />

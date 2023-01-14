@@ -304,6 +304,7 @@ const PaymentOfContributors = () => {
 
   const getTeamListByBrand = async () => {
     const listTeam = await getTeamByBrand(brand?.key || brandList[0]?.key);
+    console.log(listTeam);
     let teamListTemp = [];
     listTeam?.data?.map((item) => {
       let a = {
@@ -314,7 +315,7 @@ const PaymentOfContributors = () => {
       teamListTemp.push(a);
     });
     const teamList1 = teamListTemp;
-    setTeam(teamList1[0]);
+    team?.key === undefined && setTeam(teamList1[0]);
     setTeamList(teamList1);
   };
 
@@ -372,19 +373,24 @@ const PaymentOfContributors = () => {
   }, [brand?.key]);
 
   useEffect(() => {
-    setDomain({});
     getDomainListByTeam();
   }, [team?.key]);
 
   const handleSelectBrand = (value) => {
-    setBrand(value);
+    setTeam({});
+    setTeamList([]);
     setDomain({});
+    setDomainList([]);
+    setBrand(value);
   };
 
   const handleSelectDomain = (value) => {
     setDomain(value);
   };
   const handleSelectTeam = (value) => {
+    setDomain({});
+    setDomainList([]);
+
     setTeam(value);
   };
   const onSearch = (value) => {
