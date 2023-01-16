@@ -193,7 +193,7 @@ const LinkManagement = (props) => {
       });
   };
   const getDomainListByTeam = async () => {
-    if(team?.key || teamList[0]?.key){
+    if (team?.key || teamList[0]?.key) {
       const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
       let domainListTemp = [];
       listDomains?.data?.map((item) => {
@@ -203,15 +203,14 @@ const LinkManagement = (props) => {
         };
         domainListTemp.push(a);
       });
-  
+
       const domainsList = domainListTemp;
       setDomain(domainsList[0]);
       setDomainList(domainsList);
     }
-   
   };
   const getTeamListByBrand = async () => {
-    if( brand?.key || brandList[0]?.key){
+    if (brand?.key || brandList[0]?.key) {
       const listTeam = await getTeamByBrand(brand?.key || brandList[0]?.key);
       let teamListTemp = [];
       listTeam?.data?.map((item) => {
@@ -226,7 +225,6 @@ const LinkManagement = (props) => {
       setTeam(teamList1[0]);
       setTeamList(teamList1);
     }
-    
   };
   const getListBrand = async () => {
     if (!brand?.key) {
@@ -247,7 +245,7 @@ const LinkManagement = (props) => {
   };
 
   const getColapsByDomain = async (key) => {
-    if(domain?.key || domainList[0]?.key) {
+    if (domain?.key || domainList[0]?.key) {
       const listColaps = await getPaymentByDomains(
         domain?.key || domainList[0]?.key,
         10000,
@@ -275,8 +273,6 @@ const LinkManagement = (props) => {
         }
       }
     }
-
-    
   };
 
   useEffect(() => {
@@ -299,47 +295,43 @@ const LinkManagement = (props) => {
   }, [colab?.key, pageSize, pageIndex]);
 
   const handleSelectBrand = (value) => {
-    if(value?.key !== brand?.key) {
+    if (value?.key !== brand?.key) {
       history.replace("/postsLink");
-      setDomain({})
-      setDomainList([])
-      setTeam({})
-      setTeamList([])
-      setColab({})
-      setColabList([])
-      setData([])
+      setDomain({});
+      setDomainList([]);
+      setTeam({});
+      setTeamList([]);
+      setColab({});
+      setColabList([]);
+      setData([]);
       setBrand(value);
     }
-   
   };
   const handleSelectTeam = (value) => {
-    if(value?.key !== team?.key){
-      setDomain({})
-      setDomainList([])
-      setColab({})
-      setColabList([])
-      setData([])
+    if (value?.key !== team?.key) {
+      setDomain({});
+      setDomainList([]);
+      setColab({});
+      setColabList([]);
+      setData([]);
       setTeam(value);
     }
-   
   };
 
   const handleSelectDomain = (value) => {
-    if(value?.key !== domain?.key){
-      setColab({})
-      setData([])
-      setColabList([])
+    if (value?.key !== domain?.key) {
+      setColab({});
+      setData([]);
+      setColabList([]);
       setDomain(value);
     }
-   
   };
   const handleSelectColaps = (value) => {
-    if(value?.key !== colab?.key){
+    if (value?.key !== colab?.key) {
       setData([]);
       setSearch("");
       setColab(value);
     }
-   
   };
   const onSearch = (value) => {
     if (value) {
@@ -643,11 +635,15 @@ const LinkManagement = (props) => {
                 >
                   <Input />
                 </Form.Item>
+                <p style={{ color: "orange" }}>
+                  Lưu ý: bài viết phải chuẩn định dạng google document. Nếu vẫn
+                  có lỗi bạn hãy copy nội dung qua một google document khác và
+                  thử lại.
+                </p>
                 <Form.Item
                   label="Số tiền mỗi từ"
                   name="price_per_word"
                   rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
-                  
                 >
                   <InputNumber type="number" />
                 </Form.Item>
