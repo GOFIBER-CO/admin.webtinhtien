@@ -647,8 +647,9 @@ const LinkManagement = (props) => {
                   label="Số tiền mỗi từ"
                   name="price_per_word"
                   rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
+                  
                 >
-                  <InputNumber />
+                  <InputNumber type="number" />
                 </Form.Item>
               </>
             )}

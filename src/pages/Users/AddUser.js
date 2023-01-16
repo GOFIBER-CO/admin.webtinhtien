@@ -65,8 +65,9 @@ function AddUser() {
     });
   };
 
+ 
   const onRoleChange = (e) => {
-    setFormVal({ ...formVal, role: e });
+    setFormVal({ ...formVal, role: roleList.filter((item)=>  item?._id === e)?.[0].name });
   };
 
   const onStatusChange = (e) => {
@@ -79,7 +80,7 @@ function AddUser() {
       return;
     }
     if (user?.id) {
-      let a = await updateUsers(id, formVal)
+       await updateUsers(id, formVal)
         .then((res) => {
           reset();
           success();
@@ -89,7 +90,7 @@ function AddUser() {
           error();
         });
     } else {
-      newUser(formVal)
+      await newUser(formVal)
         .then((res) => {
           reset();
           history.push("/users");
