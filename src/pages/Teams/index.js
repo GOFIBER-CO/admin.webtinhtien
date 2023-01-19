@@ -146,9 +146,9 @@ const Teams = () => {
       };
     });
 
-    const ws = XLSX.utils.json_to_sheet(whitelistExcel);
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel,{header:['QUẢN LÝ TEAMS']});
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array"});
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "Teams" + fileExtension);
   };

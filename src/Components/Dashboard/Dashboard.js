@@ -656,7 +656,7 @@ const Dashboard = (props) => {
       })
 
     });
-    const ws = XLSX.utils.json_to_sheet(exportList);
+    const ws = XLSX.utils.json_to_sheet(exportList,{header:['BẢNG THỐNG KÊ CHI TIẾT']});
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const dataSave = new Blob([excelBuffer], { type: fileType });

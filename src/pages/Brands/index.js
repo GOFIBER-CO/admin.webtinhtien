@@ -28,7 +28,8 @@ const Brands = () => {
   const [pageSize, setPageSize] = useState(10);
   const [totalItem, setTotalItem] = useState(1);
   const [search, setSearch] = useState("");
-
+  const [sum, setSum] = useState(0)
+// console.log(sum,'sum');
   const onClose = () => {
     setVisibleForm(false);
   };
@@ -115,6 +116,8 @@ const Brands = () => {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
     const whitelistExcel = listColab?.data?.map((item, index) => {
+      const tong = item?.total
+      setSum(item?.total)
       return {
         STT: index + 1,
         "Tên thương hiệu": item?.name,
@@ -126,7 +129,7 @@ const Brands = () => {
       };
     });
 
-    const ws = XLSX.utils.json_to_sheet(whitelistExcel);
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {header:['QUẢN LÝ THƯƠNG HIỆU',]});
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });

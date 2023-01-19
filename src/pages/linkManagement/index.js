@@ -455,7 +455,7 @@ const LinkManagement = (props) => {
         "Xác nhận": item?.status,
       };
     });
-    const ws = XLSX.utils.json_to_sheet(whitelistExcel);
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {header:['QUẢN LÝ CỘNG TÁC VIÊN']});
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });

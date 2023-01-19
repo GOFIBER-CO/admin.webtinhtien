@@ -39,15 +39,17 @@ const Domains = () => {
   const [visibleForm, setVisibleForm] = useState(false);
   const [drawerTitle, setDrawerTitle] = useState("");
   const [dataTeam, setDataTeam] = useState([]);
+  const [dataBrand, setDataBrand] = useState([]);
   const [selectedCate, setSelectedCate] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [count, setCount] = useState(1);
   const [data, setData] = useState([]);
   const [idEdit, setIdEdit] = useState("");
   const [search, setSearch] = useState("");
+  const [brandAll, setBrandAll] = useState([])
   const ref = createRef();
-
   const onClose = () => {
     setVisibleForm(false);
   };
@@ -70,20 +72,30 @@ const Domains = () => {
       setDataTeam(res.data);
     });
   };
+
+  const dataAllBrand = () =>{
+    getAllBrands().then((res)=>{
+        // console.log(res, 'res');
+        setBrandAll(res.data)
+    })
+  }
   useEffect(() => {
     getDataTeams();
     getDataDomains();
+    dataAllBrand();
   }, [pageSize, pageIndex]);
 
   const onFinishFailed = () => {
     // message.error("Save failed!");
   };
   const onFinish = async (data) => {
-
+    // console.log(data, 'dsadsad');
+    // return
     const dataDomains = {
       name: data.host,
       total: 0,
       team: data.team_id,
+      brand: data.brand
     };
     if (!data._id) {
       await insertDomains(dataDomains)
@@ -115,8 +127,14 @@ const Domains = () => {
 
   const handleSelectCate = (e) => {
     setSelectedCate(e);
+    setDataBrand(dataTeam?.filter(a => a._id === e)?.[0]?.brand)
+    setSelectedBrand('')
   };
-
+ 
+  const handleSelectBrand = (e) => {
+    setSelectedBrand(e);
+  };
+ 
   const onEdit = (id) => {
     const dataEdit = data.filter((item) => item._id === id);
     console.log(dataEdit,'data');
@@ -125,6 +143,7 @@ const Domains = () => {
       host: dataEdit[0].name,
       _id: dataEdit[0]._id,
       team_id: dataEdit[0]?.team?._id,
+      brand:dataEdit[0]?.team?.brand[0]
     });
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Domains");
@@ -151,12 +170,13 @@ const Domains = () => {
       };
     });
 
-    const ws = XLSX.utils.json_to_sheet(whitelistExcel);
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel,{header:['QUẢN LÝ DOMAINS']});
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "Domains" + fileExtension);
   };
+  console.log(data,'aa');
   return (
     <React.Fragment>
       <div className="page-content">
@@ -251,6 +271,47 @@ const Domains = () => {
                               key={item?._id}
                               value={item?._id}
                               label={item?.name}
+                            >
+                              {item?.name}
+                            </Option>
+                          );
+                        })}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item
+                    name="brand"
+                    label="Brands"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập brands!",
+                      },
+                      {
+                        type: "Brands",
+                      },
+                      {
+                        type: "string",
+                        min: 1,
+                      },
+                    ]}
+                  >
+                    <Select
+                      showSearch
+                      placeholder="Brands"
+                      optionFilterProp="children"
+                      style={{ width: "100%" }}
+                      value={selectedBrand}
+                      onChange={(e) => handleSelectBrand(e)}
+                    >
+                      {dataBrand &&
+                        dataBrand?.map((item, index) => {
+                          return (
+                            <Option
+                            key={item?._id}
+                            value={item?._id}
+                            label={item?.name}
                             >
                               {item?.name}
                             </Option>
@@ -374,6 +435,23 @@ const Domains = () => {
                   key="team"
                   render={(val, record) => {
                     return <>{val?.name}</>;
+                  }}
+                />
+                 <Column
+                  title="Brands"
+                  dataIndex="brand"
+                  key="brand"
+                  render={(val, record) => {
+                    console.log(record, 'record');
+                  //  const name = brandAll.filter((item)=> item?._id ===  record?.team?.brand)
+                  //  console.log(name, 'name');
+                    // return <>{record?.team?.brand}</>;
+                    if(record?.brand){
+                      return <>{record?.brand?.name}</>
+                    }
+                    else{
+                      return <>{record?.team?.brand}</>
+                    }
                   }}
                 />
                 <Column
