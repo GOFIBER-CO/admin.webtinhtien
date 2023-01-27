@@ -276,9 +276,17 @@ export const getPagingRedirect = (data) =>
 
 //Payment of Contributors
 export const createPayment = (data) => api.create(`${url.API_PAYMENT}`, data);
-export const getPaymentByDomains = (id, pageSize, pageIndex, search) =>
+// export const getPaymentByDomains = (id, pageSize, pageIndex, search ,brand, team
+//   ,domain) =>
+//   api.get(
+//     `${url.API_PAYMENT}/getCollaboratorsByDomainId?id=${id}&pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}`
+//   );
+
+  export const getPaymentByDomains = ( pageSize,pageIndex,search,brand, team
+    ,domain
+    ) =>
   api.get(
-    `${url.API_PAYMENT}/getCollaboratorsByDomainId?domainId=${id}&pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`
+    `${url.API_PAYMENT}/getCollaboratorsByDomainId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}`
   );
 export const getColabByBrand = (
   brandId = "",
@@ -342,8 +350,8 @@ export const getLinkPostByColab = (colabId, pageSize, pageIndex, search) =>
   );
 
 //Quản lý users
-export const getPagingUsers = (search) =>
-  api.get(`${url.API_USERS}?search=${search}`);
+export const getPagingUsers = (search , pageIndex , pageSize) =>
+  api.get(`${url.API_USERS}?search=${search}&pageIndex=${pageIndex}&pageSize=${pageSize}`);
 export const getAllRoles = () => api.get(`${url.GET_ALL_ROLE}/getRoles`);
 export const newUser = (body) => api.create(`${url.API_USERS}/signup`, body);
 export const deleteUsers = (id) => api.delete(`${url.API_USERS}/delete/${id}`);
@@ -362,6 +370,12 @@ export const getPagingTeams = (pageSize, pageIndex, search) =>
 export const getTeamById = (id) => api.get(`${url.API_TEAMS}/getById/${id}`);
 export const getTeamByBrand = (brandid) =>
   api.get(`${url.API_TEAMS}/getTeamByBrand/${brandid}`);
+
+  export const getAllDomain = () =>
+  api.get(`${url.API_DOMAINS}/getAll`);
+
+  export const getAllBrand = () =>
+  api.get(`${url.API_BRANDS}/getAll`);
 
 export const createTeam = (data) => api.create(`${url.API_TEAMS}`, data);
 

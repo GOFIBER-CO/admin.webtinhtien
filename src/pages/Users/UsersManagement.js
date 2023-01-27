@@ -102,9 +102,11 @@ const UsersManagement = () => {
       pageIndex: pageIndex,
       search: searchInput,
     };
-    getPagingUsers(searchInput).then((res) => {
-      // console.log(res, 'res');
-      setUsers(res)
+    getPagingUsers(searchInput, pageIndex , pageSize).then((res) => {
+      setUsers(res?.data);
+      setPageIndex(res?.pageIndex)
+      setPageSize(res?.pageSize)
+      setTotals(res?.totalItem)
       // let userList = res.docs;
       // userList.map((item) => {
       //   item.role = item.role.roleName;

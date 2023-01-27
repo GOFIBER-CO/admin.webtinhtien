@@ -27,6 +27,8 @@ import {
   deletePayment,
   getTeamByBrand,
   getDomainByTeam,
+  getAllBrand,
+  getAllDomain,
 } from "../../helpers/helper";
 import { useHistory } from "react-router-dom";
 import { format } from "echarts";
@@ -144,6 +146,7 @@ const PaymentOfContributors = () => {
   };
 
   const columns = [
+    
     {
       title: "Tên CTV",
       dataIndex: "name",
@@ -300,6 +303,9 @@ const PaymentOfContributors = () => {
   const [pageIndex, setPageIndex] = useState(1);
   const [search, setSearch] = useState("");
   const [count, setCount] = useState(1);
+  const [status, setStatus] = useState('')
+  const [statusTeam, setStatusTeam] = useState('')
+ 
 
   const getTeamListByBrand = async () => {
     if(brand?.key){
@@ -314,13 +320,27 @@ const PaymentOfContributors = () => {
         teamListTemp.push(a);
       });
       const teamList1 = teamListTemp;
-      team?.key === undefined && setTeam(teamList1[0]);
+      // team?.key === undefined && setTeam(teamList1[0]);
       setTeamList(teamList1);
     }
-   
+  
   };
 
   const getDomainListByTeam = async () => {
+    // const listDomains = await getAllDomain();
+    // let domainListTemp = [];
+    //    listDomains?.data?.map((item) => {
+    //     let a = {
+    //       key: item?._id,
+    //       value: item?.name,
+    //       total: item?.total,
+    //     };
+    //     domainListTemp.push(a);
+    //   });
+    //   const domainList = domainListTemp
+    //   // setDomain(domainList[0])
+    //   setDomainList(domainList);
+
     if(team?.key){
       const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
       let domainListTemp = [];
@@ -334,15 +354,15 @@ const PaymentOfContributors = () => {
       });
   
       const domainsList = domainListTemp;
-      domain?.key === undefined && setDomain(domainsList[0]);
-      data === originData && getColapsByDomain(domainsList[0]);
+      // domain?.key === undefined && setDomain(domainsList[0]);
+      // data === originData && getColapsByDomain(domainsList[0]);
       setDomainList(domainsList);
     }
-    
+   
   };
 
   const getListBrand = async () => {
-    const listBrand = await getPagingBrands(10000, 1, "");
+    const listBrand = await getAllBrand();
     let brandList = [];
     listBrand?.data?.map((item) => {
       let a = {
@@ -353,24 +373,43 @@ const PaymentOfContributors = () => {
     });
     brand?.key === undefined && setBrand(brandList[0]);
     setBrandList(brandList);
+   
   };
 
   const getColapsByDomain = async (value) => {
     const colaps = await getPaymentByDomains(
-      domain?.key || value?.key,
-      pageSize,
-      pageIndex,
-      search
+      // domain?.key || value?.key,
+      pageSize || 10 ,
+      pageIndex || 1,
+      search || ''
+      ,brand?.key || ''
+      , team?.key || ''
+      , domain?.key ||''
     );
     setData(colaps?.data);
-    setPageIndex(colaps?.pageIndex);
-    setPageSize(colaps?.pageSize);
+    // setPageIndex(colaps?.pageIndex);
+    // setPageSize(colaps?.pageSize);
     setCount(colaps?.count);
+    //  await getPaymentByDomains(pageIndex,pageSize,search,brand?.key, team?.key
+    //   , domain?.key
+    //   ).then((res)=>{
+    //     console.log(res, 'dadaadsa');
+    //     return; 
+    //   setData(res?.data);
+    //   setPageIndex(res?.pageIndex);
+    //   setPageSize(res?.pageSize);
+    //   setCount(res?.totalItem);
+    //  })
   };
 
-  useEffect(() => {
+  useEffect(()=>{
     getListBrand();
-  }, [pageIndex, pageSize]);
+    getDomainListByTeam();
+  },[])
+  useEffect(() => {
+   
+    getColapsByDomain();
+  }, [pageIndex, pageSize, brand]);
 
   useEffect(() => {
     getTeamListByBrand();
@@ -381,6 +420,7 @@ const PaymentOfContributors = () => {
   }, [team?.key]);
 
   const handleSelectBrand = (value) => {
+    // console.log(value, 'valuesdasa');
     if(value?.key !== brand?.key){
       setTeam({});
       setTeamList([]);
@@ -395,6 +435,7 @@ const PaymentOfContributors = () => {
     if(value?.key !== domain?.key){
       setDomain(value);
     }
+    setStatus("")
   };
   const handleSelectTeam = (value) => {
     if(value?.key !== team?.key){
@@ -402,12 +443,15 @@ const PaymentOfContributors = () => {
       setDomainList([]);
       setTeam(value);
     }
-    
+    setStatusTeam("")
   };
   const onSearch = (value) => {
     setSearch(value);
     getColapsByDomain();
   };
+  const filter = (value) =>{
+      getColapsByDomain();
+  }
 
   const handleCloseModal = () => {
     formAdd.resetFields();
@@ -417,6 +461,12 @@ const PaymentOfContributors = () => {
   const handleFormAdd = async (value) => {
     // return ;
     let newColab = value;
+    if(!domain?.key){
+      setStatus("error");
+      setStatusTeam("error");
+      message.error("Bạn chưa chọn Team và Domains!");
+      handleCloseModal();
+    }
     newColab.domain_id = domain?.key;
     const res = await createPayment(newColab);
     getColapsByDomain();
@@ -493,6 +543,7 @@ const PaymentOfContributors = () => {
                 value={team}
                 onSelect={(key, value) => handleSelectTeam(value)}
                 options={teamList}
+                status={statusTeam}
               />
             </Col>
             <Col lg="2">
@@ -504,6 +555,7 @@ const PaymentOfContributors = () => {
                 value={domain}
                 onSelect={(key, value) => handleSelectDomain(value)}
                 options={domainList}
+                status={status}
               />
             </Col>
             <Col lg="1">
@@ -511,7 +563,7 @@ const PaymentOfContributors = () => {
               <Button
                 style={{ height: 36, margin: "5px" }}
                 type="primary"
-                onClick={getColapsByDomain}
+                onClick={filter}
               >
                 Lọc
               </Button>
