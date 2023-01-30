@@ -30,6 +30,8 @@ import {
   deleteLinkManagement,
   getTeamByBrand,
   getDomainByTeam,
+  getAllBrand,
+  getColabByDomainId,
 } from "../../helpers/helper";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
@@ -205,7 +207,7 @@ const LinkManagement = (props) => {
       });
 
       const domainsList = domainListTemp;
-      setDomain(domainsList[0]);
+      // setDomain(domainsList[0]);
       setDomainList(domainsList);
     }
   };
@@ -222,57 +224,81 @@ const LinkManagement = (props) => {
         teamListTemp.push(a);
       });
       const teamList1 = teamListTemp;
-      setTeam(teamList1[0]);
+      // setTeam(teamList1[0]);
       setTeamList(teamList1);
     }
   };
   const getListBrand = async () => {
-    if (!brand?.key) {
-      const listBrand = await getPagingBrands(10000, 1, "");
-      let brandList = [];
-      listBrand?.data?.map((item) => {
-        let a = {
-          key: item?._id,
-          value: item?.name,
-        };
-        brandList.push(a);
-      });
-      props?.location?.state
-        ? setBrand(props?.location?.state[2])
-        : brand?.key === undefined && setBrand(brandList[0]);
-      setBrandList(brandList);
-    }
+    // if (!brand?.key) {
+    //   const listBrand = await getPagingBrands(10000, 1, "");
+    //   let brandList = [];
+    //   listBrand?.data?.map((item) => {
+    //     let a = {
+    //       key: item?._id,
+    //       value: item?.name,
+    //     };
+    //     brandList.push(a);
+    //   });
+    //   props?.location?.state
+    //     ? setBrand(props?.location?.state[2])
+    //     : brand?.key === undefined && setBrand(brandList[0]);
+    //   setBrandList(brandList);
+    // }
+    const listBrand = await getAllBrand();
+    let brandList = [];
+    listBrand?.data?.map((item) => {
+      let a = {
+        key: item?._id,
+        value: item?.name,
+      };
+      brandList.push(a);
+    });
+    brand?.key === undefined && setBrand(brandList[0]);
+    setBrandList(brandList);
   };
 
   const getColapsByDomain = async (key) => {
     if (domain?.key || domainList[0]?.key) {
-      const listColaps = await getPaymentByDomains(
-        domain?.key || domainList[0]?.key,
-        10000,
-        1,
-        ""
-      );
-      let colabList = [];
-      listColaps?.data?.map((item) => {
-        let a = {
-          key: item?._id,
-          value: item?.name,
-          total: item?.total,
-        };
-        colabList.push(a);
-      });
-      setColabList(colabList);
-      if (props?.location?.state) {
-        setColab(props?.location?.state?.[0]);
-      } else {
-        if (!key) {
-          setColab(colabList[0]);
-        } else {
-          const colab1 = colabList.find((item) => item?.key === key);
-          setColab(colab1);
-        }
-      }
-    }
+    const listColaps = await getColabByDomainId(domain?.key)
+    let colabList = [];
+    listColaps?.data?.map((item) => {
+      let a = {
+              key: item?._id,
+              value: item?.name,
+              total: item?.total,
+            };
+            colabList.push(a);
+    });
+    setColabList(colabList);
+  }
+    // if (domain?.key || domainList[0]?.key) {
+    //   const listColaps = await getPaymentByDomains(
+    //     domain?.key || domainList[0]?.key,
+    //     10000,
+    //     1,
+    //     ""
+    //   );
+    //   let colabList = [];
+    //   listColaps?.data?.map((item) => {
+    //     let a = {
+    //       key: item?._id,
+    //       value: item?.name,
+    //       total: item?.total,
+    //     };
+    //     colabList.push(a);
+    //   });
+    //   setColabList(colabList);
+    //   if (props?.location?.state) {
+    //     setColab(props?.location?.state?.[0]);
+    //   } else {
+    //     if (!key) {
+    //       setColab(colabList[0]);
+    //     } else {
+    //       const colab1 = colabList.find((item) => item?.key === key);
+    //       setColab(colab1);
+    //     }
+    //   }
+    // }
   };
 
   useEffect(() => {
@@ -292,7 +318,7 @@ const LinkManagement = (props) => {
 
   useEffect(() => {
     handleGetLinkPostByColaps();
-  }, [colab?.key, pageSize, pageIndex]);
+  }, [colab?.key, pageSize, pageIndex, brand?.key]);
 
   const handleSelectBrand = (value) => {
     if (value?.key !== brand?.key) {
@@ -350,10 +376,14 @@ const LinkManagement = (props) => {
   };
   const handleGetLinkPostByColaps = async () => {
     const linkPost = await getLinkPostByColab(
-      colab?.key || colabList?.[0]?.key,
-      pageSize,
-      pageIndex,
-      search
+      // colab?.key || colabList?.[0]?.key,
+      pageSize || 10,
+      pageIndex || 1,
+      search || '',
+      brand?.key || '',
+      team?.key || '',
+      domain?.key || '',
+      colab?.key || '',
     );
     setTotal(linkPost?.count);
     setData(linkPost?.data);

@@ -344,10 +344,21 @@ export const getStatisticByBrand = (id, dateRange) =>
     `${url.API_LINK_MANAGEMENT}/getStatisticByBrand?brandId=${id}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
   );
 
-export const getLinkPostByColab = (colabId, pageSize, pageIndex, search) =>
-  api.get(
-    `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?collaboratorId=${colabId}&pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}`
-  );
+// export const getLinkPostByColab = (colabId, pageSize, pageIndex, search) =>
+//   api.get(
+//     `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?collaboratorId=${colabId}&pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}`
+//   );
+
+  export const getLinkPostByColab = ( pageSize,
+    pageIndex,
+    search,
+    brand ,
+    team ,
+    domain,
+    colab) =>
+    api.get(
+      `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domain=${domain}&colab=${colab}`
+    ); 
 
 //Quản lý users
 export const getPagingUsers = (search , pageIndex , pageSize) =>
@@ -385,3 +396,5 @@ export const updateTeam = (id, data) =>
 export const deleteTeam = (id) => api.delete(`${url.API_TEAMS}/${id}`);
 
 export const getTeamAll = () => api.get(`${url.API_TEAMS}/all`);
+
+export const getColabByDomainId = (domain) => api.get(`${url.API_PAYMENT}/getCollaboratorsByDomain?domain=${domain}`,)
