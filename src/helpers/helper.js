@@ -357,7 +357,7 @@ export const getStatisticByBrand = (id, dateRange) =>
     domain,
     colab) =>
     api.get(
-      `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domain=${domain}&colab=${colab}`
+      `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}&coladId=${colab}`
     ); 
 
 //Quản lý users
@@ -398,3 +398,5 @@ export const deleteTeam = (id) => api.delete(`${url.API_TEAMS}/${id}`);
 export const getTeamAll = () => api.get(`${url.API_TEAMS}/all`);
 
 export const getColabByDomainId = (domain) => api.get(`${url.API_PAYMENT}/getCollaboratorsByDomain?domain=${domain}`,)
+
+export const getLinkManagementsByTeamUser = (teamId)=> api.get(`${url.API_LINK_MANAGEMENT}/getLinkManagementsByTeamUser?teamId=${teamId}`)
