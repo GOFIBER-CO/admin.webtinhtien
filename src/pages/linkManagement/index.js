@@ -67,6 +67,10 @@ const LinkManagement = (props) => {
   const [error, setError] = useState("");
   const [loading, setIsLoading] = useState(false);
   const [linkByTeam, setLinkByTeam] = useState([])
+  const [sum, setSum] = useState(0)
+  const [sumKey, setSumKey] = useState('')
+  
+
   const columns = [
     {
       title: "Tiêu đề",
@@ -307,7 +311,6 @@ const LinkManagement = (props) => {
 
   const getLinkManagementByTeam = async()=>{
     const listColadsTeam = await getLinkManagementsByTeamUser(team?.key)
-    // console.log(listColadsTeam,'listColadsTeam');
     let listColadTeam = [];
     listColadsTeam?.map((item)=>{
       let a = {
@@ -320,6 +323,7 @@ const LinkManagement = (props) => {
       // console.log(listColadTeam, 'listColadTeam');
     });
     setLinkByTeam(listColadTeam)
+    setSum(listColadTeam)
   } 
 
   useEffect(() => {
@@ -332,11 +336,11 @@ const LinkManagement = (props) => {
   useEffect(() => {
     getDomainListByTeam();
     getLinkManagementByTeam();
-  }, [team?.key]);
+  }, [team?.key, colab?.key]);
 
   useEffect(() => {
     getColapsByDomain();
-  }, [domain?.key]);
+  }, [domain?.key ]);
 
   useEffect(() => {
     handleGetLinkPostByColaps();
@@ -376,12 +380,16 @@ const LinkManagement = (props) => {
     }
   };
   const handleSelectColaps = (value) => {
+    // console.log(value, 'sadsada');
     if (value?.key !== colab?.key) {
       // setData([]);
       setSearch("");
       setColab(value);
+      setSumKey(value?.key)
     }
+
   };
+
   const onSearch = (value) => {
     if (value) {
       setSearch(value);
@@ -412,6 +420,8 @@ const LinkManagement = (props) => {
     setData(linkPost?.data);
   };
   const onFinish = async (values) => {
+    // console.log(values, 'values');
+    // return ;
     setIsLoading(true);
     const dataReq = {
       link_post: values?.link_post,
@@ -432,6 +442,7 @@ const LinkManagement = (props) => {
         });
       });
       if (res?.success) {
+        
         getColapsByDomain(colab?.key);
         handleGetLinkPostByColaps();
         handleCloseModal();
@@ -449,6 +460,8 @@ const LinkManagement = (props) => {
         keyword: values?.keyword || "",
         category: values?.category || "",
         status: values?.status || 1,
+        price_per_word: values?.price_per_word,
+        collaboratorId: colab?.key || "",
       };
       const res = await updateLinkManagement(edit, dataUpdate).catch(
         (error) => {
@@ -461,9 +474,9 @@ const LinkManagement = (props) => {
         }
       );
       if (res?.success) {
+        getLinkManagementByTeam();
         handleGetLinkPostByColaps(colab?.key);
         handleCloseModal();
-
         api["success"]({
           message: `Chỉnh sửa thành công`,
           placement: "top",
@@ -476,6 +489,7 @@ const LinkManagement = (props) => {
   const handleEdit = (value) => {
     form.setFieldValue("keyword", value?.keyword);
     form.setFieldValue("category", value?.category);
+    form.setFieldValue("price_per_word", value?.price_per_word);
     setEdit(value?._id);
     handleOpenModal();
   };
@@ -515,6 +529,47 @@ const LinkManagement = (props) => {
     FileSaver.saveAs(data, "Link" + fileExtension);
   };
 
+  const ShowEditLink = () =>{
+    if(!edit){
+      return <>
+        <Form.Item
+                  label="Link bài viết"
+                  name="link_post"
+                  rules={[{ required: true, message: "Nhập link bài viết" }]}
+                >
+                  <Input />
+                </Form.Item>
+                <p style={{ color: "orange" }}>
+                  Lưu ý: bài viết phải chuẩn định dạng google document. Nếu vẫn
+                  có lỗi bạn hãy copy nội dung qua một google document khác và
+                  thử lại.
+                </p>
+                <Form.Item
+                  label="Số tiền mỗi từ"
+                  name="price_per_word"
+                  rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
+                >
+                  <InputNumber type="number" />
+                </Form.Item>
+      </>
+    }
+    if(edit){
+      return <>
+          <Form.Item
+                  label="Số tiền mỗi từ"
+                  name="price_per_word"
+                  rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
+                >
+                  <InputNumber type="number" />
+                </Form.Item>
+      </>
+    }
+  }
+
+  const Total = () =>{
+   return sum?.map((item)=> item?.key === sumKey) 
+  }
+  // console.log(Total, 'taaaa');
   return (
     <>
       {contextHolder}
@@ -617,6 +672,7 @@ const LinkManagement = (props) => {
               <Col lg="2">
                 <p className="custom-label">
                   Tổng số tiền :{" "}
+                  
                   {colab
                     ? colab?.total?.toLocaleString("it-IT", {
                         style: "currency",
@@ -684,29 +740,33 @@ const LinkManagement = (props) => {
             onLoad={<Spin delay={500}></Spin>}
             autoComplete="off"
           >
-            {!edit && (
-              <>
-                <Form.Item
-                  label="Link bài viết"
-                  name="link_post"
-                  rules={[{ required: true, message: "Nhập link bài viết" }]}
-                >
-                  <Input />
-                </Form.Item>
-                <p style={{ color: "orange" }}>
-                  Lưu ý: bài viết phải chuẩn định dạng google document. Nếu vẫn
-                  có lỗi bạn hãy copy nội dung qua một google document khác và
-                  thử lại.
-                </p>
-                <Form.Item
-                  label="Số tiền mỗi từ"
-                  name="price_per_word"
-                  rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
-                >
-                  <InputNumber type="number" />
-                </Form.Item>
-              </>
-            )}
+            {
+              ShowEditLink()
+            // !edit && (
+            //   <>
+            //     <Form.Item
+            //       label="Link bài viết"
+            //       name="link_post"
+            //       rules={[{ required: true, message: "Nhập link bài viết" }]}
+            //     >
+            //       <Input />
+            //     </Form.Item>
+            //     <p style={{ color: "orange" }}>
+            //       Lưu ý: bài viết phải chuẩn định dạng google document. Nếu vẫn
+            //       có lỗi bạn hãy copy nội dung qua một google document khác và
+            //       thử lại.
+            //     </p>
+            //     <Form.Item
+            //       label="Số tiền mỗi từ"
+            //       name="price_per_word"
+            //       rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
+            //     >
+            //       <InputNumber type="number" />
+            //     </Form.Item>
+            //   </>
+            // )
+            }
+            
             <Form.Item label="Link đã đăng" name="link_posted">
               <Input />
             </Form.Item>
