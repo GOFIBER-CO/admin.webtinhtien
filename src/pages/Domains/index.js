@@ -76,7 +76,6 @@ const Domains = () => {
 
   const dataAllBrand = () => {
     getAllBrands().then((res) => {
-      // console.log(res, 'res');
       setBrandAll(res.data);
     });
   };
@@ -138,13 +137,12 @@ const Domains = () => {
 
   const onEdit = (id) => {
     const dataEdit = data.filter((item) => item._id === id);
-    console.log(dataEdit, "data");
     setIdEdit(dataEdit[0]._id);
     form.setFieldsValue({
       host: dataEdit[0].name,
       _id: dataEdit[0]._id,
       team_id: dataEdit[0]?.team?._id,
-      brand: dataEdit[0]?.team?.brand[0],
+      brand: dataEdit[0]?.brand?._id,
     });
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Domains");
@@ -307,8 +305,8 @@ const Domains = () => {
                       value={selectedBrand}
                       onChange={(e) => handleSelectBrand(e)}
                     >
-                      {dataBrand &&
-                        dataBrand?.map((item, index) => {
+                      {brandAll &&
+                        brandAll?.map((item, index) => {
                           return (
                             <Option
                               key={item?._id}
@@ -444,15 +442,7 @@ const Domains = () => {
                   dataIndex="brand"
                   key="brand"
                   render={(val, record) => {
-                    console.log(record, "record");
-                    //  const name = brandAll.filter((item)=> item?._id ===  record?.team?.brand)
-                    //  console.log(name, 'name');
-                    // return <>{record?.team?.brand}</>;
-                    if (record?.brand) {
-                      return <>{record?.brand?.name}</>;
-                    } else {
-                      return <>{record?.team?.brand?.name}</>;
-                    }
+                    return <>{val?.name}</>;
                   }}
                 />
                 <Column
