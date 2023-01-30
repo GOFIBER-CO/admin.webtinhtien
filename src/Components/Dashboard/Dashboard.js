@@ -29,397 +29,16 @@ const styles = () => ({
     flexGrow: 1,
   },
 });
-const headers = [{
-  id: 'first',
-  display: 'First column'
-}, {
-  id: 'second',
-  display: 'Second column'
-}];
-
-const rows = [
-  [
-      "THANH TOÁN THEO CTV"
-  ],
-  [
-      "STT",
-      "TÊN ",
-      "PHƯƠNG THỨC THANH TOÁN",
-      "Số bài viết 1000 từ ",
-      "CHI TIẾT ",
-      null,
-      "Mức giá 1000 từ ",
-      "TỔNG NHUẬN",
-      "TỔNG TIỀN THEO CTV"
-  ],
-  [
-      1,
-      "Phương",
-      "21410003222360 \nNGUYỄN ĐỨC PHƯƠNG \nBIDV",
-      11,
-      "m888.mobi",
-      "thể thao: 6",
-      55000,
-      605000,
-      605000
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      "W888.mobi",
-      "thể thao: 5"
-  ],
-  [
-      2,
-      "LINH",
-      "19038001732011 \nNguyen Thu Ha \nTechcombank",
-      34,
-      "m888.mobi",
-      "xổ sô: 14",
-      50000,
-      1700000
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      "W888.mobi",
-      "xổ sô: 20"
-  ],
-  [
-      null,
-      null,
-      null,
-      "49",
-      "6789bet.net",
-      "Bài tổng hợp: 40",
-      55000,
-      2695000
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "\nBài trang mục con: 9"
-  ],
-  [
-      null,
-      null,
-      null,
-      "11",
-      "st6666.mobi",
-      "10 bài GP",
-      55000,
-      605000
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      "6689bet.com",
-      "bài meta: 1"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      "#REF!"
-  ],
-  [
-      null,
-      null,
-      null,
-      "3",
-      null,
-      "bài trang chủ: 3",
-      55000,
-      165000
-  ],
-  [
-      3,
-      "KEN",
-      "108006122867\n Phan Quang Duong \nViettin",
-      146,
-      "W888.mobi",
-      "game bài: 8",
-      55000,
-      8030000,
-      22225000
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "esport: 18"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "casino: 40"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      "m888.mobi",
-      "bắn cá: 13"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "đá gà: 4"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "xổ số: 10"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "game bài: 6"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "esport: 2"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "slot game: 16"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "casino: 29"
-  ],
-  [
-      null,
-      null,
-      null,
-      "5",
-      "789b.win",
-      "xổ số: 5",
-      100000,
-      500000
-  ],
-  [
-      null,
-      null,
-      null,
-      249,
-      "bet3655.mobi",
-      "bắn cá: 1",
-      55000,
-      13695000
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "đá gà: 5"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "xổ số: 46"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "game bài: 1"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "esport: 4"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "thể thao: 2"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "casino: 9"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      "kubet1.mobi",
-      "xổ số: 44"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "esport: 10"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "casino: 3"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      "122bet.mobi",
-      "game bài: 1"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "bắn cá: 1"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "đá gà: 3"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "eport: 4"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "xổ số: 48"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "tin tức: 2"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "thể thao: 4"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "casino: 3"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      "789bets.co",
-      "Xổ Số: 55"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      null,
-      "Đá gà: 3"
-  ],
-  [
-      4,
-      "trang",
-      "04301015956383 \nMSB \nMai Thùy Trang",
-      21,
-      null,
-      null,
-      65000,
-      "#REF!",
-      "#REF!"
-  ],
-  [
-      null,
-      null,
-      null,
-      null,
-      "789b.win",
-      "GP: 20"
-  ]
-]
+const headers = [
+  {
+    id: "first",
+    display: "First column",
+  },
+  {
+    id: "second",
+    display: "Second column",
+  },
+];
 
 const columns = [
   {
@@ -474,7 +93,6 @@ const Dashboard = (props) => {
     getStatistic();
   }, []);
 
- 
   const expandedRowRender = (data) => {
     const dataTemp = data?.team?.map((item, index) => {
       return { ...item, key: index };
@@ -584,7 +202,6 @@ const Dashboard = (props) => {
           );
         },
       },
-     
     ];
     return (
       <div>
@@ -631,36 +248,38 @@ const Dashboard = (props) => {
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
-    const exportList = []
+    const exportList = [];
     let count = 0;
     const whitelistExcel = data?.map((itemBrand) => {
-      return itemBrand?.team?.map(itemTeam => {
-        return itemTeam?.domains?.map(itemDomain =>{
-          return itemDomain?.collaborators?.map(itemColab =>{
-            count +=1;
-            let a =  {
-              STT: count,
+      return itemBrand?.team?.map((itemTeam) => {
+        return itemTeam?.domains?.map((itemDomain) => {
+          return itemDomain?.collaborators?.map((itemColab) => {
+            count += 1;
+            let a = {
+              STT: { t: "s", v: count, s: {} },
               "Thương hiệu": itemBrand?.name,
-              "Team":itemTeam?.name,
-              "Domain":itemDomain?.name,
-              "CTV":itemColab?.name,
-              "Tổng tiền":itemColab?.total?.toLocaleString("it-IT", {
+              Team: itemTeam?.name,
+              Domain: itemDomain?.name,
+              CTV: itemColab?.name,
+              "Tổng tiền":
+                itemColab?.total?.toLocaleString("it-IT", {
                   style: "currency",
                   currency: "VND",
                 }) || 0,
-      
             };
-            exportList.push(a)
-          })
-        })
-      })
-
+            exportList.push(a);
+          });
+        });
+      });
     });
-    const ws = XLSX.utils.json_to_sheet(exportList,{header:['BẢNG THỐNG KÊ CHI TIẾT']});
+    const ws = XLSX.utils.json_to_sheet(exportList, {
+      header: ["BẢNG THỐNG KÊ CHI TIẾT"],
+    });
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    console.log(ws["A1"], "aaa");
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const dataSave = new Blob([excelBuffer], { type: fileType });
-    FileSaver.saveAs(dataSave, "Link" + fileExtension);
+    FileSaver.saveAs(dataSave, "Dashboard" + fileExtension);
   };
   const onDateRangeChange = (dates, dateStrings) => {
     const date = [dates[0].toISOString(), dates[1].toISOString()];
@@ -669,8 +288,8 @@ const Dashboard = (props) => {
   const handleChangeDateRange = () => {
     getStatistic();
   };
-  const  myJsonString = JSON.stringify(data)
- 
+  const myJsonString = JSON.stringify(data);
+
   return (
     <div className={classes.root}>
       <Row>
@@ -712,6 +331,7 @@ const Dashboard = (props) => {
               >
                 Xuất excel
               </Button>
+
               {/* <CsvCreator
                   filename='my_cool_csv'
                   headers={headers}

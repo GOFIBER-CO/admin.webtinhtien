@@ -136,17 +136,20 @@ const PaymentOfContributors = () => {
   };
 
   const handleDelete = async (key) => {
-    await deletePayment(key._id).then((res) => {
-      getColapsByDomain();
-      if (res.success === true) {
-        return message.success("Xóa thành công");
-      }
-    });
+    await deletePayment(key._id)
+      .then((res) => {
+        getColapsByDomain();
+        if (res.success === true) {
+          return message.success("Xóa thành công");
+        }
+      })
+      .catch((err) =>
+        message.error("Cộng tác viên này còn các bài viết nên không thể xóa!")
+      );
     // setData(newData);
   };
 
   const columns = [
-    
     {
       title: "Tên CTV",
       dataIndex: "name",
@@ -303,12 +306,11 @@ const PaymentOfContributors = () => {
   const [pageIndex, setPageIndex] = useState(1);
   const [search, setSearch] = useState("");
   const [count, setCount] = useState(1);
-  const [status, setStatus] = useState('')
-  const [statusTeam, setStatusTeam] = useState('')
- 
+  const [status, setStatus] = useState("");
+  const [statusTeam, setStatusTeam] = useState("");
 
   const getTeamListByBrand = async () => {
-    if(brand?.key){
+    if (brand?.key) {
       const listTeam = await getTeamByBrand(brand?.key || brandList[0]?.key);
       let teamListTemp = [];
       listTeam?.data?.map((item) => {
@@ -323,7 +325,6 @@ const PaymentOfContributors = () => {
       // team?.key === undefined && setTeam(teamList1[0]);
       setTeamList(teamList1);
     }
-  
   };
 
   const getDomainListByTeam = async () => {
@@ -341,7 +342,7 @@ const PaymentOfContributors = () => {
     //   // setDomain(domainList[0])
     //   setDomainList(domainList);
 
-    if(team?.key){
+    if (team?.key) {
       const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
       let domainListTemp = [];
       listDomains?.data?.map((item) => {
@@ -352,13 +353,12 @@ const PaymentOfContributors = () => {
         };
         domainListTemp.push(a);
       });
-  
+
       const domainsList = domainListTemp;
       // domain?.key === undefined && setDomain(domainsList[0]);
       // data === originData && getColapsByDomain(domainsList[0]);
       setDomainList(domainsList);
     }
-   
   };
 
   const getListBrand = async () => {
@@ -373,18 +373,17 @@ const PaymentOfContributors = () => {
     });
     brand?.key === undefined && setBrand(brandList[0]);
     setBrandList(brandList);
-   
   };
 
   const getColapsByDomain = async (value) => {
     const colaps = await getPaymentByDomains(
       // domain?.key || value?.key,
-      pageSize || 10 ,
+      pageSize || 10,
       pageIndex || 1,
-      search || ''
-      ,brand?.key || ''
-      , team?.key || ''
-      , domain?.key ||''
+      search || "",
+      brand?.key || "",
+      team?.key || "",
+      domain?.key || ""
     );
     setData(colaps?.data);
     // setPageIndex(colaps?.pageIndex);
@@ -394,7 +393,7 @@ const PaymentOfContributors = () => {
     //   , domain?.key
     //   ).then((res)=>{
     //     console.log(res, 'dadaadsa');
-    //     return; 
+    //     return;
     //   setData(res?.data);
     //   setPageIndex(res?.pageIndex);
     //   setPageSize(res?.pageSize);
@@ -402,12 +401,11 @@ const PaymentOfContributors = () => {
     //  })
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getListBrand();
     getDomainListByTeam();
-  },[])
+  }, []);
   useEffect(() => {
-   
     getColapsByDomain();
   }, [pageIndex, pageSize, brand]);
 
@@ -421,37 +419,36 @@ const PaymentOfContributors = () => {
 
   const handleSelectBrand = (value) => {
     // console.log(value, 'valuesdasa');
-    if(value?.key !== brand?.key){
+    if (value?.key !== brand?.key) {
       setTeam({});
       setTeamList([]);
       setDomain({});
       setDomainList([]);
       setBrand(value);
     }
-   
   };
 
   const handleSelectDomain = (value) => {
-    if(value?.key !== domain?.key){
+    if (value?.key !== domain?.key) {
       setDomain(value);
     }
-    setStatus("")
+    setStatus("");
   };
   const handleSelectTeam = (value) => {
-    if(value?.key !== team?.key){
+    if (value?.key !== team?.key) {
       setDomain({});
       setDomainList([]);
       setTeam(value);
     }
-    setStatusTeam("")
+    setStatusTeam("");
   };
   const onSearch = (value) => {
     setSearch(value);
     getColapsByDomain();
   };
-  const filter = (value) =>{
-      getColapsByDomain();
-  }
+  const filter = (value) => {
+    getColapsByDomain();
+  };
 
   const handleCloseModal = () => {
     formAdd.resetFields();
@@ -461,7 +458,7 @@ const PaymentOfContributors = () => {
   const handleFormAdd = async (value) => {
     // return ;
     let newColab = value;
-    if(!domain?.key){
+    if (!domain?.key) {
       setStatus("error");
       setStatusTeam("error");
       message.error("Bạn chưa chọn Team và Domains!");
@@ -510,7 +507,9 @@ const PaymentOfContributors = () => {
         "Xác nhận": item?.owner_confirm,
       };
     });
-    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {header:['QUẢN LÝ CỘNG TÁC VIÊN']});
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {
+      header: ["QUẢN LÝ CỘNG TÁC VIÊN"],
+    });
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });

@@ -27,7 +27,7 @@ import {
   getAllBrands,
   getPagingTeams,
   updateTeam,
-  deleteTeam
+  deleteTeam,
 } from "./../../helpers/helper";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
@@ -74,14 +74,12 @@ const Teams = () => {
     // message.error("Save failed!");
   };
   const onFinish = async (data) => {
-    
     // return ;
     const dataTeams = {
       name: data.name,
       total: 0,
       brand: data.brand,
     };
-    console.log(dataTeams ,'daa');
     if (!data._id) {
       await createTeam(dataTeams)
         .then((res) => {
@@ -119,7 +117,7 @@ const Teams = () => {
     form.setFieldsValue({
       name: dataEdit[0].name,
       _id: dataEdit[0]._id,
-      brand: dataEdit[0].brand?.map((item)=>item._id),
+      brand: dataEdit[0].brand?.map((item) => item._id),
     });
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Teams");
@@ -146,9 +144,11 @@ const Teams = () => {
       };
     });
 
-    const ws = XLSX.utils.json_to_sheet(whitelistExcel,{header:['QUẢN LÝ TEAMS']});
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {
+      header: ["QUẢN LÝ TEAMS"],
+    });
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array"});
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "Teams" + fileExtension);
   };
@@ -227,7 +227,7 @@ const Teams = () => {
                     ]}
                   >
                     <Select
-                    mode="multiple"
+                      mode="multiple"
                       showSearch
                       placeholder="Thương hiệu"
                       optionFilterProp="children"
@@ -363,11 +363,11 @@ const Teams = () => {
                   title="Thương hiệu"
                   dataIndex="brand"
                   key="brand"
-                  render={(val, record) => (
-                    val?.map((item, index)=>{
-                      return <span key={index}>{item?.name} , </span>
+                  render={(val, record) =>
+                    val?.map((item, index) => {
+                      return <span key={index}>{item?.name} , </span>;
                     })
-                  )}
+                  }
                 />
                 <Column
                   title="Hoạt động"
@@ -385,12 +385,18 @@ const Teams = () => {
                       <Popconfirm
                         title="Are you sure to delete this user?"
                         onConfirm={() => {
-                          deleteTeam(val._id).then((res) => {
-                            getDataTeams();
-                            if (res.success === true) {
-                              return message.success(`Delete Success! `);
-                            }
-                          });
+                          deleteTeam(val._id)
+                            .then((res) => {
+                              getDataTeams();
+                              if (res.success === true) {
+                                return message.success(`Delete Success! `);
+                              }
+                            })
+                            .catch((error) =>
+                              message.error(
+                                "Team này còn domain nên bạn không thể xóa!"
+                              )
+                            );
                         }}
                         okText="Yes"
                         cancelText="No"

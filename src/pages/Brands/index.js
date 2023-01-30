@@ -28,8 +28,8 @@ const Brands = () => {
   const [pageSize, setPageSize] = useState(10);
   const [totalItem, setTotalItem] = useState(1);
   const [search, setSearch] = useState("");
-  const [sum, setSum] = useState(0)
-// console.log(sum,'sum');
+  const [sum, setSum] = useState(0);
+  // console.log(sum,'sum');
   const onClose = () => {
     setVisibleForm(false);
   };
@@ -116,8 +116,8 @@ const Brands = () => {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
     const whitelistExcel = listColab?.data?.map((item, index) => {
-      const tong = item?.total
-      setSum(item?.total)
+      const tong = item?.total;
+      setSum(item?.total);
       return {
         STT: index + 1,
         "Tên thương hiệu": item?.name,
@@ -129,7 +129,9 @@ const Brands = () => {
       };
     });
 
-    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {header:['QUẢN LÝ THƯƠNG HIỆU',]});
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {
+      header: ["QUẢN LÝ THƯƠNG HIỆU"],
+    });
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });
@@ -321,16 +323,20 @@ const Brands = () => {
                       </Tooltip>
 
                       <Popconfirm
-                        title="Are you sure to delete this user?"
+                        title="Bạn có chắc chắn muốn xóa brand này?"
                         onConfirm={() => {
-                          deleteBrands(val._id).then((res) => {
-                            // console.log(res,'res');
-                            // return ;
-                            getdata();
-                            if (res.success === true) {
-                              return message.success(`Delete Success! `);
-                            }
-                          });
+                          deleteBrands(val._id)
+                            .then((res) => {
+                              // console.log(res,'res');
+                              // return ;
+                              getdata();
+                              if (res.success === true) {
+                                return message.success(`Delete Success! `);
+                              }
+                            })
+                            .catch((err) =>
+                              message.error("Brand còn team nên không thể xóa!")
+                            );
                         }}
                         okText="Yes"
                         cancelText="No"

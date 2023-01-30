@@ -48,7 +48,7 @@ const Domains = () => {
   const [data, setData] = useState([]);
   const [idEdit, setIdEdit] = useState("");
   const [search, setSearch] = useState("");
-  const [brandAll, setBrandAll] = useState([])
+  const [brandAll, setBrandAll] = useState([]);
   const ref = createRef();
   const onClose = () => {
     setVisibleForm(false);
@@ -61,6 +61,7 @@ const Domains = () => {
   };
   const getDataDomains = () => {
     getPagingDomains(pageSize, pageIndex, search).then((res) => {
+      console.log(res, "asdasdas");
       setPageIndex(res.pageIndex);
       setPageSize(res.pageSize);
       setCount(res.count);
@@ -73,12 +74,12 @@ const Domains = () => {
     });
   };
 
-  const dataAllBrand = () =>{
-    getAllBrands().then((res)=>{
-        // console.log(res, 'res');
-        setBrandAll(res.data)
-    })
-  }
+  const dataAllBrand = () => {
+    getAllBrands().then((res) => {
+      // console.log(res, 'res');
+      setBrandAll(res.data);
+    });
+  };
   useEffect(() => {
     getDataTeams();
     getDataDomains();
@@ -95,7 +96,7 @@ const Domains = () => {
       name: data.host,
       total: 0,
       team: data.team_id,
-      brand: data.brand
+      brand: data.brand,
     };
     if (!data._id) {
       await insertDomains(dataDomains)
@@ -127,23 +128,23 @@ const Domains = () => {
 
   const handleSelectCate = (e) => {
     setSelectedCate(e);
-    setDataBrand(dataTeam?.filter(a => a._id === e)?.[0]?.brand)
-    setSelectedBrand('')
+    setDataBrand(dataTeam?.filter((a) => a._id === e)?.[0]?.brand);
+    setSelectedBrand("");
   };
- 
+
   const handleSelectBrand = (e) => {
     setSelectedBrand(e);
   };
- 
+
   const onEdit = (id) => {
     const dataEdit = data.filter((item) => item._id === id);
-    console.log(dataEdit,'data');
+    console.log(dataEdit, "data");
     setIdEdit(dataEdit[0]._id);
     form.setFieldsValue({
       host: dataEdit[0].name,
       _id: dataEdit[0]._id,
       team_id: dataEdit[0]?.team?._id,
-      brand:dataEdit[0]?.team?.brand[0]
+      brand: dataEdit[0]?.team?.brand[0],
     });
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Domains");
@@ -170,13 +171,14 @@ const Domains = () => {
       };
     });
 
-    const ws = XLSX.utils.json_to_sheet(whitelistExcel,{header:['QUẢN LÝ DOMAINS']});
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {
+      header: ["QUẢN LÝ DOMAINS"],
+    });
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "Domains" + fileExtension);
   };
-  console.log(data,'aa');
   return (
     <React.Fragment>
       <div className="page-content">
@@ -309,9 +311,9 @@ const Domains = () => {
                         dataBrand?.map((item, index) => {
                           return (
                             <Option
-                            key={item?._id}
-                            value={item?._id}
-                            label={item?.name}
+                              key={item?._id}
+                              value={item?._id}
+                              label={item?.name}
                             >
                               {item?.name}
                             </Option>
@@ -437,20 +439,19 @@ const Domains = () => {
                     return <>{val?.name}</>;
                   }}
                 />
-                 <Column
+                <Column
                   title="Brands"
                   dataIndex="brand"
                   key="brand"
                   render={(val, record) => {
-                    console.log(record, 'record');
-                  //  const name = brandAll.filter((item)=> item?._id ===  record?.team?.brand)
-                  //  console.log(name, 'name');
+                    console.log(record, "record");
+                    //  const name = brandAll.filter((item)=> item?._id ===  record?.team?.brand)
+                    //  console.log(name, 'name');
                     // return <>{record?.team?.brand}</>;
-                    if(record?.brand){
-                      return <>{record?.brand?.name}</>
-                    }
-                    else{
-                      return <>{record?.team?.brand}</>
+                    if (record?.brand) {
+                      return <>{record?.brand?.name}</>;
+                    } else {
+                      return <>{record?.team?.brand?.name}</>;
                     }
                   }}
                 />
@@ -470,12 +471,18 @@ const Domains = () => {
                       <Popconfirm
                         title="Are you sure to delete this user?"
                         onConfirm={() => {
-                          deleteDomains(val._id).then((res) => {
-                            getDataDomains();
-                            if (res.success === true) {
-                              return message.success(`Delete Success! `);
-                            }
-                          });
+                          deleteDomains(val._id)
+                            .then((res) => {
+                              getDataDomains();
+                              if (res.success === true) {
+                                return message.success(`Delete Success! `);
+                              }
+                            })
+                            .catch((err) =>
+                              message.error(
+                                "Domain này còn các cộng tác viên nên không thể xóa!"
+                              )
+                            );
                         }}
                         okText="Yes"
                         cancelText="No"
