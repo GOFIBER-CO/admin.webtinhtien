@@ -21,9 +21,15 @@ import linkManagement from "../pages/linkManagement";
 import Brands from "../pages/Brands";
 import Domains from "../pages/Domains";
 import Teams from "../pages/Teams";
+import TeamDashboard from "../Components/Dashboard/TeamDashboard";
+import DomainDashboard from "../Components/Dashboard/DomainDashboard";
+import CtvDashboard from "../Components/Dashboard/CTVDashboard";
 const authProtectedRoutes = [
   // { path: "/pages-starter", component: Starter },
   { path: "/dashboard-analytics", component: DashboardAnalytics },
+  { path: "/team-analytics", component: TeamDashboard },
+  { path: "/domain-analytics", component: DomainDashboard },
+  { path: "/ctv-analytics", component: CtvDashboard },
   { path: "/users", component: UsersManagement },
   { path: "/permission", component: UsersPermission },
   { path: "/user/add/:id", component: AddUser },

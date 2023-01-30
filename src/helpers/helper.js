@@ -282,9 +282,14 @@ export const createPayment = (data) => api.create(`${url.API_PAYMENT}`, data);
 //     `${url.API_PAYMENT}/getCollaboratorsByDomainId?id=${id}&pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}`
 //   );
 
-  export const getPaymentByDomains = ( pageSize,pageIndex,search,brand, team
-    ,domain
-    ) =>
+export const getPaymentByDomains = (
+  pageSize,
+  pageIndex,
+  search,
+  brand,
+  team,
+  domain
+) =>
   api.get(
     `${url.API_PAYMENT}/getCollaboratorsByDomainId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}`
   );
@@ -349,20 +354,24 @@ export const getStatisticByBrand = (id, dateRange) =>
 //     `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?collaboratorId=${colabId}&pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}`
 //   );
 
-  export const getLinkPostByColab = ( pageSize,
-    pageIndex,
-    search,
-    brand ,
-    team ,
-    domain,
-    colab) =>
-    api.get(
-      `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}&coladId=${colab}`
-    ); 
+export const getLinkPostByColab = (
+  pageSize,
+  pageIndex,
+  search,
+  brand,
+  team,
+  domain,
+  colab
+) =>
+  api.get(
+    `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}&coladId=${colab}`
+  );
 
 //Quản lý users
-export const getPagingUsers = (search , pageIndex , pageSize) =>
-  api.get(`${url.API_USERS}?search=${search}&pageIndex=${pageIndex}&pageSize=${pageSize}`);
+export const getPagingUsers = (search, pageIndex, pageSize) =>
+  api.get(
+    `${url.API_USERS}?search=${search}&pageIndex=${pageIndex}&pageSize=${pageSize}`
+  );
 export const getAllRoles = () => api.get(`${url.GET_ALL_ROLE}/getRoles`);
 export const newUser = (body) => api.create(`${url.API_USERS}/signup`, body);
 export const deleteUsers = (id) => api.delete(`${url.API_USERS}/delete/${id}`);
@@ -379,14 +388,14 @@ export const getPagingTeams = (pageSize, pageIndex, search) =>
   );
 
 export const getTeamById = (id) => api.get(`${url.API_TEAMS}/getById/${id}`);
-export const getTeamByBrand = (brandid) =>
-  api.get(`${url.API_TEAMS}/getTeamByBrand/${brandid}`);
+export const getTeamByBrand = (brandid, pageSize = 10, pageIndex = 1) =>
+  api.get(
+    `${url.API_TEAMS}/getTeamByBrand/${brandid}?pageSize=${pageSize}&pageIndex=${pageIndex}`
+  );
 
-  export const getAllDomain = () =>
-  api.get(`${url.API_DOMAINS}/getAll`);
+export const getAllDomain = () => api.get(`${url.API_DOMAINS}/getAll`);
 
-  export const getAllBrand = () =>
-  api.get(`${url.API_BRANDS}/getAll`);
+export const getAllBrand = () => api.get(`${url.API_BRANDS}/getAll`);
 
 export const createTeam = (data) => api.create(`${url.API_TEAMS}`, data);
 
@@ -397,6 +406,10 @@ export const deleteTeam = (id) => api.delete(`${url.API_TEAMS}/${id}`);
 
 export const getTeamAll = () => api.get(`${url.API_TEAMS}/all`);
 
-export const getColabByDomainId = (domain) => api.get(`${url.API_PAYMENT}/getCollaboratorsByDomain?domain=${domain}`,)
+export const getColabByDomainId = (domain) =>
+  api.get(`${url.API_PAYMENT}/getCollaboratorsByDomain?domain=${domain}`);
 
-export const getLinkManagementsByTeamUser = (teamId)=> api.get(`${url.API_LINK_MANAGEMENT}/getLinkManagementsByTeamUser?teamId=${teamId}`)
+export const getLinkManagementsByTeamUser = (teamId) =>
+  api.get(
+    `${url.API_LINK_MANAGEMENT}/getLinkManagementsByTeamUser?teamId=${teamId}`
+  );

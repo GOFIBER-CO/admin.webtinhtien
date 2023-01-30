@@ -119,7 +119,7 @@ const Navdata = () => {
     },
     {
       id: "dashboard",
-      label: "BẢNG ĐIỀU KHIỂN",
+      label: "BẢNG THỐNG KÊ",
       icon: "ri-dashboard-2-line",
       link: "/dashboard",
       stateVariables: isDashboard,
@@ -131,9 +131,27 @@ const Navdata = () => {
       },
       subItems: [
         {
-          id: "analytics",
-          label: "Analytics",
+          id: "brandAnalytics",
+          label: "Thống kê thương hiệu",
           link: "/dashboard-analytics",
+          parentId: "dashboard",
+        },
+        {
+          id: "teamAnalytics",
+          label: "Thống kê team",
+          link: "/team-analytics",
+          parentId: "dashboard",
+        },
+        {
+          id: "domainAnalytics",
+          label: "Thống kê Domain",
+          link: "/domain-analytics",
+          parentId: "dashboard",
+        },
+        {
+          id: "ctvAnalytics",
+          label: "Thống kê CTV",
+          link: "/ctv-analytics",
           parentId: "dashboard",
         },
       ],

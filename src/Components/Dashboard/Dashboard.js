@@ -29,16 +29,6 @@ const styles = () => ({
     flexGrow: 1,
   },
 });
-const headers = [
-  {
-    id: "first",
-    display: "First column",
-  },
-  {
-    id: "second",
-    display: "Second column",
-  },
-];
 
 const columns = [
   {
@@ -84,6 +74,7 @@ const Dashboard = (props) => {
   // };
   const getStatistic = async () => {
     const res = await getStatisticByBrand("", dateRange);
+    console.log(res, "adasds");
     let dataTemp = res?.data?.map((item, index) => {
       return { ...item, key: index };
     });
@@ -114,6 +105,14 @@ const Dashboard = (props) => {
             title: "Tên CTV",
             dataIndex: "name",
             key: "name",
+          },
+          {
+            title: "Tổng số bài",
+            dataIndex: "link_management_ids",
+            key: "link_management_ids",
+            render: (value) => {
+              return <>{value.length}</>;
+            },
           },
           {
             title: "Tổng số tiền",

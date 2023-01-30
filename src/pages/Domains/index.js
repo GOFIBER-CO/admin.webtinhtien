@@ -61,7 +61,6 @@ const Domains = () => {
   };
   const getDataDomains = () => {
     getPagingDomains(pageSize, pageIndex, search).then((res) => {
-      console.log(res, "asdasdas");
       setPageIndex(res.pageIndex);
       setPageSize(res.pageSize);
       setCount(res.count);
