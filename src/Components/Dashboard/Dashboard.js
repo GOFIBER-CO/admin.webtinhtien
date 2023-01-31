@@ -74,7 +74,6 @@ const Dashboard = (props) => {
   // };
   const getStatistic = async () => {
     const res = await getStatisticByBrand("", dateRange);
-    console.log(res, "adasds");
     let dataTemp = res?.data?.map((item, index) => {
       return { ...item, key: index };
     });
@@ -275,7 +274,6 @@ const Dashboard = (props) => {
       header: ["BẢNG THỐNG KÊ CHI TIẾT"],
     });
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-    console.log(ws["A1"], "aaa");
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const dataSave = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(dataSave, "Dashboard" + fileExtension);

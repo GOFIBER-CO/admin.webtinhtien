@@ -319,8 +319,8 @@ export const updateDomains = (id, data) =>
   api.update(`${url.API_DOMAINS}/${id}`, data);
 export const getDomainsByBrand = (id) =>
   api.get(`${url.API_DOMAINS}/getAllDomainsByBrandId/${id}`);
-export const getDomainByTeam = (id) =>
-  api.get(`${url.API_DOMAINS}/getByTeamId/${id}`);
+export const getDomainByTeam = (id, brand) =>
+  api.get(`${url.API_DOMAINS}/getByTeamId/${id}?brand=${brand}`);
 export const getAllDomains = () => api.get(`${url.API_DOMAINS}/getAll`);
 //Brands
 
@@ -408,7 +408,7 @@ export const getTeamAll = () => api.get(`${url.API_TEAMS}/all`);
 
 export const getColabByDomainId = (domain) =>
   api.get(`${url.API_PAYMENT}/getCollaboratorsByDomain?domain=${domain}`);
-
+export const getColabById = (id) => api.get(`${url.API_PAYMENT}/getById/${id}`);
 export const getLinkManagementsByTeamUser = (teamId) =>
   api.get(
     `${url.API_LINK_MANAGEMENT}/getLinkManagementsByTeamUser?teamId=${teamId}`

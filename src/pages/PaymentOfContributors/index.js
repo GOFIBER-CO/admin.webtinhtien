@@ -29,6 +29,7 @@ import {
   getDomainByTeam,
   getAllBrand,
   getAllDomain,
+  getAllDomains,
 } from "../../helpers/helper";
 import { useHistory } from "react-router-dom";
 import { format } from "echarts";
@@ -150,6 +151,14 @@ const PaymentOfContributors = () => {
   };
 
   const columns = [
+    {
+      title: "Domains",
+      dataIndex: "domain",
+      width: "10%",
+      render: (value) => {
+        return value?.map((item) => item?.name)?.toString();
+      },
+    },
     {
       title: "Tên CTV",
       dataIndex: "name",
@@ -343,7 +352,10 @@ const PaymentOfContributors = () => {
     //   setDomainList(domainList);
 
     if (team?.key) {
-      const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
+      const listDomains = await getDomainByTeam(
+        team?.key || teamList[0]?.key,
+        brand?.key || brandList[0]?.key
+      );
       let domainListTemp = [];
       listDomains?.data?.map((item) => {
         let a = {
@@ -404,6 +416,7 @@ const PaymentOfContributors = () => {
   useEffect(() => {
     getListBrand();
     getDomainListByTeam();
+    getListDomainByTeam();
   }, []);
   useEffect(() => {
     getColapsByDomain();
@@ -458,13 +471,12 @@ const PaymentOfContributors = () => {
   const handleFormAdd = async (value) => {
     // return ;
     let newColab = value;
-    if (!domain?.key) {
-      setStatus("error");
-      setStatusTeam("error");
-      message.error("Bạn chưa chọn Team và Domains!");
-      handleCloseModal();
-    }
-    newColab.domain_id = domain?.key;
+    // if (!domain?.key) {
+    //   setStatus("error");
+    //   setStatusTeam("error");
+    //   message.error("Bạn chưa chọn Team và Domains!");
+    //   handleCloseModal();
+    // }
     const res = await createPayment(newColab);
     getColapsByDomain();
     if (res.success === true) {
@@ -486,20 +498,27 @@ const PaymentOfContributors = () => {
       pageIndex: 1,
       search: "",
     };
-    const listColab = await getPaymentByDomains(domain?.key, 10000, 1, "");
+    const listColab = await getPaymentByDomains(
+      10000,
+      1,
+      "",
+      brand?.key || "",
+      team?.key || "",
+      domain?.key || ""
+    );
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
     const whitelistExcel = listColab?.data?.map((item, index) => {
       return {
         STT: index + 1,
+        Domain: item?.domain?.map((item) => item.name).toString(),
         "Tên CTV": item?.name,
         "Số tài khoản": item?.stk,
         "Tên ngân hàng": item?.bank_name,
         "Tên trên thẻ": item?.account_holder,
         "Số lượng từ": item?.number_words,
         "Tổng số bài": item?.link_management_ids?.length || 0,
-
         "Tổng tiền": item?.total?.toLocaleString("it-IT", {
           style: "currency",
           currency: "VND",
@@ -514,6 +533,11 @@ const PaymentOfContributors = () => {
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "CTV" + fileExtension);
+  };
+  const [listDomainAdd, setListDomainAdd] = useState([]);
+  const getListDomainByTeam = async () => {
+    const res = await getAllDomains();
+    setListDomainAdd(res?.data);
   };
   return (
     <React.Fragment>
@@ -543,6 +567,8 @@ const PaymentOfContributors = () => {
                 onSelect={(key, value) => handleSelectTeam(value)}
                 options={teamList}
                 status={statusTeam}
+                allowClear
+                onClear={() => setTeam({})}
               />
             </Col>
             <Col lg="2">
@@ -555,6 +581,8 @@ const PaymentOfContributors = () => {
                 onSelect={(key, value) => handleSelectDomain(value)}
                 options={domainList}
                 status={status}
+                allowClear
+                onClear={() => setDomain({})}
               />
             </Col>
             <Col lg="1">
@@ -682,6 +710,29 @@ const PaymentOfContributors = () => {
                 onFinish={handleFormAdd}
               >
                 <Form.Item
+                  label="Domain"
+                  name="domain_id"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: "không được bỏ trống Domain",
+                    },
+                  ]}
+                >
+                  <Select mode="tags">
+                    {listDomainAdd?.map((item) => {
+                      return (
+                        <>
+                          <Select.Option value={item?._id}>
+                            {item?.name}
+                          </Select.Option>
+                        </>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+                <Form.Item
                   label="Tên"
                   name="name"
                   required
@@ -694,6 +745,7 @@ const PaymentOfContributors = () => {
                 >
                   <Input placeholder="Nhập tên CTV" />
                 </Form.Item>
+
                 <Form.Item
                   label="Số tài khoản"
                   name="stk"

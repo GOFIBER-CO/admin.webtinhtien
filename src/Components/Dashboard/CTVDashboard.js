@@ -334,7 +334,10 @@ const CtvDashboard = () => {
     //   setDomainList(domainList);
 
     if (team?.key) {
-      const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
+      const listDomains = await getDomainByTeam(
+        team?.key || teamList[0]?.key,
+        brand?.key || brand[0]?.key
+      );
       let domainListTemp = [];
       listDomains?.data?.map((item) => {
         let a = {
@@ -453,14 +456,21 @@ const CtvDashboard = () => {
       pageIndex: 1,
       search: "",
     };
-    const listColab = data;
+    const listColab = await getPaymentByDomains(
+      10000,
+      1,
+      "",
+      brand?.key || "",
+      team?.key || "",
+      domain?.key || ""
+    );
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
-    const whitelistExcel = listColab?.map((item, index) => {
+    const whitelistExcel = listColab?.data?.map((item, index) => {
       return {
         STT: index + 1,
-        Team: item?.domain?.team?.name,
+        Domain: item?.domain?.map((item) => item.name).toString(),
         "Tên CTV": item?.name,
         "Số tài khoản": item?.stk,
         "Tên ngân hàng": item?.bank_name,
@@ -479,8 +489,8 @@ const CtvDashboard = () => {
     });
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    const dataSave = new Blob([excelBuffer], { type: fileType });
-    FileSaver.saveAs(dataSave, "CTV" + fileExtension);
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, "CTV" + fileExtension);
   };
   return (
     <React.Fragment>

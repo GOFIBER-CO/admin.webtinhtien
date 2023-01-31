@@ -126,8 +126,9 @@ const Domains = () => {
 
   const handleSelectCate = (e) => {
     setSelectedCate(e);
+    setDataBrand([]);
+    form.setFieldValue("brand", "");
     setDataBrand(dataTeam?.filter((a) => a._id === e)?.[0]?.brand);
-    setSelectedBrand("");
   };
 
   const handleSelectBrand = (e) => {
@@ -261,7 +262,7 @@ const Domains = () => {
                       optionFilterProp="children"
                       style={{ width: "100%" }}
                       value={selectedCate}
-                      onChange={(e) => handleSelectCate(e)}
+                      onChange={handleSelectCate}
                     >
                       {dataTeam &&
                         dataTeam.map((item, index) => {
@@ -304,8 +305,8 @@ const Domains = () => {
                       value={selectedBrand}
                       onChange={(e) => handleSelectBrand(e)}
                     >
-                      {brandAll &&
-                        brandAll?.map((item, index) => {
+                      {dataBrand &&
+                        dataBrand?.map((item, index) => {
                           return (
                             <Option
                               key={item?._id}

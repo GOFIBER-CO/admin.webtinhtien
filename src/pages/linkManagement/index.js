@@ -33,6 +33,8 @@ import {
   getAllBrand,
   getColabByDomainId,
   getLinkManagementsByTeamUser,
+  getColabById,
+  getAllDomain,
 } from "../../helpers/helper";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
@@ -64,12 +66,11 @@ const LinkManagement = (props) => {
   const [search, setSearch] = useState("");
   const [edit, setEdit] = useState("");
   const [total, setTotal] = useState(0);
-  const [error, setError] = useState("");
+
   const [loading, setIsLoading] = useState(false);
-  const [linkByTeam, setLinkByTeam] = useState([])
-  const [sum, setSum] = useState(0)
-  const [sumKey, setSumKey] = useState('')
-  
+  const [linkByTeam, setLinkByTeam] = useState([]);
+  const [sum, setSum] = useState(0);
+  const [sumKey, setSumKey] = useState("");
 
   const columns = [
     {
@@ -202,7 +203,10 @@ const LinkManagement = (props) => {
   };
   const getDomainListByTeam = async () => {
     if (team?.key || teamList[0]?.key) {
-      const listDomains = await getDomainByTeam(team?.key || teamList[0]?.key);
+      const listDomains = await getDomainByTeam(
+        team?.key || teamList[0]?.key,
+        brand?.key || brandList[0]?.key
+      );
       let domainListTemp = [];
       listDomains?.data?.map((item) => {
         let a = {
@@ -257,28 +261,28 @@ const LinkManagement = (props) => {
         key: item?._id,
         value: item?.name,
         label: item?.name,
+        total: item?.total,
       };
       brandList.push(a);
     });
     brand?.key === undefined && setBrand(brandList[0]);
     setBrandList(brandList);
   };
-  // console.log(brandList, 'brandList');
 
   const getColapsByDomain = async (key) => {
     if (domain?.key || domainList[0]?.key) {
-    const listColaps = await getColabByDomainId(domain?.key)
-    let colabList = [];
-    listColaps?.data?.map((item) => {
-      let a = {
-              key: item?._id,
-              value: item?.name,
-              total: item?.total,
-            };
-            colabList.push(a);
-    });
-    setColabList(colabList);
-  }
+      const listColaps = await getColabByDomainId(domain?.key);
+      let colabList = [];
+      listColaps?.data?.map((item) => {
+        let a = {
+          key: item?._id,
+          value: item?.name,
+          total: item?.total,
+        };
+        colabList.push(a);
+      });
+      setColabList(colabList);
+    }
     // if (domain?.key || domainList[0]?.key) {
     //   const listColaps = await getPaymentByDomains(
     //     domain?.key || domainList[0]?.key,
@@ -309,10 +313,10 @@ const LinkManagement = (props) => {
     // }
   };
 
-  const getLinkManagementByTeam = async()=>{
-    const listColadsTeam = await getLinkManagementsByTeamUser(team?.key)
+  const getLinkManagementByTeam = async () => {
+    const listColadsTeam = await getLinkManagementsByTeamUser(team?.key);
     let listColadTeam = [];
-    listColadsTeam?.map((item)=>{
+    listColadsTeam?.map((item) => {
       let a = {
         key: item?._id,
         value: item?.name,
@@ -320,11 +324,10 @@ const LinkManagement = (props) => {
         total: item?.total,
       };
       listColadTeam.push(a);
-      // console.log(listColadTeam, 'listColadTeam');
     });
-    setLinkByTeam(listColadTeam)
-    setSum(listColadTeam)
-  } 
+    setLinkByTeam(listColadTeam);
+    setSum(listColadTeam);
+  };
 
   useEffect(() => {
     getListBrand();
@@ -340,11 +343,11 @@ const LinkManagement = (props) => {
 
   useEffect(() => {
     getColapsByDomain();
-  }, [domain?.key ]);
+  }, [domain?.key]);
 
   useEffect(() => {
     handleGetLinkPostByColaps();
-  }, [ pageSize, pageIndex, brand?.key]);
+  }, [pageSize, pageIndex, brand?.key]);
 
   const handleSelectBrand = (value) => {
     if (value?.key !== brand?.key) {
@@ -379,15 +382,14 @@ const LinkManagement = (props) => {
       setDomain(value);
     }
   };
-  const handleSelectColaps = (value) => {
+  const handleSelectColaps = async (value) => {
     // console.log(value, 'sadsada');
     if (value?.key !== colab?.key) {
       // setData([]);
       setSearch("");
       setColab(value);
-      setSumKey(value?.key)
+      setSumKey(value?.key);
     }
-
   };
 
   const onSearch = (value) => {
@@ -410,11 +412,11 @@ const LinkManagement = (props) => {
       // colab?.key || colabList?.[0]?.key,
       pageSize || 10,
       pageIndex || 1,
-      search || '',
-      brand?.key || '',
-      team?.key || '',
-      domain?.key || '',
-      colab?.key || '',
+      search || "",
+      brand?.key || "",
+      team?.key || "",
+      domain?.key || "",
+      colab?.key || ""
     );
     setTotal(linkPost?.count);
     setData(linkPost?.data);
@@ -429,7 +431,8 @@ const LinkManagement = (props) => {
       keyword: values?.keyword,
       category: values?.category,
       status: values?.status || 1,
-      collaboratorId: colab?.key || "",
+      collaboratorId: values?.collaboratorId || "",
+      domain: values?.domain || "",
       price_per_word: values?.price_per_word,
     };
     if (!edit) {
@@ -442,7 +445,6 @@ const LinkManagement = (props) => {
         });
       });
       if (res?.success) {
-        
         getColapsByDomain(colab?.key);
         handleGetLinkPostByColaps();
         handleCloseModal();
@@ -522,54 +524,118 @@ const LinkManagement = (props) => {
         "Xác nhận": item?.status,
       };
     });
-    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {header:['QUẢN LÝ CỘNG TÁC VIÊN']});
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {
+      header: ["QUẢN LÝ CỘNG TÁC VIÊN"],
+    });
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "Link" + fileExtension);
   };
+  const [domainAdd, setDomainAdd] = useState([]);
+  const [selectedDomainAdd, setSelectedDomainAdd] = useState("");
+  const [colabAdd, setColabAdd] = useState([]);
+  const handleGetDomainAdd = async () => {
+    const res = await getAllDomain();
+    setDomainAdd(res?.data);
+  };
+  const handleGetColabAdd = async () => {
+    form.setFieldValue("collaboratorId", "");
+    const res = await getColabByDomainId(
+      selectedDomainAdd || domainAdd[0]?._id
+    );
+    setColabAdd(res?.data);
+  };
+  useEffect(() => {
+    handleGetDomainAdd();
+    handleGetColabAdd();
+  }, []);
+  useEffect(() => {
+    setColab();
+    handleGetColabAdd();
+  }, [selectedDomainAdd]);
 
-  const ShowEditLink = () =>{
-    if(!edit){
-      return <>
-        <Form.Item
-                  label="Link bài viết"
-                  name="link_post"
-                  rules={[{ required: true, message: "Nhập link bài viết" }]}
-                >
-                  <Input />
-                </Form.Item>
-                <p style={{ color: "orange" }}>
-                  Lưu ý: bài viết phải chuẩn định dạng google document. Nếu vẫn
-                  có lỗi bạn hãy copy nội dung qua một google document khác và
-                  thử lại.
-                </p>
-                <Form.Item
-                  label="Số tiền mỗi từ"
-                  name="price_per_word"
-                  rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
-                >
-                  <InputNumber type="number" />
-                </Form.Item>
-      </>
-    }
-    if(edit){
-      return <>
+  const ShowEditLink = () => {
+    if (!edit) {
+      return (
+        <>
+          {" "}
           <Form.Item
-                  label="Số tiền mỗi từ"
-                  name="price_per_word"
-                  rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
-                >
-                  <InputNumber type="number" />
-                </Form.Item>
-      </>
+            label="Domain"
+            name="domain"
+            rules={[{ required: true, message: "Vui lòng chọn domain!" }]}
+          >
+            <Select
+              onChange={(e) => setSelectedDomainAdd(e)}
+              value={selectedDomainAdd}
+            >
+              {domainAdd?.map((item) => {
+                return (
+                  <>
+                    <Option value={item?._id}>{item?.name}</Option>
+                  </>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Cộng tác viên"
+            name="collaboratorId"
+            rules={[
+              { required: true, message: "Vui lòng chọn cộng tác viên!" },
+            ]}
+          >
+            <Select>
+              {colabAdd?.map((item) => {
+                return (
+                  <>
+                    <Option value={item?._id}>{item?.name}</Option>
+                  </>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Link bài viết"
+            name="link_post"
+            rules={[{ required: true, message: "Nhập link bài viết" }]}
+          >
+            <Input />
+          </Form.Item>
+          <p style={{ color: "orange" }}>
+            Lưu ý: bài viết phải chuẩn định dạng google document. Nếu vẫn có lỗi
+            bạn hãy copy nội dung qua một google document khác và thử lại.
+          </p>
+          <Form.Item
+            label="Số tiền mỗi từ"
+            name="price_per_word"
+            rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
+          >
+            <InputNumber type="number" />
+          </Form.Item>
+        </>
+      );
     }
-  }
+    if (edit) {
+      return (
+        <>
+          <Form.Item
+            label="Số tiền mỗi từ"
+            name="price_per_word"
+            rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
+          >
+            <InputNumber type="number" />
+          </Form.Item>
+        </>
+      );
+    }
+  };
 
-  const Total = () =>{
-   return sum?.map((item)=> item?.key === sumKey) 
-  }
+  const Total = () => {
+    return sum?.map((item) => item?.key === sumKey);
+  };
   // console.log(Total, 'taaaa');
+
   return (
     <>
       {contextHolder}
@@ -592,9 +658,7 @@ const LinkManagement = (props) => {
                   value={brand}
                   onSelect={(key, value) => handleSelectBrand(value)}
                   options={brandList}
-                  allowClear={true}
                 ></Select>
-                
               </Col>
               <Col lg={2}>
                 <p className="custom-label">Team</p>
@@ -606,6 +670,7 @@ const LinkManagement = (props) => {
                   onSelect={(key, value) => handleSelectTeam(value)}
                   options={teamList}
                   allowClear
+                  onClear={() => setTeam({})}
                 ></Select>
               </Col>
               <Col lg={2}>
@@ -618,6 +683,7 @@ const LinkManagement = (props) => {
                   onSelect={(key, value) => handleSelectDomain(value)}
                   options={domainList}
                   allowClear
+                  onClear={() => setDomain({})}
                 ></Select>
               </Col>
               <Col lg={2}>
@@ -626,10 +692,11 @@ const LinkManagement = (props) => {
                   // showSearch
                   style={{ width: "100%" }}
                   placeholder="Search to Select"
-                  value={ colab }
+                  value={colab}
                   onSelect={(key, value) => handleSelectColaps(value)}
-                  options={domain?.key ?colabList : linkByTeam}
+                  options={domain?.key ? colabList : linkByTeam}
                   allowClear
+                  onClear={() => setColab({})}
                 />
               </Col>
               <Col lg="1">
@@ -664,7 +731,6 @@ const LinkManagement = (props) => {
                     marginBottom: 16,
                   }}
                   onClick={handleOpenModal}
-                  disabled={!colab?.key}
                 >
                   Thêm bài viết
                 </Button>
@@ -672,13 +738,25 @@ const LinkManagement = (props) => {
               <Col lg="2">
                 <p className="custom-label">
                   Tổng số tiền :{" "}
-                  
-                  {colab
+                  {/* {colab
                     ? colab?.total?.toLocaleString("it-IT", {
                         style: "currency",
                         currency: "VND",
                       })
-                    : 0}
+                    : null} */}
+                  {(colab
+                    ? colab?.total || 0
+                    : domain
+                    ? domain?.total || 0
+                    : team
+                    ? team?.total || 0
+                    : brand
+                    ? brand?.total || 0
+                    : 0
+                  ).toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
                 </p>
               </Col>
               <Col style={{ width: "130px" }} lg="2">
@@ -742,31 +820,31 @@ const LinkManagement = (props) => {
           >
             {
               ShowEditLink()
-            // !edit && (
-            //   <>
-            //     <Form.Item
-            //       label="Link bài viết"
-            //       name="link_post"
-            //       rules={[{ required: true, message: "Nhập link bài viết" }]}
-            //     >
-            //       <Input />
-            //     </Form.Item>
-            //     <p style={{ color: "orange" }}>
-            //       Lưu ý: bài viết phải chuẩn định dạng google document. Nếu vẫn
-            //       có lỗi bạn hãy copy nội dung qua một google document khác và
-            //       thử lại.
-            //     </p>
-            //     <Form.Item
-            //       label="Số tiền mỗi từ"
-            //       name="price_per_word"
-            //       rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
-            //     >
-            //       <InputNumber type="number" />
-            //     </Form.Item>
-            //   </>
-            // )
+              // !edit && (
+              //   <>
+              //     <Form.Item
+              //       label="Link bài viết"
+              //       name="link_post"
+              //       rules={[{ required: true, message: "Nhập link bài viết" }]}
+              //     >
+              //       <Input />
+              //     </Form.Item>
+              //     <p style={{ color: "orange" }}>
+              //       Lưu ý: bài viết phải chuẩn định dạng google document. Nếu vẫn
+              //       có lỗi bạn hãy copy nội dung qua một google document khác và
+              //       thử lại.
+              //     </p>
+              //     <Form.Item
+              //       label="Số tiền mỗi từ"
+              //       name="price_per_word"
+              //       rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
+              //     >
+              //       <InputNumber type="number" />
+              //     </Form.Item>
+              //   </>
+              // )
             }
-            
+
             <Form.Item label="Link đã đăng" name="link_posted">
               <Input />
             </Form.Item>
