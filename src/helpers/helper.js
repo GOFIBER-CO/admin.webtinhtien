@@ -344,7 +344,7 @@ export const updateLinkManagement = (id, data) =>
   api.update(`${url.API_LINK_MANAGEMENT}/${id}`, data);
 export const deleteLinkManagement = (id) =>
   api.delete(`${url.API_LINK_MANAGEMENT}/remove/${id}`);
-export const getStatisticByBrand = (id, dateRange) =>
+export const getStatisticByBrand = (id, dateRange = ["", ""]) =>
   api.get(
     `${url.API_LINK_MANAGEMENT}/getStatisticByBrand?brandId=${id}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
   );

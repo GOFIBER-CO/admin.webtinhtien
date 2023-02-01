@@ -82,7 +82,14 @@ const Dashboard = (props) => {
   useEffect(() => {
     getStatistic();
   }, []);
-
+  const handleReset = async () => {
+    setDateRange([dayjs().subtract(30, "days"), dayjs()]);
+    const res = await getStatisticByBrand("", []);
+    let dataTemp = res?.data?.map((item, index) => {
+      return { ...item, key: index };
+    });
+    setData(dataTemp);
+  };
   const expandedRowRender = (data) => {
     const dataTemp = data?.team?.map((item, index) => {
       return { ...item, key: index };
@@ -280,7 +287,8 @@ const Dashboard = (props) => {
   };
   const onDateRangeChange = (dates, dateStrings) => {
     const date = [dates[0].toISOString(), dates[1].toISOString()];
-    setDateRange(date);
+    console.log(dates);
+    setDateRange(dates);
   };
   const handleChangeDateRange = () => {
     getStatistic();
@@ -344,6 +352,7 @@ const Dashboard = (props) => {
             <Space size={15}>
               <RangePicker
                 defaultValue={dateRange}
+                value={dateRange}
                 allowClear={false}
                 onChange={onDateRangeChange}
               />
@@ -354,6 +363,13 @@ const Dashboard = (props) => {
               style={{ marginLeft: "10px" }}
             >
               Lọc
+            </Button>
+            <Button
+              type="primary"
+              onClick={handleReset}
+              style={{ marginLeft: "10px" }}
+            >
+              Reset
             </Button>
           </Row>
         </Col>

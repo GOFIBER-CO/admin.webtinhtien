@@ -248,7 +248,7 @@ const PaymentOfContributors = () => {
           </span>
         ) : (
           <>
-            <Typography.Link
+            {/* <Typography.Link
               disabled={editingKey !== ""}
               onClick={() =>
                 history.push(`/postsLink`, [
@@ -259,7 +259,7 @@ const PaymentOfContributors = () => {
               }
             >
               <ImEye />
-            </Typography.Link>
+            </Typography.Link> */}
             <Typography.Link
               disabled={editingKey !== ""}
               onClick={() => edit(record)}

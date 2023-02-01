@@ -74,6 +74,20 @@ const LinkManagement = (props) => {
 
   const columns = [
     {
+      title: "Domains",
+      dataIndex: "domain",
+      key: "domain",
+      ellipsis: true,
+      render: (value) => {
+        return (
+          <Tooltip placement="Top" title={value?.name}>
+            {value?.name}
+          </Tooltip>
+        );
+      },
+      width: "10%",
+    },
+    {
       title: "Tiêu đề",
       dataIndex: "title",
       key: "title",
