@@ -144,6 +144,11 @@ const Domains = () => {
       team_id: dataEdit[0]?.team?._id,
       brand: dataEdit[0]?.brand?._id,
     });
+    setDataBrand(
+      dataTeam?.filter((a) => a._id === dataEdit[0]?.team?._id)?.[0]?.brand
+    );
+    console.log(dataBrand);
+    setSelectedBrand(dataEdit[0]?.brand?._id);
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Domains");
   };
@@ -308,11 +313,7 @@ const Domains = () => {
                       {dataBrand &&
                         dataBrand?.map((item, index) => {
                           return (
-                            <Option
-                              key={item?._id}
-                              value={item?._id}
-                              label={item?.name}
-                            >
+                            <Option key={item?._id} value={item?._id}>
                               {item?.name}
                             </Option>
                           );
