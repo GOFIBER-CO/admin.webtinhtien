@@ -10,6 +10,7 @@ import {
   Typography,
   Modal,
   message,
+  Tooltip,
 } from "antd";
 import { Container, Row, Col } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -124,7 +125,7 @@ const PaymentOfContributors = () => {
           owner_confirm: newData[index]?.owner_confirm,
         };
         await updatePayment(newData[index]?._id, newReq);
-        setData(newData);
+        getColapsByDomain();
         setEditingKey("");
       } else {
         newData.push(row);
@@ -224,7 +225,16 @@ const PaymentOfContributors = () => {
       width: "5%",
       editable: true,
       render: (value) => {
-        return <>{value}</>;
+        return (
+          <>
+            <Tooltip
+              placement="top"
+              title="1 là đã xác nhận,0 là chưa xác nhận"
+            >
+              {value === 1 ? "Xác nhận" : "Chưa xác nhận"}
+            </Tooltip>
+          </>
+        );
       },
     },
     {
@@ -720,7 +730,7 @@ const PaymentOfContributors = () => {
                     },
                   ]}
                 >
-                  <Select mode="tags">
+                  <Select mode="multiple">
                     {listDomainAdd?.map((item) => {
                       return (
                         <>

@@ -287,7 +287,6 @@ const Dashboard = (props) => {
   };
   const onDateRangeChange = (dates, dateStrings) => {
     const date = [dates[0].toISOString(), dates[1].toISOString()];
-    console.log(dates);
     setDateRange(dates);
   };
   const handleChangeDateRange = () => {

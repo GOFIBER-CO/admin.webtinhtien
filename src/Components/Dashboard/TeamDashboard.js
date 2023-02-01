@@ -9,18 +9,7 @@ import {
   InputGroupText,
   Row,
 } from "reactstrap";
-import {
-  Form,
-  Space,
-  Table,
-  Select,
-  Popconfirm,
-  notification,
-  Drawer,
-  Tooltip,
-  message,
-  Pagination,
-} from "antd";
+import { Form, Space, Table, Select, Pagination, DatePicker } from "antd";
 import Column from "antd/lib/table/Column";
 import {
   createTeam,
@@ -32,6 +21,8 @@ import {
 } from "./../../helpers/helper";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
+import dayjs from "dayjs";
+const { RangePicker } = DatePicker;
 const { Option } = Select;
 const TeamDashboard = () => {
   const [dataBrands, setDataBrands] = useState([]);
@@ -41,8 +32,15 @@ const TeamDashboard = () => {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
+  const [dateRange, setDateRange] = useState([
+    dayjs().subtract(30, "days"),
+    dayjs(),
+  ]);
   const getDataTeams = () => {
-    getPagingTeams(pageSize, pageIndex, search).then((res) => {
+    getPagingTeams(pageSize, pageIndex, search, [
+      dateRange[0].toISOString(),
+      dateRange[1].toISOString(),
+    ]).then((res) => {
       setCount(res.count);
       setData(res.data);
     });
@@ -65,7 +63,8 @@ const TeamDashboard = () => {
       const res = await getTeamByBrand(
         selectedBrand || "",
         pageSize,
-        pageIndex
+        pageIndex,
+        [dateRange[0].toISOString(), dateRange[1].toISOString()]
       );
       setData(res?.data);
     } else {
@@ -108,6 +107,22 @@ const TeamDashboard = () => {
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "Teams" + fileExtension);
+  };
+
+  const onDateRangeChange = (dates, dateStrings) => {
+    const date = [dates[0].toISOString(), dates[1].toISOString()];
+    setDateRange(dates);
+  };
+  const handleChangeDateRange = () => {
+    getDataTeams();
+  };
+  const handleReset = async () => {
+    setDateRange([dayjs().subtract(30, "days"), dayjs()]);
+    const res = await getPagingTeams(pageSize, pageIndex, search, []);
+    let dataTemp = res?.data?.map((item, index) => {
+      return { ...item, key: index };
+    });
+    setData(dataTemp);
   };
   return (
     <React.Fragment>
@@ -184,6 +199,39 @@ const TeamDashboard = () => {
                   Xuất excel
                 </Button>
               </div>
+            </Col>
+          </Row>
+          <Row
+            className="mb-3"
+            style={{
+              marginBottom: "10px",
+              display: "flex",
+            }}
+          >
+            <Col lg={4}>
+              {" "}
+              <Space size={15}>
+                <RangePicker
+                  defaultValue={dateRange}
+                  value={dateRange}
+                  allowClear={false}
+                  onChange={onDateRangeChange}
+                />
+              </Space>
+              <Button
+                type="primary"
+                onClick={handleChangeDateRange}
+                style={{ marginLeft: "10px" }}
+              >
+                Lọc
+              </Button>
+              <Button
+                type="primary"
+                onClick={handleReset}
+                style={{ marginLeft: "10px" }}
+              >
+                Reset
+              </Button>
             </Col>
           </Row>
           <Row>

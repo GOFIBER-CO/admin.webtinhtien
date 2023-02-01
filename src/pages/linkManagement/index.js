@@ -77,7 +77,6 @@ const LinkManagement = (props) => {
       title: "Domains",
       dataIndex: "domain",
       key: "domain",
-      ellipsis: true,
       render: (value) => {
         return (
           <Tooltip placement="Top" title={value?.name}>
@@ -91,7 +90,6 @@ const LinkManagement = (props) => {
       title: "Tiêu đề",
       dataIndex: "title",
       key: "title",
-      ellipsis: true,
       render: (value) => {
         return (
           <Tooltip placement="Top" title={value}>
@@ -99,7 +97,7 @@ const LinkManagement = (props) => {
           </Tooltip>
         );
       },
-      width: "15%",
+      width: "10%",
     },
     {
       title: "Từ khóa",
@@ -112,51 +110,48 @@ const LinkManagement = (props) => {
           </Tooltip>
         </a>
       ),
-      ellipsis: true,
     },
     {
       title: "Chuyên mục",
       dataIndex: "category",
       key: "address",
-      ellipsis: true,
     },
     {
       title: "Link bài viết",
       key: "link_post",
       dataIndex: "link_post",
+      ellipsis: true,
       render: (value) => (
         <>
           <a href={value}>{value}</a>
         </>
       ),
-      ellipsis: true,
     },
     {
       title: "Link bài đăng",
       key: "link_posted",
+      ellipsis: true,
+
       dataIndex: "link_posted",
       render: (value) => (
         <>
           <a href={value}>{value}</a>
         </>
       ),
-      ellipsis: true,
     },
     {
       title: "Số từ",
       key: "number_words",
       dataIndex: "number_words",
       render: (value) => <>{value}</>,
-      width: "5%",
-      ellipsis: true,
+      width: "7%",
     },
     {
       title: "Số ảnh",
       key: "number_images",
       dataIndex: "number_images",
       render: (value) => <>{value}</>,
-      width: "5%",
-      ellipsis: true,
+      width: "7%",
     },
     {
       title: "Số tiền",
@@ -179,7 +174,7 @@ const LinkManagement = (props) => {
       render: (value) => <>{value === 1 ? <>Đã đăng</> : <>Nháp</>}</>,
     },
     {
-      title: "Action",
+      title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
@@ -798,7 +793,12 @@ const LinkManagement = (props) => {
               </Col>
             </Row>
             <Row>
-              <Table columns={columns} dataSource={data} pagination={false} />
+              <Table
+                columns={columns}
+                dataSource={data}
+                pagination={false}
+                scroll={{ x: 1300, y: 600 }}
+              />
             </Row>
             <Row style={{ display: "flex", float: "right" }}>
               <Pagination

@@ -286,12 +286,13 @@ export const getPaymentByDomains = (
   pageSize,
   pageIndex,
   search,
-  brand,
-  team,
-  domain
+  brand = "",
+  team = "",
+  domain = "",
+  dateRange
 ) =>
   api.get(
-    `${url.API_PAYMENT}/getCollaboratorsByDomainId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}`
+    `${url.API_PAYMENT}/getCollaboratorsByDomainId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
   );
 export const getColabByBrand = (
   brandId = "",
@@ -309,9 +310,9 @@ export const deletePayment = (id) =>
 
 //Domains
 export const insertDomains = (data) => api.create(`${url.API_DOMAINS}`, data);
-export const getPagingDomains = (pageSize, pageIndex, search) =>
+export const getPagingDomains = (pageSize, pageIndex, search, dateRange = []) =>
   api.get(
-    `${url.API_DOMAINS}?pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}`
+    `${url.API_DOMAINS}?pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
   );
 export const deleteDomains = (id) =>
   api.delete(`${url.API_DOMAINS}/remove/${id}`);
@@ -382,15 +383,20 @@ export const updateUsers = (id, body) => {
 
 //Teams
 
-export const getPagingTeams = (pageSize, pageIndex, search) =>
+export const getPagingTeams = (pageSize, pageIndex, search, dateRange = []) =>
   api.get(
-    `${url.API_TEAMS}?search=${search}&pageSize=${pageSize}&pageIndex=${pageIndex}`
+    `${url.API_TEAMS}?search=${search}&pageSize=${pageSize}&pageIndex=${pageIndex}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
   );
 
 export const getTeamById = (id) => api.get(`${url.API_TEAMS}/getById/${id}`);
-export const getTeamByBrand = (brandid, pageSize = 10, pageIndex = 1) =>
+export const getTeamByBrand = (
+  brandid,
+  pageSize = 10,
+  pageIndex = 1,
+  dateRange = []
+) =>
   api.get(
-    `${url.API_TEAMS}/getTeamByBrand/${brandid}?pageSize=${pageSize}&pageIndex=${pageIndex}`
+    `${url.API_TEAMS}/getTeamByBrand/${brandid}?pageSize=${pageSize}&pageIndex=${pageIndex}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
   );
 
 export const getAllDomain = () => api.get(`${url.API_DOMAINS}/getAll`);

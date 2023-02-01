@@ -10,6 +10,8 @@ import {
   Typography,
   Modal,
   message,
+  Space,
+  DatePicker,
 } from "antd";
 import { Container, Row, Col } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -30,7 +32,9 @@ import {
 import { useHistory } from "react-router-dom";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
+import dayjs from "dayjs";
 const { Search } = Input;
+const { RangePicker } = DatePicker;
 const originData = [];
 for (let i = 0; i < 4; i++) {
   originData.push({
@@ -377,7 +381,8 @@ const CtvDashboard = () => {
       search || "",
       brand?.key || "",
       team?.key || "",
-      domain?.key || ""
+      domain?.key || "",
+      [dateRange[0].toISOString(), dateRange[1].toISOString()]
     );
     setData(colaps?.data);
     // setPageIndex(colaps?.pageIndex);
@@ -492,6 +497,34 @@ const CtvDashboard = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "CTV" + fileExtension);
   };
+  const [dateRange, setDateRange] = useState([
+    dayjs().subtract(30, "days"),
+    dayjs(),
+  ]);
+  const onDateRangeChange = (dates, dateStrings) => {
+    const date = [dates[0].toISOString(), dates[1].toISOString()];
+    setDateRange(dates);
+  };
+  const handleChangeDateRange = () => {
+    getColapsByDomain();
+  };
+  const handleReset = async () => {
+    setDateRange([dayjs().subtract(30, "days"), dayjs()]);
+    const res = await getPaymentByDomains(
+      pageSize,
+      pageIndex,
+      search,
+      brand?.key,
+      team?.key,
+      domain?.key,
+      [dateRange[0].toISOString(), dateRange[1].toISOString()]
+    );
+    let dataTemp = res?.data?.map((item, index) => {
+      return { ...item, key: index };
+    });
+    setData(dataTemp);
+  };
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -534,7 +567,7 @@ const CtvDashboard = () => {
                 status={status}
               />
             </Col>
-            <Col lg="1">
+            {/* <Col lg="1">
               <br />
               <Button
                 style={{ height: 36, margin: "5px" }}
@@ -543,7 +576,7 @@ const CtvDashboard = () => {
               >
                 Lọc
               </Button>
-            </Col>
+            </Col> */}
           </Row>
           <Row>
             <Col lg="3">
@@ -567,7 +600,33 @@ const CtvDashboard = () => {
               </Button>
             </Col> */}
           </Row>
-          <Row style={{ marginTop: "10px" }}>
+
+          <Row style={{ marginTop: "10px", marginBottom: "10px" }}>
+            <Col lg={4}>
+              {" "}
+              <Space size={15}>
+                <RangePicker
+                  defaultValue={dateRange}
+                  value={dateRange}
+                  allowClear={false}
+                  onChange={onDateRangeChange}
+                />
+              </Space>
+              <Button
+                type="primary"
+                onClick={handleChangeDateRange}
+                style={{ marginLeft: "10px" }}
+              >
+                Tìm kiếm
+              </Button>
+              <Button
+                type="primary"
+                onClick={handleReset}
+                style={{ marginLeft: "10px" }}
+              >
+                Reset
+              </Button>
+            </Col>
             <Col lg="2">
               <p className="custom-label">
                 Tổng số tiền :{" "}

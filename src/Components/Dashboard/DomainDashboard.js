@@ -9,18 +9,7 @@ import {
   InputGroupText,
   Row,
 } from "reactstrap";
-import {
-  Form,
-  Space,
-  Table,
-  Select,
-  Popconfirm,
-  notification,
-  Drawer,
-  Tooltip,
-  message,
-  Pagination,
-} from "antd";
+import { Form, Space, Table, Select, Pagination, DatePicker } from "antd";
 import Column from "antd/lib/table/Column";
 import {
   deleteDomains,
@@ -33,6 +22,8 @@ import {
 } from "./../../helpers/helper";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
+import dayjs from "dayjs";
+const { RangePicker } = DatePicker;
 const { Option } = Select;
 const DomainDashboard = () => {
   const [form] = Form.useForm();
@@ -47,7 +38,10 @@ const DomainDashboard = () => {
   const [brandAll, setBrandAll] = useState([]);
 
   const getDataDomains = () => {
-    getPagingDomains(pageSize, pageIndex, search).then((res) => {
+    getPagingDomains(pageSize, pageIndex, search, [
+      dateRange[0].toISOString(),
+      dateRange[1].toISOString(),
+    ]).then((res) => {
       setPageIndex(res.pageIndex);
       setPageSize(res.pageSize);
       setCount(res.count);
@@ -107,6 +101,26 @@ const DomainDashboard = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "Domains" + fileExtension);
   };
+  const [dateRange, setDateRange] = useState([
+    dayjs().subtract(30, "days"),
+    dayjs(),
+  ]);
+  const onDateRangeChange = (dates, dateStrings) => {
+    const date = [dates[0].toISOString(), dates[1].toISOString()];
+    setDateRange(dates);
+  };
+  const handleChangeDateRange = () => {
+    getDataDomains();
+  };
+  const handleReset = async () => {
+    setDateRange([dayjs().subtract(30, "days"), dayjs()]);
+    const res = await getPagingDomains(pageSize, pageIndex, search, []);
+    let dataTemp = res?.data?.map((item, index) => {
+      return { ...item, key: index };
+    });
+    setData(dataTemp);
+  };
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -164,6 +178,39 @@ const DomainDashboard = () => {
                   Xuất excel
                 </Button>
               </div>
+            </Col>
+          </Row>
+          <Row
+            className="mb-3"
+            style={{
+              marginBottom: "10px",
+              display: "flex",
+            }}
+          >
+            <Col lg={4}>
+              {" "}
+              <Space size={15}>
+                <RangePicker
+                  defaultValue={dateRange}
+                  value={dateRange}
+                  allowClear={false}
+                  onChange={onDateRangeChange}
+                />
+              </Space>
+              <Button
+                type="primary"
+                onClick={handleChangeDateRange}
+                style={{ marginLeft: "10px" }}
+              >
+                Lọc
+              </Button>
+              <Button
+                type="primary"
+                onClick={handleReset}
+                style={{ marginLeft: "10px" }}
+              >
+                Reset
+              </Button>
             </Col>
           </Row>
           <Row>
