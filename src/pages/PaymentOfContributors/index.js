@@ -227,11 +227,8 @@ const PaymentOfContributors = () => {
       render: (value) => {
         return (
           <>
-            <Tooltip
-              placement="top"
-              title="1 là đã xác nhận,0 là chưa xác nhận"
-            >
-              {value === 1 ? "Xác nhận" : "Chưa xác nhận"}
+            <Tooltip placement="top" title="1 là đã xác nhận,0 là đang chờ">
+              {value === 1 ? "Xác nhận" : "Đang chờ"}
             </Tooltip>
           </>
         );

@@ -472,7 +472,7 @@ const LinkManagement = (props) => {
         category: values?.category || "",
         status: values?.status || 1,
         price_per_word: values?.price_per_word,
-        collaboratorId: colab?.key || "",
+        collaboratorId: values?.collaboratorId || "",
       };
       const res = await updateLinkManagement(edit, dataUpdate).catch(
         (error) => {
@@ -500,7 +500,10 @@ const LinkManagement = (props) => {
   const handleEdit = (value) => {
     form.setFieldValue("keyword", value?.keyword);
     form.setFieldValue("category", value?.category);
+    form.setFieldValue("link_posted", value?.link_posted);
     form.setFieldValue("price_per_word", value?.price_per_word);
+    form.setFieldValue("status", value?.status);
+    form.setFieldValue("collaboratorId", value?.collaborators[0]?._id);
     setEdit(value?._id);
     handleOpenModal();
   };
@@ -628,6 +631,9 @@ const LinkManagement = (props) => {
     if (edit) {
       return (
         <>
+          <Form.Item name="collaboratorId" hidden></Form.Item>
+          <Form.Item name="link_posted" hidden></Form.Item>
+
           <Form.Item
             label="Số tiền mỗi từ"
             name="price_per_word"

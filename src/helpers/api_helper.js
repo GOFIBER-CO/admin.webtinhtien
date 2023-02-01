@@ -15,7 +15,6 @@ const urlRefreshToken = "/api/users/refresh-token";
 const token = JSON.parse(sessionStorage.getItem("authUser"))
   ? JSON.parse(sessionStorage.getItem("authUser")).jwtToken
   : null;
-console.log(token, "asdasdas");
 if (token) axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
 // intercepting to capture errors

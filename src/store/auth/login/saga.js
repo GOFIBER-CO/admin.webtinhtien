@@ -27,7 +27,7 @@ function* loginUser({ payload: { user, history } }) {
       if (response && response.status !== 0) {
         sessionStorage.setItem("authUser", JSON.stringify(response.data));
         yield put(loginSuccess(response));
-        history.push("/dashboard");
+        history.push("/dashboard-analytics");
       } else {
         yield put(apiError(response));
       }
@@ -63,7 +63,7 @@ function* socialLogin({ payload: { data, history, type } }) {
       sessionStorage.setItem("authUser", JSON.stringify(response));
       yield put(loginSuccess(response));
     }
-    history.push("/dashboard");
+    history.push("/dashboard-analytics");
   } catch (error) {
     yield put(apiError(error));
   }

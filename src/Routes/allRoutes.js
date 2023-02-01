@@ -57,7 +57,7 @@ const authProtectedRoutes = [
     component: linkManagement,
   },
   {
-    path: "/dashboard",
+    path: "/",
     exact: true,
     component: () => <Redirect to="/dashboard-analytics" />,
   },
