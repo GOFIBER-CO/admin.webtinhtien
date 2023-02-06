@@ -505,18 +505,18 @@ const PaymentOfContributors = () => {
       pageIndex: 1,
       search: "",
     };
-    const listColab = await getPaymentByDomains(
-      10000,
-      1,
-      "",
-      brand?.key || "",
-      team?.key || "",
-      domain?.key || ""
-    );
+    // const listColab = await getPaymentByDomains(
+    //   10000,
+    //   1,
+    //   "",
+    //   brand?.key || "",
+    //   team?.key || "",
+    //   domain?.key || ""
+    // );
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
-    const whitelistExcel = listColab?.data?.map((item, index) => {
+    const whitelistExcel = data?.map((item, index) => {
       return {
         STT: index + 1,
         Domain: item?.domain?.map((item) => item.name).toString(),
@@ -538,8 +538,8 @@ const PaymentOfContributors = () => {
     });
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    const data = new Blob([excelBuffer], { type: fileType });
-    FileSaver.saveAs(data, "CTV" + fileExtension);
+    const exportData = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(exportData, "CTV" + fileExtension);
   };
   const [listDomainAdd, setListDomainAdd] = useState([]);
   const getListDomainByTeam = async () => {

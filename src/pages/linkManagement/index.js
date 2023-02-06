@@ -524,7 +524,7 @@ const LinkManagement = (props) => {
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
-    const whitelistExcel = listColab?.data?.map((item, index) => {
+    const whitelistExcel = data?.map((item, index) => {
       return {
         STT: index + 1,
         "Tiêu đề": item?.title,
@@ -547,8 +547,8 @@ const LinkManagement = (props) => {
     });
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    const data = new Blob([excelBuffer], { type: fileType });
-    FileSaver.saveAs(data, "Link" + fileExtension);
+    const exportData = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(exportData, "Link" + fileExtension);
   };
   const [domainAdd, setDomainAdd] = useState([]);
   const [selectedDomainAdd, setSelectedDomainAdd] = useState("");
@@ -593,11 +593,19 @@ const LinkManagement = (props) => {
             <Select
               onChange={(e) => setSelectedDomainAdd(e)}
               value={selectedDomainAdd}
+              showSearch
+              optionFilterProp="label"
             >
               {domainAdd?.map((item) => {
                 return (
                   <>
-                    <Option value={item?._id}>{item?.name}</Option>
+                    <Option
+                      value={item?._id}
+                      key={item?.name}
+                      label={item?.name}
+                    >
+                      {item?.name}
+                    </Option>
                   </>
                 );
               })}
