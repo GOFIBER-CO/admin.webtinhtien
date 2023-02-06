@@ -466,6 +466,7 @@ const CtvDashboard = () => {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
     const whitelistExcel = data?.map((item, index) => {
+      
       return {
         STT: index + 1,
         Domain: item?.domain?.map((item) => item.name).toString(),

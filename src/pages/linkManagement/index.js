@@ -722,7 +722,7 @@ const LinkManagement = (props) => {
                   options={brandList}
                 ></Select>
               </Col>
-              <Col lg={2}>
+              {/* <Col lg={2}>
                 <p className="custom-label">Team</p>
                 <Select
                   // showSearch
@@ -734,7 +734,7 @@ const LinkManagement = (props) => {
                   allowClear
                   onClear={() => setTeam({})}
                 ></Select>
-              </Col>
+              </Col> */}
               <Col lg={2}>
                 <p className="custom-label">Domains</p>
                 <Select

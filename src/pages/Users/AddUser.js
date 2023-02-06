@@ -7,7 +7,7 @@ import {
 import { message, Select, Table } from "antd";
 import { Link, useHistory, useParams } from "react-router-dom";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { getAllRoles, getUserId, newUser, updateUsers } from "../../helpers/helper";
+import { getAllRoles, getTeamAll, getUserId, newUser, updateUsers } from "../../helpers/helper";
 const { Option } = Select;
 const { Column } = Table;
 
@@ -32,12 +32,19 @@ function AddUser() {
     lastName: "",
     status: "",
     role: "",
+    team:""
     // avatar:"",
   });
+  const [teamList, setTeamList] = useState([])
   const getRole = async () => {
     let roleList = await getAllRoles();
     setRoleList(roleList.roles);
   };
+
+  const getTeamAlls = async() =>{
+    const data = await getTeamAll()
+    setTeamList(data?.data)
+  }
   useEffect(() => {
     if (id && id !== "new") {
       getUserId(id).then((res) => {
@@ -46,6 +53,7 @@ function AddUser() {
       });
     }
     getRole();
+    getTeamAlls()
   }, [id]);
 
   const reset = () => {
@@ -70,9 +78,15 @@ function AddUser() {
     setFormVal({ ...formVal, role: roleList.filter((item)=>  item?._id === e)?.[0].name });
   };
 
+  const onTeamChange = (e) => {
+    
+    setFormVal({ ...formVal, team: teamList.filter((item)=>  item?._id === e)?.[0]._id });
+  };
+
   const onStatusChange = (e) => {
     setFormVal({ ...formVal, status: e });
   };
+
   const addNewUser = async () => {
     setSubmitted(true);
  
@@ -223,6 +237,32 @@ function AddUser() {
                         />
                       </FormGroup>
                     </Col >
+                    {user?.id ? <></> : <Col lg={6}>
+                      <FormGroup>
+                        <Label className="mb-1" for="team">
+                          Team
+                        </Label>
+                        <Select
+                          size="large"
+                          name="team"
+                          id="team"
+                          value={formVal.team}
+                          onChange={(e)=>onTeamChange(e)}
+                          placeholder="Role"
+                          style={{ width: "100%" }}
+                        >
+                          {teamList &&
+                            teamList?.map((item, index) => {
+                              return (
+                                <Option value={item._id} key={item._id}>
+                                  {item.name}
+                                </Option>
+                              );
+                            })}
+                        </Select>
+                      </FormGroup>
+                    </Col >}
+                    
                     <Col lg={6}>
                       <FormGroup>
                         <Label className="mb-1" for="role">
