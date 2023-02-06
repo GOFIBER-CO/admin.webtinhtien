@@ -22,6 +22,11 @@ const ProfileDropdown = () => {
         }
     }, [userName, user]);
 
+    const onClickLogout = () =>{
+        sessionStorage.removeItem("authUser");
+
+    }
+
     //Dropdown Toggle
     const [isProfileDropdown, setIsProfileDropdown] = useState(false);
     const toggleProfileDropdown = () => {
@@ -46,7 +51,7 @@ const ProfileDropdown = () => {
                     <DropdownItem href="/profile"><i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
                         <span className="align-middle">Profile</span></DropdownItem>
                     <div className="dropdown-divider"></div>
-                    <DropdownItem href="/logout"><i
+                    <DropdownItem href="/" onClick={onClickLogout}><i
                         className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
                             className="align-middle" data-key="t-logout">Logout</span></DropdownItem>
                 </DropdownMenu>
