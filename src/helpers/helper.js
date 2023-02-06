@@ -5,7 +5,7 @@ import axios from "axios";
 const api = new APIClient();
 
 export const getLoggedInUser = () => {
-  const user = sessionStorage.getItem("user");
+  const user = sessionStorage.getItem("authUser");
   if (user) return JSON.parse(user);
   return null;
 };

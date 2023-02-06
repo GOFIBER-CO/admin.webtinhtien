@@ -366,6 +366,7 @@ const CtvDashboard = () => {
       let a = {
         key: item?._id,
         value: item?.name,
+        total: item?.total,
       };
       brandList.push(a);
     });
@@ -466,7 +467,6 @@ const CtvDashboard = () => {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
     const whitelistExcel = data?.map((item, index) => {
-      
       return {
         STT: index + 1,
         Domain: item?.domain?.map((item) => item.name).toString(),
@@ -547,6 +547,8 @@ const CtvDashboard = () => {
                 onSelect={(key, value) => handleSelectTeam(value)}
                 options={teamList}
                 status={statusTeam}
+                allowClear
+                onClear={() => setTeam({})}
               />
             </Col>
             <Col lg="2">
@@ -559,6 +561,8 @@ const CtvDashboard = () => {
                 onSelect={(key, value) => handleSelectDomain(value)}
                 options={domainList}
                 status={status}
+                allowClear
+                onClear={() => setDomain({})}
               />
             </Col>
             {/* <Col lg="1">
@@ -624,8 +628,18 @@ const CtvDashboard = () => {
             <Col lg="2">
               <p className="custom-label">
                 Tổng số tiền :{" "}
-                {domain
+                {domain?.total
                   ? domain?.total?.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    }) || 0
+                  : team?.total
+                  ? team?.total?.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    }) || 0
+                  : brand?.total
+                  ? brand?.total?.toLocaleString("it-IT", {
                       style: "currency",
                       currency: "VND",
                     }) || 0

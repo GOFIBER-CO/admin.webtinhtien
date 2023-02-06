@@ -16,7 +16,7 @@ import { Container, Row, Col } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import "./style.css";
 import { Select } from "antd";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiFillFileExcel, AiOutlineEdit } from "react-icons/ai";
 import { ImBin2, ImEye } from "react-icons/im";
 import {
   getPaymentByDomains,
@@ -267,6 +267,16 @@ const PaymentOfContributors = () => {
             >
               <ImEye />
             </Typography.Link> */}
+            <Typography.Link
+              style={{
+                marginRight: 8,
+              }}
+              onClick={() => handleOpenModalExport(record)}
+            >
+              <Tooltip title="Xuất excel">
+                <AiFillFileExcel />
+              </Tooltip>
+            </Typography.Link>
             <Typography.Link
               disabled={editingKey !== ""}
               onClick={() => edit(record)}
@@ -546,6 +556,109 @@ const PaymentOfContributors = () => {
     const res = await getAllDomains();
     setListDomainAdd(res?.data);
   };
+  const [modalExportOne, setModalExportOne] = useState(false);
+  const [nameExport, setNameExport] = useState("");
+  const [dataExport, setDataExport] = useState({});
+  const [teamExport, setTeamExport] = useState([]);
+  const [teamSelectedExport, setTeamSelectedExport] = useState({});
+  const [domainExport, setDomainExport] = useState([]);
+  const [domainSelectedExport, setDomainSelectedExport] = useState({});
+
+  const handleCloseModalExport = () => {
+    setModalExportOne(false);
+    setDataExport({});
+  };
+  const handleOpenModalExport = (data) => {
+    setDataExport(data);
+    setNameExport(data?.name);
+    const list = data;
+    let domain = data?.domain?.map((itemDomain) => {
+      return {
+        key: itemDomain?._id,
+        value: itemDomain?.name,
+        team: itemDomain?.team,
+      };
+    });
+    let team = [];
+    domain?.map((item) => {
+      if (!team?.find((x) => x?.key === item?.team[0]._id)) {
+        console.log(item, "aaaa");
+        team.push({ key: item?.team[0]._id, value: item?.team[0].name });
+      }
+    });
+    setTeamSelectedExport(team?.[0]);
+    setDomainExport(domain);
+    setTeamExport(team);
+    setModalExportOne(true);
+  };
+  const handleSelectExportTeam = (value) => {
+    setTeamSelectedExport(value);
+  };
+
+  const exportExcelByOne = async () => {
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    let init = {
+      Team: "",
+      "Tên CTV": dataExport?.name,
+      "Số tài khoản": dataExport?.stk,
+      "Tên ngân hàng": dataExport?.bank_name,
+      "Tên trên thẻ": dataExport?.account_holder,
+      "Số lượng từ": dataExport?.number_words,
+      "Tổng số bài": dataExport?.link_management_ids?.length || 0,
+      "Tổng tiền CTV": 0,
+      // "Xác nhận": dataExport?.owner_confirm,
+    };
+    let linkList = [];
+    if (teamSelectedExport?.key) {
+      let domainList = dataExport?.domain?.filter(
+        (item) => item?.team?.[0]._id === teamSelectedExport?.key
+      );
+      let link = dataExport?.link_management_ids?.map((item) => {
+        if (domainList.find((x) => x._id === item.domain)) {
+          return item;
+        }
+      });
+      linkList = link;
+      init["Team"] = teamSelectedExport?.value;
+    } else {
+      linkList = dataExport?.link_management_ids;
+      init["Team"] = teamExport?.map((item) => item.name).toString();
+    }
+    let totalCTV = 0;
+    let linkExportList = linkList?.map((item) => {
+      totalCTV = totalCTV + item?.total;
+      return {
+        "Tiêu đề": item?.title,
+        "Từ khóa": item?.keyword,
+        "Chuyên mục": item?.category,
+        "Link bài viết": item?.link_post,
+        "Link bài đăng": item?.link_posted,
+        "Số từ": item?.number_words,
+        "Số ảnh": item?.number_images,
+        "Tổng tiền": item?.total?.toLocaleString("it-IT", {
+          style: "currency",
+          currency: "VND",
+        }),
+        "Xác nhận": item?.status,
+      };
+    });
+    init["Tổng Tiền CTV"] = totalCTV.toLocaleString("it-IT", {
+      style: "currency",
+      currency: "VND",
+    });
+    let whitelistExcel = [init, ...linkExportList];
+    console.log(whitelistExcel);
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {
+      header: ["QUẢN LÝ CỘNG TÁC VIÊN"],
+    });
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const exportData = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(exportData, "CTV" + fileExtension);
+    handleCloseModalExport();
+  };
   return (
     <React.Fragment>
       <div className="page-content">
@@ -641,8 +754,18 @@ const PaymentOfContributors = () => {
             <Col lg="2">
               <p className="custom-label">
                 Tổng số tiền :{" "}
-                {domain
+                {domain?.total
                   ? domain?.total?.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    }) || 0
+                  : team?.total
+                  ? team?.total?.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    }) || 0
+                  : brand?.total
+                  ? brand?.total?.toLocaleString("it-IT", {
                       style: "currency",
                       currency: "VND",
                     }) || 0
@@ -829,6 +952,25 @@ const PaymentOfContributors = () => {
                 </Form.Item>
               </Form>
             </Row>
+          </Modal>
+          <Modal
+            title={`Xuất excel theo cộng tác viên ${nameExport}`}
+            open={modalExportOne}
+            onCancel={handleCloseModalExport}
+            onOk={exportExcelByOne}
+          >
+            Team
+            <Select
+              showSearch
+              style={{ width: "100%" }}
+              placeholder="Search to Select"
+              value={teamSelectedExport}
+              onSelect={(key, value) => handleSelectExportTeam(value)}
+              options={teamExport}
+              // status={statusTeam}
+              allowClear
+              onClear={() => setTeamSelectedExport({})}
+            ></Select>
           </Modal>
         </Container>
       </div>

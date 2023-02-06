@@ -1,13 +1,26 @@
 import React, { useEffect, useState } from "react";
 import {
-  Button, Col,
-  Container, Form, FormFeedback, FormGroup, Input, Label, Row
+  Button,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Row,
 } from "reactstrap";
 
 import { message, Select, Table } from "antd";
 import { Link, useHistory, useParams } from "react-router-dom";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { getAllRoles, getTeamAll, getUserId, newUser, updateUsers } from "../../helpers/helper";
+import {
+  getAllRoles,
+  getTeamAll,
+  getUserId,
+  newUser,
+  updateUsers,
+} from "../../helpers/helper";
 const { Option } = Select;
 const { Column } = Table;
 
@@ -32,28 +45,29 @@ function AddUser() {
     lastName: "",
     status: "",
     role: "",
-    team:""
+    team: "",
     // avatar:"",
   });
-  const [teamList, setTeamList] = useState([])
+  const [teamList, setTeamList] = useState([]);
   const getRole = async () => {
     let roleList = await getAllRoles();
     setRoleList(roleList.roles);
   };
 
-  const getTeamAlls = async() =>{
-    const data = await getTeamAll()
-    setTeamList(data?.data)
-  }
+  const getTeamAlls = async () => {
+    const data = await getTeamAll();
+    setTeamList(data?.data);
+  };
   useEffect(() => {
     if (id && id !== "new") {
       getUserId(id).then((res) => {
         setUser(res);
+        console.log(res, "aaa");
         setFormVal(res);
       });
     }
     getRole();
-    getTeamAlls()
+    getTeamAlls();
   }, [id]);
 
   const reset = () => {
@@ -73,14 +87,18 @@ function AddUser() {
     });
   };
 
- 
   const onRoleChange = (e) => {
-    setFormVal({ ...formVal, role: roleList.filter((item)=>  item?._id === e)?.[0].name });
+    setFormVal({
+      ...formVal,
+      role: roleList.filter((item) => item?._id === e)?.[0].name,
+    });
   };
 
   const onTeamChange = (e) => {
-    
-    setFormVal({ ...formVal, team: teamList.filter((item)=>  item?._id === e)?.[0]._id });
+    setFormVal({
+      ...formVal,
+      team: teamList.filter((item) => item?._id === e)?.[0]._id,
+    });
   };
 
   const onStatusChange = (e) => {
@@ -89,12 +107,12 @@ function AddUser() {
 
   const addNewUser = async () => {
     setSubmitted(true);
- 
+
     if (formVal.password?.length < 6) {
       return;
     }
     if (user?.id) {
-       await updateUsers(id, formVal)
+      await updateUsers(id, formVal)
         .then((res) => {
           reset();
           success();
@@ -186,42 +204,46 @@ function AddUser() {
                         />
                       </FormGroup>
                     </Col>
-                    {user.id ? <></> : <Col lg={6}>
-                      <FormGroup>
-                        <Label className="mb-1" for="password">
-                          {" "}
-                          Mật khẩu
-                        </Label>
-                        <Input
-                          id="password"
-                          name="passwordHash"
-                          placeholder="password"
-                          value={formVal.passwordHash}
-                          onChange={onInputChange}
-                          // disabled
-                          type="password"
-                          invalid={
-                            submitted
-                              ? formVal.passwordHash?.length >= 6
-                                ? false
-                                : true
-                              : false
-                          }
-                        />
-                        <FormFeedback
-                          invalid={
-                            submitted
-                              ? formVal.passwordHash?.length >= 6
-                                ? false
-                                : true
-                              : false
-                          }
-                        >
-                          Mật khẩu chứa ít nhất có 6 kí tự
-                        </FormFeedback>
-                      </FormGroup>
-                    </Col>}
-                    
+                    {user.id ? (
+                      <></>
+                    ) : (
+                      <Col lg={6}>
+                        <FormGroup>
+                          <Label className="mb-1" for="password">
+                            {" "}
+                            Mật khẩu
+                          </Label>
+                          <Input
+                            id="password"
+                            name="passwordHash"
+                            placeholder="password"
+                            value={formVal.passwordHash}
+                            onChange={onInputChange}
+                            // disabled
+                            type="password"
+                            invalid={
+                              submitted
+                                ? formVal.passwordHash?.length >= 6
+                                  ? false
+                                  : true
+                                : false
+                            }
+                          />
+                          <FormFeedback
+                            invalid={
+                              submitted
+                                ? formVal.passwordHash?.length >= 6
+                                  ? false
+                                  : true
+                                : false
+                            }
+                          >
+                            Mật khẩu chứa ít nhất có 6 kí tự
+                          </FormFeedback>
+                        </FormGroup>
+                      </Col>
+                    )}
+
                     <Col lg={6}>
                       <FormGroup>
                         <Label className="mb-1" for="name">
@@ -236,8 +258,8 @@ function AddUser() {
                           type="text"
                         />
                       </FormGroup>
-                    </Col >
-                    {user?.id ? <></> : <Col lg={6}>
+                    </Col>
+                    <Col lg={6}>
                       <FormGroup>
                         <Label className="mb-1" for="team">
                           Team
@@ -247,8 +269,8 @@ function AddUser() {
                           name="team"
                           id="team"
                           value={formVal.team}
-                          onChange={(e)=>onTeamChange(e)}
-                          placeholder="Role"
+                          onChange={(e) => onTeamChange(e)}
+                          placeholder="Team"
                           style={{ width: "100%" }}
                         >
                           {teamList &&
@@ -261,8 +283,8 @@ function AddUser() {
                             })}
                         </Select>
                       </FormGroup>
-                    </Col >}
-                    
+                    </Col>
+
                     <Col lg={6}>
                       <FormGroup>
                         <Label className="mb-1" for="role">
@@ -273,7 +295,7 @@ function AddUser() {
                           name="role"
                           id="role"
                           value={formVal.role}
-                          onChange={(e)=>onRoleChange(e)}
+                          onChange={(e) => onRoleChange(e)}
                           placeholder="Role"
                           style={{ width: "100%" }}
                         >

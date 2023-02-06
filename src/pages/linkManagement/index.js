@@ -36,6 +36,7 @@ import {
   getLinkManagementsByTeamUser,
   getColabById,
   getAllDomain,
+  getLoggedInUser,
 } from "../../helpers/helper";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
@@ -50,6 +51,7 @@ const { Search } = Input;
 
 const LinkManagement = (props) => {
   const history = useHistory();
+  const [user, setUser] = useState({});
   const [api, contextHolder] = notification.useNotification();
   const [domainList, setDomainList] = useState([]);
   const [brandList, setBrandList] = useState([]);
@@ -697,7 +699,14 @@ const LinkManagement = (props) => {
     return sum?.map((item) => item?.key === sumKey);
   };
   // console.log(Total, 'taaaa');
-
+  const getUser = async () => {
+    const user = await getLoggedInUser();
+    console.log(user);
+    setUser(user);
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
   return (
     <>
       {contextHolder}
@@ -711,30 +720,34 @@ const LinkManagement = (props) => {
               slug="domains"
             />
             <Row>
-              <Col lg={2}>
-                <p className="custom-label">Tên thương hiệu</p>
-                <Select
-                  // showSearch
-                  style={{ width: "100%" }}
-                  placeholder="Search to Select"
-                  value={brand}
-                  onSelect={(key, value) => handleSelectBrand(value)}
-                  options={brandList}
-                ></Select>
-              </Col>
-              {/* <Col lg={2}>
-                <p className="custom-label">Team</p>
-                <Select
-                  // showSearch
-                  style={{ width: "100%" }}
-                  placeholder="Search to Select"
-                  value={team}
-                  onSelect={(key, value) => handleSelectTeam(value)}
-                  options={teamList}
-                  allowClear
-                  onClear={() => setTeam({})}
-                ></Select>
-              </Col> */}
+              {user?.role === "Admin" && (
+                <>
+                  <Col lg={2}>
+                    <p className="custom-label">Tên thương hiệu</p>
+                    <Select
+                      // showSearch
+                      style={{ width: "100%" }}
+                      placeholder="Search to Select"
+                      value={brand}
+                      onSelect={(key, value) => handleSelectBrand(value)}
+                      options={brandList}
+                    ></Select>
+                  </Col>
+                  <Col lg={2}>
+                    <p className="custom-label">Team</p>
+                    <Select
+                      // showSearch
+                      style={{ width: "100%" }}
+                      placeholder="Search to Select"
+                      value={team}
+                      onSelect={(key, value) => handleSelectTeam(value)}
+                      options={teamList}
+                      allowClear
+                      onClear={() => setTeam({})}
+                    ></Select>
+                  </Col>
+                </>
+              )}
               <Col lg={2}>
                 <p className="custom-label">Domains</p>
                 <Select
