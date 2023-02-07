@@ -3,15 +3,12 @@ import {
   Button,
   Col,
   Container,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
+  Form, FormGroup,
   Label,
-  Row,
+  Row
 } from "reactstrap";
 
-import { message, Select, Table } from "antd";
+import { Input, message, Select, Table } from "antd";
 import { Link, useHistory, useParams } from "react-router-dom";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {
@@ -19,7 +16,7 @@ import {
   getTeamAll,
   getUserId,
   newUser,
-  updateUsers,
+  updateUsers
 } from "../../helpers/helper";
 const { Option } = Select;
 const { Column } = Table;
@@ -35,7 +32,6 @@ const error = () => {
 function AddUser() {
   const { id } = useParams();
   const [user, setUser] = useState("");
-  const [submitted, setSubmitted] = useState(false);
   const [roleList, setRoleList] = useState([]);
   const history = useHistory();
   const [formVal, setFormVal] = useState({
@@ -49,6 +45,10 @@ function AddUser() {
     // avatar:"",
   });
   const [teamList, setTeamList] = useState([]);
+  const [errTeam, setErrTeam] = useState("")
+  const [errRole, setErrRole] = useState("")
+  const [errUserName, setErrUserName] = useState("")
+  const [errPassword, setErrPassword] = useState("")
   const getRole = async () => {
     let roleList = await getAllRoles();
     setRoleList(roleList.roles);
@@ -62,7 +62,6 @@ function AddUser() {
     if (id && id !== "new") {
       getUserId(id).then((res) => {
         setUser(res);
-        console.log(res, "aaa");
         setFormVal(res);
       });
     }
@@ -80,14 +79,16 @@ function AddUser() {
     });
   };
 
-  const onInputChange = (e) => {
+  const onInputChangeUserName = (e) =>{
+    setErrUserName("")
     setFormVal({
       ...formVal,
-      [e.target.name]: e.target.value,
-    });
-  };
+      username : e.target.value
+    })
+  }
 
   const onRoleChange = (e) => {
+    setErrRole("")
     setFormVal({
       ...formVal,
       role: roleList.filter((item) => item?._id === e)?.[0].name,
@@ -95,6 +96,7 @@ function AddUser() {
   };
 
   const onTeamChange = (e) => {
+    setErrTeam("")
     setFormVal({
       ...formVal,
       team: teamList.filter((item) => item?._id === e)?.[0]._id,
@@ -105,12 +107,35 @@ function AddUser() {
     setFormVal({ ...formVal, status: e });
   };
 
-  const addNewUser = async () => {
-    setSubmitted(true);
+  const onInputChangePassword =(e) => {
+    setErrPassword("")
+    setFormVal({
+      ...formVal,
+      passwordHash: e.target.value
+    })
+  }
+  const onInputChangeLastName = (e) =>{
+    setFormVal({
+      ...formVal,
+      lastName: e.target.value
+    })
+  }
 
-    if (formVal.password?.length < 6) {
-      return;
-    }
+  const onInputChangefirstName = (e) =>{
+    setFormVal({
+      ...formVal,
+      firstName: e.target.value
+    })
+  }
+  const addNewUser = async () => {
+    if(formVal.username === "") return setErrUserName("error")
+    if(formVal.passwordHash === "") return setErrPassword("error")
+    if(!formVal.team.length)return  setErrTeam("error");
+    if(!formVal.role.length)return  setErrRole("error")
+    
+    // if(formVal.passwordHash.length < 6) 
+   
+    // return 
     if (user?.id) {
       await updateUsers(id, formVal)
         .then((res) => {
@@ -167,26 +192,10 @@ function AddUser() {
                           type="text"
                           disabled={id !== "new" ? true : false}
                           value={formVal.username}
-                          onChange={onInputChange}
-                          invalid={
-                            submitted
-                              ? formVal.username.length >= 6
-                                ? false
-                                : true
-                              : false
-                          }
+                          onChange={onInputChangeUserName}
+                          status={errUserName}
                         />
-                        <FormFeedback
-                          invalid={
-                            submitted
-                              ? formVal.username?.length >= 6
-                                ? false
-                                : true
-                              : false
-                          }
-                        >
-                          Abc
-                        </FormFeedback>
+                        {errUserName.length ? <span style={{color:"red"}}>Tên đăng nhập không được bỏ trống</span>  : null}
                       </FormGroup>
                     </Col>
                     <Col lg={6}>
@@ -199,7 +208,7 @@ function AddUser() {
                           name="firstName"
                           placeholder="First name"
                           value={formVal.firstName}
-                          onChange={onInputChange}
+                          onChange={onInputChangefirstName }
                           type="text"
                         />
                       </FormGroup>
@@ -218,28 +227,13 @@ function AddUser() {
                             name="passwordHash"
                             placeholder="password"
                             value={formVal.passwordHash}
-                            onChange={onInputChange}
+                            onChange={onInputChangePassword}
                             // disabled
                             type="password"
-                            invalid={
-                              submitted
-                                ? formVal.passwordHash?.length >= 6
-                                  ? false
-                                  : true
-                                : false
-                            }
+                            status={errPassword}
                           />
-                          <FormFeedback
-                            invalid={
-                              submitted
-                                ? formVal.passwordHash?.length >= 6
-                                  ? false
-                                  : true
-                                : false
-                            }
-                          >
-                            Mật khẩu chứa ít nhất có 6 kí tự
-                          </FormFeedback>
+                          {errPassword.length ? <span style={{color:"red"}}>Mật khẩu không được bỏ trống</span>  : null}
+                          {/* {formVal.passwordHash.length < 6 ? <span style={{color:"red"}}>Mật khẩu phải có ít nhât 6 ký tự</span>  : null} */}
                         </FormGroup>
                       </Col>
                     )}
@@ -254,7 +248,7 @@ function AddUser() {
                           name="lastName"
                           placeholder="last name"
                           value={formVal.lastName}
-                          onChange={onInputChange}
+                          onChange={onInputChangeLastName}
                           type="text"
                         />
                       </FormGroup>
@@ -272,6 +266,7 @@ function AddUser() {
                           onChange={(e) => onTeamChange(e)}
                           placeholder="Team"
                           style={{ width: "100%" }}
+                          status={errTeam}
                         >
                           {teamList &&
                             teamList?.map((item, index) => {
@@ -282,6 +277,7 @@ function AddUser() {
                               );
                             })}
                         </Select>
+                        {errTeam.length ? <span style={{color:"red"}}>Team không được bỏ trống</span>  : null}
                       </FormGroup>
                     </Col>
 
@@ -298,6 +294,7 @@ function AddUser() {
                           onChange={(e) => onRoleChange(e)}
                           placeholder="Role"
                           style={{ width: "100%" }}
+                          status={errRole}
                         >
                           {roleList &&
                             roleList?.map((item, index) => {
@@ -311,6 +308,7 @@ function AddUser() {
                           <Option value="Leader">Leader </Option>
                           <Option value="Member">Member</Option> */}
                         </Select>
+                        {errRole.length ? <span style={{color:"red"}}>Phân quyền không được bỏ trống</span>  : null}
                       </FormGroup>
                     </Col>
                     <Col lg={6}>
