@@ -312,9 +312,9 @@ export const deletePayment = (id) =>
 
 //Domains
 export const insertDomains = (data) => api.create(`${url.API_DOMAINS}`, data);
-export const getPagingDomains = (pageSize, pageIndex, search, dateRange = []) =>
+export const getPagingDomains = (pageSize, pageIndex, search, team , brand, dateRange = []) =>
   api.get(
-    `${url.API_DOMAINS}?pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
+    `${url.API_DOMAINS}?pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}&team=${team}&brand=${brand}`
   );
 export const deleteDomains = (id) =>
   api.delete(`${url.API_DOMAINS}/remove/${id}`);
@@ -385,9 +385,9 @@ export const updateUsers = (id, body) => {
 
 //Teams
 
-export const getPagingTeams = (pageSize, pageIndex, search, dateRange = []) =>
+export const getPagingTeams = (pageSize, pageIndex, search, brand, dateRange = []) =>
   api.get(
-    `${url.API_TEAMS}?search=${search}&pageSize=${pageSize}&pageIndex=${pageIndex}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
+    `${url.API_TEAMS}?search=${search}&pageSize=${pageSize}&pageIndex=${pageIndex}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}&brand=${brand}`
   );
 
 export const getTeamById = (id) => api.get(`${url.API_TEAMS}/getById/${id}`);

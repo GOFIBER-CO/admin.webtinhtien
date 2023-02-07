@@ -49,7 +49,11 @@ const Domains = () => {
   const [idEdit, setIdEdit] = useState("");
   const [search, setSearch] = useState("");
   const [brandAll, setBrandAll] = useState([]);
+  const [teamList, setTeamList] = useState([])
+  const [team,setTeam] = useState("")
   const ref = createRef();
+
+  console.log(selectedBrand, 'selectedBrand');
   const onClose = () => {
     setVisibleForm(false);
   };
@@ -60,7 +64,7 @@ const Domains = () => {
     form.resetFields();
   };
   const getDataDomains = () => {
-    getPagingDomains(pageSize, pageIndex, search).then((res) => {
+    getPagingDomains(pageSize, pageIndex, search, team?.key || "",selectedBrand?.key || "" ).then((res) => {
       setPageIndex(res.pageIndex);
       setPageSize(res.pageSize);
       setCount(res.count);
@@ -70,6 +74,7 @@ const Domains = () => {
   const getDataTeams = () => {
     getTeamAll().then((res) => {
       setDataTeam(res.data);
+      setTeamList(res.data)
     });
   };
 
@@ -119,7 +124,8 @@ const Domains = () => {
     }
   };
 
-  const onSearch = () => {
+  const onSearch = (event) => {
+    event.preventDefault();
     getDataDomains();
   };
   const onInputChange = (e) => {};
@@ -134,6 +140,11 @@ const Domains = () => {
   const handleSelectBrand = (e) => {
     setSelectedBrand(e);
   };
+
+  const handleSelectTeam = (e) =>{
+    setTeam(e)
+  }
+
 
   const onEdit = (id) => {
     const dataEdit = data.filter((item) => item._id === id);
@@ -346,8 +357,55 @@ const Domains = () => {
                 </Form.Item>
               </Form>
             </Drawer>
-            <Col lg="5">
-              <div>
+            <Col lg="2">
+              <p className="custom-label">Thương hiệu</p>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Search to Select"
+                value={selectedBrand}
+                onSelect={(key, value) => handleSelectBrand(value)}
+                // options={domainList}
+                
+                allowClear
+                onClear={() => setSelectedBrand({})}
+              >
+                {brandAll &&
+                            brandAll?.map((item, index) => {
+                              return (
+                                <Option value={item._id} key={item._id}>
+                                  {item.name}
+                                </Option>
+                              );
+                            })}
+              </Select>
+            </Col>
+            <Col lg="2">
+              <p className="custom-label">Teams</p>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Search to Select"
+                value={team}
+                onSelect={(key, value) => handleSelectTeam(value)}
+                // options={domainList}
+                
+                allowClear
+                onClear={() => setTeam({})}
+              >
+                {teamList &&
+                  teamList?.map((item, index) => {
+                    return (
+                      <Option value={item._id} key={item._id}>
+                        {item.name}
+                      </Option>
+                    );
+                  })}
+              </Select>
+            </Col>
+            <Col lg="4">
+              <div style={{marginTop:'24px'}}>
+             
                 <InputGroup>
                   <Input
                     // value={searchText}
@@ -373,7 +431,7 @@ const Domains = () => {
               </div>
             </Col>
 
-            <Col lg="7">
+            <Col lg="4">
               <div className="text-right">
                 <Button
                   style={
