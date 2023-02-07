@@ -17,6 +17,7 @@ import {
   getPagingBrands,
   getPagingDomains,
   getTeamAll,
+  getTeamByBrand,
   insertDomains,
   updateDomains,
 } from "./../../helpers/helper";
@@ -28,7 +29,6 @@ const { Option } = Select;
 const DomainDashboard = () => {
   const [form] = Form.useForm();
   const [dataTeam, setDataTeam] = useState([]);
-  const [dataBrand, setDataBrand] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [count, setCount] = useState(1);
@@ -36,9 +36,12 @@ const DomainDashboard = () => {
   const [idEdit, setIdEdit] = useState("");
   const [search, setSearch] = useState("");
   const [brandAll, setBrandAll] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState("")
+  const [teamList, setTeamList] = useState([])
+  const [team, setTeam] = useState("")
 
   const getDataDomains = () => {
-    getPagingDomains(pageSize, pageIndex, search, [
+    getPagingDomains(pageSize, pageIndex, search, team?.key, selectedBrand?.key || "", [
       dateRange[0].toISOString(),
       dateRange[1].toISOString(),
     ]).then((res) => {
@@ -59,6 +62,31 @@ const DomainDashboard = () => {
       setBrandAll(res.data);
     });
   };
+
+  const getTeamListByBrand = async()=>{
+    if(selectedBrand?.key){
+      const listTeam = await getTeamByBrand(selectedBrand?.key)
+      let teamListTemp = []
+      listTeam?.data?.map((item) => {
+        let a = {
+          key: item?._id,
+          value: item?.name,
+          total: item?.total,
+        };
+        teamListTemp.push(a);
+      });
+      const teamList1 = teamListTemp;
+      setTeamList(teamList1)
+    }
+  }
+
+  useEffect(()=>{
+    getTeamListByBrand()
+  },[selectedBrand?.key])
+
+  const handleSelectTeam = (e) =>{
+    setTeam(e)
+  }
   useEffect(() => {
     getDataTeams();
     getDataDomains();
@@ -68,6 +96,10 @@ const DomainDashboard = () => {
   const onSearch = () => {
     getDataDomains();
   };
+
+  const handleSelectBrand = (e) =>{
+    setSelectedBrand(e)
+  }
 
   const exportExcel = async () => {
     const dataReq = {
@@ -114,20 +146,68 @@ const DomainDashboard = () => {
   };
   const handleReset = async () => {
     setDateRange([dayjs().subtract(30, "days"), dayjs()]);
-    const res = await getPagingDomains(pageSize, pageIndex, search, []);
+    const res = await getPagingDomains(pageSize, pageIndex, search, team?.key || "", selectedBrand?.key || "", []);
     let dataTemp = res?.data?.map((item, index) => {
       return { ...item, key: index };
     });
     setData(dataTemp);
   };
 
+  const onClearBrand = () =>{
+    setSelectedBrand({});
+    setTeam({});
+    setTeamList([])
+  }
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           <BreadCrumb title="Domains" pageTitle="Quản lý domains"></BreadCrumb>
           <Row className="mb-3">
-            <Col lg="5">
+            <Col lg={2}>
+              <p className="custom-label">Thương hiệu</p>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Search to Select"
+                value={selectedBrand}
+                onSelect={(key, value) => handleSelectBrand(value)}
+                // options={teamList}
+
+                allowClear
+                onClear={() => onClearBrand()}
+              >
+                {
+                  brandAll && 
+                  brandAll.map((item, index)=>{
+                    return (
+                      <Option
+                              key={item?._id}
+                              value={item?._id}
+                              label={item?.name}
+                            >
+                              {item?.name}
+                            </Option>
+                    )
+                  })
+                }
+              </Select>
+            </Col>
+            <Col lg={2}>
+              <p className="custom-label">Teams</p>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Search to Select"
+                value={team}
+                onSelect={(key, value) => handleSelectTeam(value)}
+                options={teamList}
+
+                allowClear
+                onClear={() => setTeam({})}
+              />
+            </Col>
+            <Col lg="5" style={{ marginTop: "24px" }}>
               <div>
                 <InputGroup>
                   <Input
@@ -154,7 +234,7 @@ const DomainDashboard = () => {
               </div>
             </Col>
 
-            <Col lg="7">
+            <Col lg="3">
               <div className="text-right">
                 <Button
                   style={
@@ -187,7 +267,7 @@ const DomainDashboard = () => {
               display: "flex",
             }}
           >
-            <Col lg={4}>
+            <Col lg={5}>
               {" "}
               <Space size={15}>
                 <RangePicker
@@ -196,21 +276,21 @@ const DomainDashboard = () => {
                   allowClear={false}
                   onChange={onDateRangeChange}
                 />
+                <Button
+                  type="primary"
+                  onClick={handleChangeDateRange}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Lọc
+                </Button>
+                <Button
+                  type="primary"
+                  onClick={handleReset}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Reset
+                </Button>
               </Space>
-              <Button
-                type="primary"
-                onClick={handleChangeDateRange}
-                style={{ marginLeft: "10px" }}
-              >
-                Lọc
-              </Button>
-              <Button
-                type="primary"
-                onClick={handleReset}
-                style={{ marginLeft: "10px" }}
-              >
-                Reset
-              </Button>
             </Col>
           </Row>
           <Row>

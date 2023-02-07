@@ -37,7 +37,7 @@ const TeamDashboard = () => {
     dayjs(),
   ]);
   const getDataTeams = () => {
-    getPagingTeams(pageSize, pageIndex, search, [
+    getPagingTeams(pageSize, pageIndex, search,selectedBrand?.key|| "" ,[
       dateRange[0].toISOString(),
       dateRange[1].toISOString(),
     ]).then((res) => {
@@ -133,7 +133,7 @@ const TeamDashboard = () => {
           <Row className="mb-3" style={{ alignItems: "end" }}>
             <Col lg="2" style={{ flexFlow: "column", display: "flex" }}>
               Tìm theo brand
-              <Select
+              <Select 
                 allowClear
                 value={selectedBrand}
                 onChange={(e) => setSelectedBrand(e)}
@@ -217,8 +217,7 @@ const TeamDashboard = () => {
                   allowClear={false}
                   onChange={onDateRangeChange}
                 />
-              </Space>
-              <Button
+                <Button
                 type="primary"
                 onClick={handleChangeDateRange}
                 style={{ marginLeft: "10px" }}
@@ -232,6 +231,8 @@ const TeamDashboard = () => {
               >
                 Reset
               </Button>
+              </Space>
+              
             </Col>
           </Row>
           <Row>

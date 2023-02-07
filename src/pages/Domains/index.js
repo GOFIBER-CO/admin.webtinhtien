@@ -28,6 +28,7 @@ import {
   getPagingBrands,
   getPagingDomains,
   getTeamAll,
+  getTeamByBrand,
   insertDomains,
   updateDomains,
 } from "./../../helpers/helper";
@@ -53,7 +54,7 @@ const Domains = () => {
   const [team,setTeam] = useState("")
   const ref = createRef();
 
-  console.log(selectedBrand, 'selectedBrand');
+
   const onClose = () => {
     setVisibleForm(false);
   };
@@ -63,8 +64,9 @@ const Domains = () => {
   const handleRefreshCreate = async () => {
     form.resetFields();
   };
+
   const getDataDomains = () => {
-    getPagingDomains(pageSize, pageIndex, search, team?.key || "",selectedBrand?.key || "" ).then((res) => {
+    getPagingDomains(pageSize, pageIndex, search, team?.key || "",selectedBrand?.key || "",[] ).then((res) => {
       setPageIndex(res.pageIndex);
       setPageSize(res.pageSize);
       setCount(res.count);
@@ -74,7 +76,7 @@ const Domains = () => {
   const getDataTeams = () => {
     getTeamAll().then((res) => {
       setDataTeam(res.data);
-      setTeamList(res.data)
+      // setTeamList(res.data)
     });
   };
 
@@ -87,7 +89,7 @@ const Domains = () => {
     getDataTeams();
     getDataDomains();
     dataAllBrand();
-  }, [pageSize, pageIndex]);
+  }, [pageSize, pageIndex,selectedBrand]);
 
   const onFinishFailed = () => {
     // message.error("Save failed!");
@@ -158,7 +160,7 @@ const Domains = () => {
     setDataBrand(
       dataTeam?.filter((a) => a._id === dataEdit[0]?.team?._id)?.[0]?.brand
     );
-    console.log(dataBrand);
+
     setSelectedBrand(dataEdit[0]?.brand?._id);
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Domains");
@@ -193,6 +195,33 @@ const Domains = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "Domains" + fileExtension);
   };
+
+  const getTeamListByBrand = async () =>{
+    if(selectedBrand?.key){
+        const listTeam = await getTeamByBrand(selectedBrand?.key)
+        let teamListTemp = [];
+        listTeam?.data?.map((item) => {
+          let a = {
+            key: item?._id,
+            value: item?.name,
+            total: item?.total,
+          };
+          teamListTemp.push(a);
+        });
+        const teamList1 = teamListTemp;
+        
+        setTeamList(teamList1)
+    }
+  }
+
+  useEffect(()=>{
+      getTeamListByBrand()
+  },[selectedBrand?.key])
+  
+  const onClearBrand = () =>{
+    setSelectedBrand({})
+    setTeamList([])
+  }
   return (
     <React.Fragment>
       <div className="page-content">
@@ -368,7 +397,7 @@ const Domains = () => {
                 // options={domainList}
                 
                 allowClear
-                onClear={() => setSelectedBrand({})}
+                onClear={() => onClearBrand()}
               >
                 {brandAll &&
                             brandAll?.map((item, index) => {
@@ -388,19 +417,19 @@ const Domains = () => {
                 placeholder="Search to Select"
                 value={team}
                 onSelect={(key, value) => handleSelectTeam(value)}
-                // options={domainList}
+                options={teamList}
                 
                 allowClear
                 onClear={() => setTeam({})}
               >
-                {teamList &&
+                {/* {teamList &&
                   teamList?.map((item, index) => {
                     return (
                       <Option value={item._id} key={item._id}>
                         {item.name}
                       </Option>
                     );
-                  })}
+                  })} */}
               </Select>
             </Col>
             <Col lg="4">
