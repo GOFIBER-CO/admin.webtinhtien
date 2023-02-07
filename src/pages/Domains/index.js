@@ -221,6 +221,7 @@ const Domains = () => {
   const onClearBrand = () =>{
     setSelectedBrand({})
     setTeamList([])
+    setTeam({})
   }
   return (
     <React.Fragment>
