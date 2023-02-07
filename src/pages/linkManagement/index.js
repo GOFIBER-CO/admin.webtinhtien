@@ -701,7 +701,7 @@ const LinkManagement = (props) => {
   // console.log(Total, 'taaaa');
   const getUser = async () => {
     const user = await getLoggedInUser();
-    console.log(user);
+    // console.log(user);
     setUser(user);
   };
   useEffect(() => {

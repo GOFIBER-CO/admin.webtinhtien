@@ -3,12 +3,9 @@ import {
   Button,
   Col,
   Container,
-  Form,
-  FormFeedback,
-  FormGroup,
- 
+  Form, FormGroup,
   Label,
-  Row,
+  Row
 } from "reactstrap";
 
 import { Input, message, Select, Table } from "antd";
@@ -19,7 +16,7 @@ import {
   getTeamAll,
   getUserId,
   newUser,
-  updateUsers,
+  updateUsers
 } from "../../helpers/helper";
 const { Option } = Select;
 const { Column } = Table;
@@ -35,7 +32,6 @@ const error = () => {
 function AddUser() {
   const { id } = useParams();
   const [user, setUser] = useState("");
-  const [submitted, setSubmitted] = useState(false);
   const [roleList, setRoleList] = useState([]);
   const history = useHistory();
   const [formVal, setFormVal] = useState({

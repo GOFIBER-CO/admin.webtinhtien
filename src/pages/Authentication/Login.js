@@ -42,7 +42,7 @@ const Login = (props) => {
         password: user.user.password,
       });
     }
-    console.log(user);
+    // console.log(user);
   }, [user]);
 
   const validation = useFormik({

@@ -18,7 +18,7 @@ const ProfileDropdown = () => {
             const obj = JSON.parse(sessionStorage.getItem("authUser"));
             setUserName(user.firstName || obj.firstName || "Admin");
             setAvatar(user.avatar || obj.avatar || '');
-            console.log(obj.avatar);
+            // console.log(obj.avatar);
         }
     }, [userName, user]);
 
