@@ -422,3 +422,5 @@ export const getLinkManagementsByTeamUser = (teamId) =>
   api.get(
     `${url.API_LINK_MANAGEMENT}/getLinkManagementsByTeamUser?teamId=${teamId}`
   );
+export const getStatisticTeam = (teamId) =>
+  api.get(`${url.API_TEAMS}/getStatisticTeam?teamId=${teamId}`);

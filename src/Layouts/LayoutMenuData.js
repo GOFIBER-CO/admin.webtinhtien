@@ -40,9 +40,11 @@ const Navdata = () => {
   }
   const getUser = () => {
     let user = sessionStorage.getItem("authUser");
-    if (user) setUser(JSON.parse(user));
-    console.log(user, "aaa");
-    setUser({});
+    if (user) {
+      setUser(JSON.parse(user));
+    } else {
+      setUser({});
+    }
   };
   useEffect(() => {
     getUser();

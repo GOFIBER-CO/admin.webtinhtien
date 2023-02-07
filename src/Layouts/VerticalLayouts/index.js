@@ -99,10 +99,11 @@ const VerticalLayout = (props) => {
     <React.Fragment>
       {/* menu Items */}
       {(navData || []).map((item, key) => {
+        console.log(item["disable"]);
         return (
           <React.Fragment key={key}>
             {/* Main Header */}
-            {item["disable"] ? (
+            {item["disable"] === true ? (
               <></>
             ) : (
               <>
