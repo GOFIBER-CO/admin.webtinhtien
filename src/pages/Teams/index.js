@@ -55,7 +55,7 @@ const Teams = () => {
     form.resetFields();
   };
   const getDataTeams = () => {
-    getPagingTeams(pageSize, pageIndex, search).then((res) => {
+    getPagingTeams(pageSize, pageIndex, search, selectedBrand?.key || "").then((res) => {
       setCount(res.count);
       setData(res.data);
     });
@@ -103,7 +103,8 @@ const Teams = () => {
     }
   };
 
-  const onSearch = () => {
+  const onSearch = (e) => {
+    e.preventDefault();
     getDataTeams();
   };
 
@@ -275,8 +276,31 @@ const Teams = () => {
                 </Form.Item>
               </Form>
             </Drawer>
+            <Col lg="2">
+              <p className="custom-label">Thương hiệu</p>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Search to Select"
+                value={selectedBrand}
+                onSelect={(key, value) => handleSelectBrand(value)}
+                // options={domainList}
+                
+                allowClear
+                onClear={() => setSelectedBrand({})}
+              >
+                {dataBrands &&
+                  dataBrands?.map((item, index) => {
+                    return (
+                      <Option value={item._id} key={item._id}>
+                        {item.name}
+                      </Option>
+                    );
+                  })}
+              </Select>
+            </Col>
             <Col lg="5">
-              <div>
+              <div style={{marginTop:'24px'}}>
                 <InputGroup>
                   <Input
                     // value={searchText}
@@ -302,7 +326,7 @@ const Teams = () => {
               </div>
             </Col>
 
-            <Col lg="7">
+            <Col lg="5">
               <div className="text-right">
                 <Button
                   style={

@@ -28,6 +28,7 @@ import {
   getPagingBrands,
   getPagingDomains,
   getTeamAll,
+  getTeamByBrand,
   insertDomains,
   updateDomains,
 } from "./../../helpers/helper";
@@ -49,7 +50,11 @@ const Domains = () => {
   const [idEdit, setIdEdit] = useState("");
   const [search, setSearch] = useState("");
   const [brandAll, setBrandAll] = useState([]);
+  const [teamList, setTeamList] = useState([])
+  const [team,setTeam] = useState("")
   const ref = createRef();
+
+
   const onClose = () => {
     setVisibleForm(false);
   };
@@ -59,8 +64,9 @@ const Domains = () => {
   const handleRefreshCreate = async () => {
     form.resetFields();
   };
+
   const getDataDomains = () => {
-    getPagingDomains(pageSize, pageIndex, search).then((res) => {
+    getPagingDomains(pageSize, pageIndex, search, team?.key || "",selectedBrand?.key || "",[] ).then((res) => {
       setPageIndex(res.pageIndex);
       setPageSize(res.pageSize);
       setCount(res.count);
@@ -70,6 +76,7 @@ const Domains = () => {
   const getDataTeams = () => {
     getTeamAll().then((res) => {
       setDataTeam(res.data);
+      // setTeamList(res.data)
     });
   };
 
@@ -82,7 +89,7 @@ const Domains = () => {
     getDataTeams();
     getDataDomains();
     dataAllBrand();
-  }, [pageSize, pageIndex]);
+  }, [pageSize, pageIndex,selectedBrand]);
 
   const onFinishFailed = () => {
     // message.error("Save failed!");
@@ -119,7 +126,8 @@ const Domains = () => {
     }
   };
 
-  const onSearch = () => {
+  const onSearch = (event) => {
+    event.preventDefault();
     getDataDomains();
   };
   const onInputChange = (e) => {};
@@ -135,6 +143,11 @@ const Domains = () => {
     setSelectedBrand(e);
   };
 
+  const handleSelectTeam = (e) =>{
+    setTeam(e)
+  }
+
+
   const onEdit = (id) => {
     const dataEdit = data.filter((item) => item._id === id);
     setIdEdit(dataEdit[0]._id);
@@ -147,7 +160,7 @@ const Domains = () => {
     setDataBrand(
       dataTeam?.filter((a) => a._id === dataEdit[0]?.team?._id)?.[0]?.brand
     );
-    console.log(dataBrand);
+
     setSelectedBrand(dataEdit[0]?.brand?._id);
     showDrawer();
     setDrawerTitle("Chỉnh Sửa Domains");
@@ -182,6 +195,34 @@ const Domains = () => {
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, "Domains" + fileExtension);
   };
+
+  const getTeamListByBrand = async () =>{
+    if(selectedBrand?.key){
+        const listTeam = await getTeamByBrand(selectedBrand?.key)
+        let teamListTemp = [];
+        listTeam?.data?.map((item) => {
+          let a = {
+            key: item?._id,
+            value: item?.name,
+            total: item?.total,
+          };
+          teamListTemp.push(a);
+        });
+        const teamList1 = teamListTemp;
+        
+        setTeamList(teamList1)
+    }
+  }
+
+  useEffect(()=>{
+      getTeamListByBrand()
+  },[selectedBrand?.key])
+  
+  const onClearBrand = () =>{
+    setSelectedBrand({})
+    setTeamList([])
+    setTeam({})
+  }
   return (
     <React.Fragment>
       <div className="page-content">
@@ -346,8 +387,55 @@ const Domains = () => {
                 </Form.Item>
               </Form>
             </Drawer>
-            <Col lg="5">
-              <div>
+            <Col lg="2">
+              <p className="custom-label">Thương hiệu</p>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Search to Select"
+                value={selectedBrand}
+                onSelect={(key, value) => handleSelectBrand(value)}
+                // options={domainList}
+                
+                allowClear
+                onClear={() => onClearBrand()}
+              >
+                {brandAll &&
+                            brandAll?.map((item, index) => {
+                              return (
+                                <Option value={item._id} key={item._id}>
+                                  {item.name}
+                                </Option>
+                              );
+                            })}
+              </Select>
+            </Col>
+            <Col lg="2">
+              <p className="custom-label">Teams</p>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Search to Select"
+                value={team}
+                onSelect={(key, value) => handleSelectTeam(value)}
+                options={teamList}
+                
+                allowClear
+                onClear={() => setTeam({})}
+              >
+                {/* {teamList &&
+                  teamList?.map((item, index) => {
+                    return (
+                      <Option value={item._id} key={item._id}>
+                        {item.name}
+                      </Option>
+                    );
+                  })} */}
+              </Select>
+            </Col>
+            <Col lg="4">
+              <div style={{marginTop:'24px'}}>
+             
                 <InputGroup>
                   <Input
                     // value={searchText}
@@ -373,7 +461,7 @@ const Domains = () => {
               </div>
             </Col>
 
-            <Col lg="7">
+            <Col lg="4">
               <div className="text-right">
                 <Button
                   style={
