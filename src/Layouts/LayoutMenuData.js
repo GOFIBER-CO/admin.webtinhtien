@@ -24,6 +24,7 @@ const Navdata = () => {
   const [isStatistics, setIsStatistics] = useState(false);
   const [iscurrentState, setIscurrentState] = useState("Dashboard");
   const [isPostsLink, setIsPostsLink] = useState(false);
+  const [user, setUser] = useState({});
   function updateIconSidebar(e) {
     if (e && e.target && e.target.getAttribute("subitems")) {
       const ul = document.getElementById("two-column-menu");
@@ -37,8 +38,14 @@ const Navdata = () => {
       });
     }
   }
-
+  const getUser = () => {
+    let user = sessionStorage.getItem("authUser");
+    if (user) setUser(JSON.parse(user));
+    console.log(user, "aaa");
+    setUser({});
+  };
   useEffect(() => {
+    getUser();
     document.body.classList.remove("twocolumn-panel");
     if (iscurrentState !== "Dashboard") {
       setIsDashboard(false);
@@ -272,6 +279,7 @@ const Navdata = () => {
       label: "QUẢN LÝ USER",
       icon: "ri-bookmark-line",
       link: "/#",
+      disable: user?.role !== "Admin" ? true : false,
       stateVariables: isUser,
       click: function (e) {
         e.preventDefault();

@@ -43,11 +43,6 @@ const authProtectedRoutes = [
   { path: "/domains", component: Domains },
   { path: "/brand", component: Brands },
 
-  // {
-  //   path: "/pages-management",
-  //   component: PageList,
-  // },
-
   {
     path: "/roles",
     component: Roles,

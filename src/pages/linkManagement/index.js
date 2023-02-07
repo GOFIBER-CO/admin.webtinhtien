@@ -251,31 +251,30 @@ const LinkManagement = (props) => {
     }
   };
   const getListBrand = async () => {
-    // if (!brand?.key) {
-    //   const listBrand = await getPagingBrands(10000, 1, "");
-    //   let brandList = [];
-    //   listBrand?.data?.map((item) => {
-    //     let a = {
-    //       key: item?._id,
-    //       value: item?.name,
-    //     };
-    //     brandList.push(a);
-    //   });
-    //   props?.location?.state
-    //     ? setBrand(props?.location?.state[2])
-    //     : brand?.key === undefined && setBrand(brandList[0]);
-    //   setBrandList(brandList);
-    // }
     const listBrand = await getAllBrand();
+    let user = await getLoggedInUser();
     let brandList = [];
     listBrand?.data?.map((item) => {
-      let a = {
-        key: item?._id,
-        value: item?.name,
-        label: item?.name,
-        total: item?.total,
-      };
-      brandList.push(a);
+      if (
+        user?.role !== "Admin" &&
+        user?.team?.brand?.find((x) => x === item?._id)
+      ) {
+        let a = {
+          key: item?._id,
+          value: item?.name,
+          label: item?.name,
+          total: item?.total,
+        };
+        brandList.push(a);
+      } else if (user?.role === "Admin") {
+        let a = {
+          key: item?._id,
+          value: item?.name,
+          label: item?.name,
+          total: item?.total,
+        };
+        brandList.push(a);
+      }
     });
     brand?.key === undefined && setBrand(brandList[0]);
     setBrandList(brandList);
@@ -342,9 +341,6 @@ const LinkManagement = (props) => {
   };
 
   useEffect(() => {
-    getListBrand();
-  }, []);
-  useEffect(() => {
     getTeamListByBrand();
   }, [brand?.key]);
 
@@ -358,6 +354,13 @@ const LinkManagement = (props) => {
   }, [domain?.key]);
 
   useEffect(() => {
+    if (user?.role !== "Admin") {
+      getDomainListByTeam();
+      getLinkManagementByTeam();
+    }
+  }, [brand?.key]);
+
+  useEffect(() => {
     handleGetLinkPostByColaps();
   }, [pageSize, pageIndex, brand?.key]);
 
@@ -366,8 +369,11 @@ const LinkManagement = (props) => {
       history.replace("/postsLink");
       setDomain({});
       setDomainList([]);
-      setTeam({});
-      setTeamList([]);
+      if (user?.role === "Admin") {
+        setTeam({});
+        setTeamList([]);
+      }
+
       setColab({});
       setColabList([]);
       setData([]);
@@ -701,11 +707,14 @@ const LinkManagement = (props) => {
   // console.log(Total, 'taaaa');
   const getUser = async () => {
     const user = await getLoggedInUser();
-    console.log(user);
+    if (user?.role !== "Admin") {
+      setTeam({ key: user?.team?._id, value: user?.team?.name });
+    }
     setUser(user);
   };
   useEffect(() => {
     getUser();
+    getListBrand();
   }, []);
   return (
     <>
@@ -720,34 +729,33 @@ const LinkManagement = (props) => {
               slug="domains"
             />
             <Row>
-              {user?.role === "Admin" && (
-                <>
-                  <Col lg={2}>
-                    <p className="custom-label">Tên thương hiệu</p>
-                    <Select
-                      // showSearch
-                      style={{ width: "100%" }}
-                      placeholder="Search to Select"
-                      value={brand}
-                      onSelect={(key, value) => handleSelectBrand(value)}
-                      options={brandList}
-                    ></Select>
-                  </Col>
-                  <Col lg={2}>
-                    <p className="custom-label">Team</p>
-                    <Select
-                      // showSearch
-                      style={{ width: "100%" }}
-                      placeholder="Search to Select"
-                      value={team}
-                      onSelect={(key, value) => handleSelectTeam(value)}
-                      options={teamList}
-                      allowClear
-                      onClear={() => setTeam({})}
-                    ></Select>
-                  </Col>
-                </>
-              )}
+              <>
+                <Col lg={2}>
+                  <p className="custom-label">Tên thương hiệu</p>
+                  <Select
+                    // showSearch
+                    style={{ width: "100%" }}
+                    placeholder="Search to Select"
+                    value={brand}
+                    onSelect={(key, value) => handleSelectBrand(value)}
+                    options={brandList}
+                  ></Select>
+                </Col>
+              </>
+              <Col lg={2}>
+                <p className="custom-label">Team</p>
+                <Select
+                  // showSearch
+                  style={{ width: "100%" }}
+                  placeholder="Search to Select"
+                  value={team}
+                  onSelect={(key, value) => handleSelectTeam(value)}
+                  options={teamList}
+                  allowClear
+                  onClear={() => setTeam({})}
+                  disabled={user?.role !== "Admin"}
+                ></Select>
+              </Col>
               <Col lg={2}>
                 <p className="custom-label">Domains</p>
                 <Select

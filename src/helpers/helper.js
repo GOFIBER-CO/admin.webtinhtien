@@ -4,6 +4,8 @@ import axios from "axios";
 
 const api = new APIClient();
 
+const user = sessionStorage.getItem("authUser");
+const teamId = user?.role !== "Admin" ? user?.team?._id : "";
 export const getLoggedInUser = () => {
   const user = sessionStorage.getItem("authUser");
   if (user) return JSON.parse(user);
@@ -401,7 +403,8 @@ export const getTeamByBrand = (
 
 export const getAllDomain = () => api.get(`${url.API_DOMAINS}/getAll`);
 
-export const getAllBrand = () => api.get(`${url.API_BRANDS}/getAll`);
+export const getAllBrand = () =>
+  api.get(`${url.API_BRANDS}/getAll?teamId=${teamId}`);
 
 export const createTeam = (data) => api.create(`${url.API_TEAMS}`, data);
 
