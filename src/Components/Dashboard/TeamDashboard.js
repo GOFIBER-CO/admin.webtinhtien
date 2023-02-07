@@ -51,7 +51,7 @@ const TeamDashboard = () => {
     dayjs(),
   ]);
   const getDataTeams = () => {
-    getPagingTeams(pageSize, pageIndex, search,selectedBrand?.key|| "" ,[
+    getPagingTeams(pageSize, pageIndex, search, selectedBrand?.key || "", [
       dateRange[0].toISOString(),
       dateRange[1].toISOString(),
     ]).then((res) => {
@@ -177,7 +177,8 @@ const TeamDashboard = () => {
     // listTeams?.data?.map(async (item, index) => {
     //   await exportOne(item, index);
     // });
-    exportMulti(listTeams?.data);
+
+    exportMulti(listTeams?.data, value);
   };
   const exportOne = async (data, index) => {
     const workbook = new ExcelJS.Workbook();
@@ -267,8 +268,6 @@ const TeamDashboard = () => {
         });
       });
     });
-    console.log(dataExport);
-
     //saver
     workbook.xlsx.writeBuffer().then(function (dataExport) {
       const blob = new Blob([dataExport], {
@@ -282,146 +281,332 @@ const TeamDashboard = () => {
       window.URL.revokeObjectURL(url);
     });
   };
-  const exportMulti = async (list) => {
+  const exportMulti = async (list, item) => {
     const workbook = new ExcelJS.Workbook();
-    list?.map((data, index) => {
-      const sheet = workbook.addWorksheet(`${data?.name}`);
-      sheet.properties.defaultRowHeight = 20;
+    if (!item) {
+      list?.map((dataSet, index) => {
+        if (data?.find((x) => x?._id === dataSet?._id)) {
+          console.log("asdsadasdasasd", dataSet);
+          const sheet = workbook.addWorksheet(`${dataSet?.name}`);
+          sheet.properties.defaultRowHeight = 20;
 
-      let optionBorder = {
-        top: { color: { argb: "000000" }, style: "thin" },
-        left: { color: { argb: "000000" }, style: "thin" },
-        bottom: { color: { argb: "000000" }, style: "thin" },
-        right: { color: { argb: "000000" }, style: "thin" },
-      };
-      sheet.mergeCells("A1", "L2");
-      sheet.getCell("A1").value = "Quản lý team";
-      sheet.getCell("A1", "L2").font = {
-        name: "Time New Romans",
-        family: 4,
-        size: 16,
-        bold: true,
-      };
-      sheet.getRow(1).alignment = { vertical: "middle", horizontal: "center" };
-      sheet.getCell("A1", "L2").border = optionBorder;
-      sheet.getCell("A1", "L2").fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "ffffcc00" },
-      };
+          let optionBorder = {
+            top: { color: { argb: "000000" }, style: "thin" },
+            left: { color: { argb: "000000" }, style: "thin" },
+            bottom: { color: { argb: "000000" }, style: "thin" },
+            right: { color: { argb: "000000" }, style: "thin" },
+          };
+          let optionbold = {
+            name: "Time New Romans",
+            family: 4,
+            size: 12,
+            bold: true,
+          };
+          sheet.mergeCells("A1", "L2");
+          sheet.getCell("A1").value = "Quản lý team";
+          sheet.getCell("A1", "L2").font = {
+            name: "Time New Romans",
+            family: 4,
+            size: 16,
+            bold: true,
+          };
+          sheet.getRow(1).alignment = {
+            vertical: "middle",
+            horizontal: "center",
+          };
+          sheet.getCell("A1", "L2").border = optionBorder;
+          sheet.getCell("A1", "L2").fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "ffffcc00" },
+          };
 
-      sheet.getRow(3).values = [
-        "STT",
-        "Team",
-        "Hậu đài",
-        "CTV",
-        "Key",
-        "Chuyên mục",
-        "Link docs",
-        "Link đăng",
-        "Số từ",
-        "Giá tiền",
-        "Tổng tiền theo bài",
-        "Trạng thái",
-      ];
-      for (let i = 1; i <= 12; i++) {
-        sheet.getCell(3, Number(i)).border = optionBorder;
-      }
+          sheet.getRow(3).values = [
+            "STT",
+            "Team",
+            "Hậu đài",
+            "CTV",
+            "Key",
+            "Chuyên mục",
+            "Link docs",
+            "Số từ",
+            "Link đăng",
+            "Giá tiền",
+            "Tổng tiền theo bài",
+            "Trạng thái",
+          ];
+          for (let i = 1; i <= 12; i++) {
+            sheet.getCell(3, Number(i)).border = optionBorder;
+            sheet.getCell(3, Number(i)).font = optionbold;
+          }
 
-      sheet.getRow(3).alignment = { vertical: "middle", horizontal: "center" };
+          sheet.getRow(3).alignment = {
+            vertical: "middle",
+            horizontal: "center",
+          };
 
-      sheet.columns = [
-        { key: "stt" },
-        {
-          key: "team",
-          width: 15,
-          border: optionBorder,
-        },
-        { key: "brand", width: 20, border: optionBorder },
-        { key: "ctv", width: 20, border: optionBorder },
-        { key: "key", width: 20, border: optionBorder },
-        { key: "category", width: 20, border: optionBorder },
-        { key: "link_post", width: 20, border: optionBorder },
-        { key: "link_posted", width: 20, border: optionBorder },
-        { key: "number_words", border: optionBorder },
-        { key: "price_per_word", border: optionBorder },
-        { key: "total", width: 20, border: optionBorder },
-        { key: "status", width: 20, border: optionBorder },
-      ];
-      //Add data
-      let dataExport = [];
-      let count = 1;
-      let total = 0;
-      let countCTV = 0;
-      let xBrand = 4;
-      let yBrand = 4;
-      data?.domains?.map((itemDomain, indexDomain) => {
-        itemDomain?.collaborators?.map((itemColab, indexColab) => {
-          countCTV = 0;
-
-          itemColab?.linkmanagements?.map((itemLink, indexLink) => {
-            let a = {
-              stt: count,
-              team: data?.name || "",
-              brand: itemDomain?.brand?.name || "",
-              ctv: itemColab?.name || "",
-              key: itemLink?.keyword || "",
-              category: itemLink?.category || "",
-              link_post: itemLink?.link_post || "",
-              link_posted: itemLink?.link_posted || "",
-              number_words: itemLink?.number_words || "",
-              price_per_word: itemLink?.price_per_word || "",
-              total:
-                itemLink?.total.toLocaleString("it-IT", {
-                  style: "currency",
-                  currency: "VND",
-                }) || 0,
-              status: itemLink?.status === 1 ? "Đã đăng" : "Chưa đăng",
-            };
-            total = total + itemLink.total;
-            dataExport.push(a);
-            sheet.addRow(a);
-            countCTV++;
-            count++;
+          sheet.columns = [
+            { key: "stt" },
+            {
+              key: "team",
+              width: 15,
+              border: optionBorder,
+            },
+            {
+              key: "brand",
+              width: 20,
+              border: optionBorder,
+            },
+            { key: "ctv", width: 15, border: optionBorder },
+            { key: "key", width: 20, border: optionBorder },
+            { key: "category", width: 20, border: optionBorder },
+            { key: "link_post", width: 20, border: optionBorder },
+            { key: "number_words", border: optionBorder },
+            { key: "link_posted", width: 20, border: optionBorder },
+            { key: "price_per_word", border: optionBorder },
+            { key: "total", width: 20, border: optionBorder },
+            { key: "status", width: 20, border: optionBorder },
+          ];
+          //Add dataSet
+          let dataSetExport = [];
+          let count = 1;
+          let total = 0;
+          let countCTV = 0;
+          let xBrand = 4;
+          let yBrand = 4;
+          dataSet?.domains?.map((itemDomain, indexDomain) => {
+            itemDomain?.collaborators?.map((itemColab, indexColab) => {
+              countCTV = 0;
+              itemColab?.linkmanagements?.map((itemLink, indexLink) => {
+                let a = {
+                  stt: count,
+                  team: dataSet?.name || "",
+                  brand: itemDomain?.brand?.name || "",
+                  ctv: itemColab?.name || "",
+                  key: itemLink?.keyword || "",
+                  category: itemLink?.category || "",
+                  link_post: itemLink?.link_post || "",
+                  link_posted: itemLink?.link_posted || "",
+                  number_words: itemLink?.number_words || "",
+                  price_per_word: itemLink?.price_per_word || "",
+                  total:
+                    itemLink?.total.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    }) || 0,
+                  status: itemLink?.status === 1 ? "Đã đăng" : "Chưa đăng",
+                };
+                total = total + itemLink.total;
+                dataSetExport.push(a);
+                sheet.addRow(a);
+                countCTV++;
+                count++;
+              });
+              if (itemColab?.linkmanagements.length !== 0) {
+                sheet.mergeCells(
+                  `D${count + 3 - itemColab?.linkmanagements.length}:D${
+                    count + 3 - 1
+                  }`
+                );
+                sheet.getCell(
+                  `D${count + 3 - itemColab?.linkmanagements.length}:D${
+                    count + 3 - 1
+                  }`
+                ).alignment = {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
+              }
+            });
+          });
+          for (let i = 4; i < count + 4; i++) {
             if (
-              itemDomain?.brand?._id ===
-              data?.domains[indexDomain - 1]?.brand?._id
+              sheet.getCell(`C${i}`).value === sheet.getCell(`C${i - 1}`).value
             ) {
               yBrand++;
-              console.log(itemDomain, xBrand, yBrand);
             } else {
               if (yBrand > xBrand) {
                 sheet.mergeCells(`C${xBrand}:C${yBrand}`);
+                sheet.getCell(`C${xBrand}:C${yBrand}`).alignment = {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
                 xBrand = yBrand + 1;
+                yBrand++;
               }
             }
-          });
-          if (itemColab?.linkmanagements.length !== 0) {
-            sheet.mergeCells(
-              `D${count + 3 - itemColab?.linkmanagements.length}:D${
-                count + 3 - 1
-              }`
-            );
-            sheet.getCell(
-              `D${count + 3 - itemColab?.linkmanagements.length}:D${
-                count + 3 - 1
-              }`
-            ).alignment = {
-              vertical: "middle",
-              horizontal: "center",
-            };
           }
-        });
+          sheet.mergeCells(`B4:B${count + 2}`);
+          sheet.getCell(`B4:B${count + 2}`).alignment = {
+            vertical: "middle",
+            horizontal: "center",
+          };
+        }
       });
-      sheet.mergeCells(`B4:B${count + 2}`);
-      sheet.getCell(`B4:B${count + 2}`).alignment = {
-        vertical: "middle",
-        horizontal: "center",
-      };
-    });
+    } else {
+      let dataSet = list?.find((x) => x?._id === item?._id);
+      if (data?.find((x) => x?._id === dataSet?._id)) {
+        const sheet = workbook.addWorksheet(`${dataSet?.name}`);
+        sheet.properties.defaultRowHeight = 20;
+
+        let optionBorder = {
+          top: { color: { argb: "000000" }, style: "thin" },
+          left: { color: { argb: "000000" }, style: "thin" },
+          bottom: { color: { argb: "000000" }, style: "thin" },
+          right: { color: { argb: "000000" }, style: "thin" },
+        };
+        let optionbold = {
+          name: "Time New Romans",
+          family: 4,
+          size: 12,
+          bold: true,
+        };
+        sheet.mergeCells("A1", "L2");
+        sheet.getCell("A1").value = "Quản lý team";
+        sheet.getCell("A1", "L2").font = {
+          name: "Time New Romans",
+          family: 4,
+          size: 16,
+          bold: true,
+        };
+        sheet.getRow(1).alignment = {
+          vertical: "middle",
+          horizontal: "center",
+        };
+        sheet.getCell("A1", "L2").border = optionBorder;
+        sheet.getCell("A1", "L2").fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "ffffcc00" },
+        };
+
+        sheet.getRow(3).values = [
+          "STT",
+          "Team",
+          "Hậu đài",
+          "CTV",
+          "Key",
+          "Chuyên mục",
+          "Link docs",
+          "Số từ",
+          "Link đăng",
+          "Giá tiền",
+          "Tổng tiền theo bài",
+          "Trạng thái",
+        ];
+        for (let i = 1; i <= 12; i++) {
+          sheet.getCell(3, Number(i)).border = optionBorder;
+          sheet.getCell(3, Number(i)).font = optionbold;
+        }
+
+        sheet.getRow(3).alignment = {
+          vertical: "middle",
+          horizontal: "center",
+        };
+
+        sheet.columns = [
+          { key: "stt" },
+          {
+            key: "team",
+            width: 15,
+            border: optionBorder,
+          },
+          {
+            key: "brand",
+            width: 20,
+            border: optionBorder,
+          },
+          { key: "ctv", width: 15, border: optionBorder },
+          { key: "key", width: 20, border: optionBorder },
+          { key: "category", width: 20, border: optionBorder },
+          { key: "link_post", width: 20, border: optionBorder },
+          { key: "number_words", border: optionBorder },
+          { key: "link_posted", width: 20, border: optionBorder },
+          { key: "price_per_word", border: optionBorder },
+          { key: "total", width: 20, border: optionBorder },
+          { key: "status", width: 20, border: optionBorder },
+        ];
+        //Add dataSet
+        let dataSetExport = [];
+        let count = 1;
+        let total = 0;
+        let countCTV = 0;
+        let xBrand = 4;
+        let yBrand = 4;
+        dataSet?.domains?.map((itemDomain, indexDomain) => {
+          itemDomain?.collaborators?.map((itemColab, indexColab) => {
+            countCTV = 0;
+            itemColab?.linkmanagements?.map((itemLink, indexLink) => {
+              let a = {
+                stt: count,
+                team: dataSet?.name || "",
+                brand: itemDomain?.brand?.name || "",
+                ctv: itemColab?.name || "",
+                key: itemLink?.keyword || "",
+                category: itemLink?.category || "",
+                link_post: itemLink?.link_post || "",
+                link_posted: itemLink?.link_posted || "",
+                number_words: itemLink?.number_words || "",
+                price_per_word: itemLink?.price_per_word || "",
+                total:
+                  itemLink?.total.toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  }) || 0,
+                status: itemLink?.status === 1 ? "Đã đăng" : "Chưa đăng",
+              };
+              total = total + itemLink.total;
+              dataSetExport.push(a);
+              sheet.addRow(a);
+              countCTV++;
+              count++;
+            });
+            if (itemColab?.linkmanagements.length !== 0) {
+              sheet.mergeCells(
+                `D${count + 3 - itemColab?.linkmanagements.length}:D${
+                  count + 3 - 1
+                }`
+              );
+              sheet.getCell(
+                `D${count + 3 - itemColab?.linkmanagements.length}:D${
+                  count + 3 - 1
+                }`
+              ).alignment = {
+                vertical: "middle",
+                horizontal: "center",
+              };
+            }
+          });
+        });
+        for (let i = 4; i < count + 4; i++) {
+          if (
+            sheet.getCell(`C${i}`).value === sheet.getCell(`C${i - 1}`).value
+          ) {
+            yBrand++;
+          } else {
+            if (yBrand > xBrand) {
+              console.log(xBrand, yBrand);
+              sheet.mergeCells(`C${xBrand}:C${yBrand}`);
+              sheet.getCell(`C${xBrand}:C${yBrand}`).alignment = {
+                vertical: "middle",
+                horizontal: "center",
+              };
+              xBrand = yBrand + 1;
+              yBrand++;
+            }
+          }
+        }
+        sheet.mergeCells(`B4:B${count + 2}`);
+        sheet.getCell(`B4:B${count + 2}`).alignment = {
+          vertical: "middle",
+          horizontal: "center",
+        };
+      }
+    }
+
     //saver
-    workbook.xlsx.writeBuffer().then(function (dataExport) {
-      const blob = new Blob([dataExport], {
+    workbook.xlsx.writeBuffer().then(function (dataSetExport) {
+      const blob = new Blob([dataSetExport], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
       const url = window.URL.createObjectURL(blob);
@@ -432,16 +617,16 @@ const TeamDashboard = () => {
       window.URL.revokeObjectURL(url);
     });
   };
+
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           <BreadCrumb title="Teams" pageTitle="Quản lý Teams"></BreadCrumb>
-          {console.log(selectedBrand)}
           <Row className="mb-3" style={{ alignItems: "end" }}>
             <Col lg="2" style={{ flexFlow: "column", display: "flex" }}>
               Tìm theo brand
-              <Select 
+              <Select
                 allowClear
                 value={selectedBrand}
                 onChange={(e) => setSelectedBrand(e)}
@@ -502,7 +687,7 @@ const TeamDashboard = () => {
                           marginRight: "10px",
                         }
                   }
-                  onClick={() => exportExcel()}
+                  onClick={() => exportExcelMulti()}
                   disabled={data?.length === 0}
                 >
                   Xuất excel
@@ -527,21 +712,20 @@ const TeamDashboard = () => {
                   onChange={onDateRangeChange}
                 />
                 <Button
-                type="primary"
-                onClick={handleChangeDateRange}
-                style={{ marginLeft: "10px" }}
-              >
-                Lọc
-              </Button>
-              <Button
-                type="primary"
-                onClick={handleReset}
-                style={{ marginLeft: "10px" }}
-              >
-                Reset
-              </Button>
+                  type="primary"
+                  onClick={handleChangeDateRange}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Lọc
+                </Button>
+                <Button
+                  type="primary"
+                  onClick={handleReset}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Reset
+                </Button>
               </Space>
-              
             </Col>
           </Row>
           <Row>
