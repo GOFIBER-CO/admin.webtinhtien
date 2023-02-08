@@ -286,7 +286,6 @@ const TeamDashboard = () => {
     if (!item) {
       list?.map((dataSet, index) => {
         if (data?.find((x) => x?._id === dataSet?._id)) {
-          console.log("asdsadasdasasd", dataSet);
           const sheet = workbook.addWorksheet(`${dataSet?.name}`);
           sheet.properties.defaultRowHeight = 20;
 
@@ -585,7 +584,6 @@ const TeamDashboard = () => {
             yBrand++;
           } else {
             if (yBrand > xBrand) {
-              console.log(xBrand, yBrand);
               sheet.mergeCells(`C${xBrand}:C${yBrand}`);
               sheet.getCell(`C${xBrand}:C${yBrand}`).alignment = {
                 vertical: "middle",
