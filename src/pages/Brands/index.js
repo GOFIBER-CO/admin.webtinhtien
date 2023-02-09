@@ -308,7 +308,7 @@ const Brands = () => {
                   }}
                 />
 
-                <Column title="Thương hiệu" dataIndex="name" key="name" />
+                <Column title="Thương hiệu" dataIndex="name" key="name" sorter={(a,b)=> a?.name.localeCompare(b?.name)} />
                 <Column
                   title="Hoạt động"
                   key="action"

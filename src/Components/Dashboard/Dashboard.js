@@ -35,6 +35,7 @@ const columns = [
     title: "Tên thương hiệu",
     dataIndex: "name",
     key: "name",
+    sorter: (a,b) => a?.name.localeCompare(b?.name)
   },
   {
     title: "Tổng tiền",
@@ -48,6 +49,7 @@ const columns = [
         }) || 0
       );
     },
+    sorter: (a,b) => a?.total - b?.total
   },
   // {
   //   title: <button onClick={(e)=> console.log(e)}>Xuất Excel chi tiết</button>
@@ -154,6 +156,7 @@ const Dashboard = (props) => {
           title: "Tên Domains",
           dataIndex: "name",
           key: "name",
+          sorter: (a,b) => a?.name.localeCompare(b?.name)
         },
         {
           title: "Tổng số tiền",
@@ -167,6 +170,7 @@ const Dashboard = (props) => {
               }) || 0
             );
           },
+          sorter: (a,b) => a?.total - b?.total
         },
       ];
       return (
@@ -193,6 +197,7 @@ const Dashboard = (props) => {
         title: "Team",
         dataIndex: "name",
         key: "name",
+        sorter: (a,b)=> a?.name.localeCompare(b?.name)
       },
       {
         title: "Tổng số tiền",
@@ -206,6 +211,7 @@ const Dashboard = (props) => {
             }) || 0
           );
         },
+        sorter: (a,b)=> a?.total - b?.total
       },
     ];
     return (

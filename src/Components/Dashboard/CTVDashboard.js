@@ -154,7 +154,9 @@ const CtvDashboard = () => {
       title: "Tên CTV",
       dataIndex: "name",
       width: "10%",
+      sorter: (a,b) => a?.name.localeCompare(b?.name),
       editable: true,
+      
     },
     {
       title: "STK",
@@ -165,29 +167,33 @@ const CtvDashboard = () => {
     {
       title: "Tên ngân hàng",
       dataIndex: "bank_name",
-      width: "10%",
+      width: "12%",
       editable: true,
+      sorter: (a,b) => a?.bank_name.localeCompare(b?.bank_name),
     },
     {
       title: "Tên trên thẻ",
       dataIndex: "account_holder",
       width: "10%",
       editable: true,
+      sorter: (a,b) => a?.bank_name.localeCompare(b?.bank_name),
     },
     {
       title: "Số từ",
       dataIndex: "number_words",
       width: "7%",
       editable: false,
+      sorter: (a,b) => a?.number_words - b?.number_words
     },
     {
       title: "Số bài viết",
       dataIndex: "link_management_ids",
-      width: "7%",
+      width: "9%",
       editable: false,
       render: (value) => {
         return <>{value?.length}</>;
       },
+      sorter: (a,b) => a?.link_management_ids.length - b?.link_management_ids?.length
     },
     {
       title: "Thành tiền",
@@ -202,6 +208,7 @@ const CtvDashboard = () => {
           }) || 0
         );
       },
+      sorter: (a,b) => a?.total - b?.total
     },
     {
       title: "Ghi chú",
@@ -212,7 +219,7 @@ const CtvDashboard = () => {
     {
       title: "Xác nhận",
       dataIndex: "owner_confirm",
-      width: "5%",
+      width: "8%",
       editable: true,
       render: (value) => {
         return <>{value}</>;

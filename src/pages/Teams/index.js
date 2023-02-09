@@ -381,7 +381,7 @@ const Teams = () => {
                     return index + 1;
                   }}
                 />
-                <Column title="Teams" dataIndex="name" key="name" />
+                <Column title="Teams" dataIndex="name" key="name" sorter={(a,b)=> a?.name.localeCompare(b?.name)} />
 
                 <Column
                   title="Thương hiệu"
@@ -391,7 +391,7 @@ const Teams = () => {
                     val?.map((item, index) => {
                       return <span key={index}>{item?.name} , </span>;
                     })
-                  }
+                  }                
                 />
                 <Column
                   title="Hoạt động"

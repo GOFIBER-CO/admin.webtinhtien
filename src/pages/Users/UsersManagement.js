@@ -154,13 +154,14 @@ const UsersManagement = () => {
                     return index + 1;
                   }}
                 />
-                <Column title="Tên" dataIndex="lastName" key="lastName" />
+                <Column title="Tên" dataIndex="lastName" key="lastName" sorter={(a,b)=>a?.lastName.localeCompare(b?.lastName)} />
                 <Column
                   title="Tên đăng nhập"
                   dataIndex="username"
                   key="username"
+                  sorter={(a,b)=>a?.username.localeCompare(b?.username)}
                 />
-                <Column title="Phân quyền" dataIndex="role" key="role" />
+                <Column title="Phân quyền" dataIndex="role" key="role" sorter={(a,b)=>a?.role.localeCompare(b?.role)} />
                 <Column
                   title="Tình trạng"
                   dataIndex="status"
@@ -183,6 +184,7 @@ const UsersManagement = () => {
                     }
                     
                   }}
+                  sorter={(a,b)=>a?.status - b?.status}
                 />
                 <Column
                   title="Hoạt động"

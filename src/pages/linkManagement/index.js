@@ -87,6 +87,7 @@ const LinkManagement = (props) => {
           </Tooltip>
         );
       },
+      sorter: (a,b)=> a.domain.name.localeCompare(b.domain.name) ,
       width: "10%",
     },
     {
@@ -100,6 +101,7 @@ const LinkManagement = (props) => {
           </Tooltip>
         );
       },
+      sorter: (a,b)=> a.title.localeCompare(b.title) ,
       width: "10%",
     },
     {
@@ -113,11 +115,14 @@ const LinkManagement = (props) => {
           </Tooltip>
         </a>
       ),
+      sorter: (a,b)=> a.keyword.localeCompare(b.keyword) ,
     },
     {
       title: "Chuyên mục",
       dataIndex: "category",
       key: "address",
+      sorter: (a,b)=> a.category.localeCompare(b.category) ,
+
     },
     {
       title: "Link bài viết",
@@ -148,6 +153,7 @@ const LinkManagement = (props) => {
       dataIndex: "number_words",
       render: (value) => <>{value}</>,
       width: "7%",
+      sorter: (a,b)=> a.number_words - b.number_words ,
     },
     {
       title: "Số ảnh",
@@ -155,6 +161,7 @@ const LinkManagement = (props) => {
       dataIndex: "number_images",
       render: (value) => <>{value}</>,
       width: "7%",
+      sorter: (a,b)=> a.number_images - b.number_images ,
     },
     {
       title: "Số tiền",
@@ -168,6 +175,7 @@ const LinkManagement = (props) => {
           })}
         </>
       ),
+      sorter: (a,b)=> a.total - b.total ,
       ellipsis: true,
     },
     {
@@ -871,7 +879,7 @@ const LinkManagement = (props) => {
                 columns={columns}
                 dataSource={data}
                 pagination={false}
-                scroll={{ x: 1300, y: 600 }}
+                scroll={{ x: 1400, y: 600 }}
               />
             </Row>
             <Row style={{ display: "flex", float: "right" }}>
@@ -936,7 +944,7 @@ const LinkManagement = (props) => {
             <Form.Item label="Link đã đăng" name="link_posted">
               <Input />
             </Form.Item>
-            <Form.Item label="Từ khóa" name="keyword">
+            <Form.Item label="Từ khóa" name="keyword" rules={[{ required: true, message: "Nhập từ khóa " }]} >
               <Input />
             </Form.Item>
             <Form.Item
