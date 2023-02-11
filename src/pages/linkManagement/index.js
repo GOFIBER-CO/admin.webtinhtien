@@ -809,8 +809,9 @@ const LinkManagement = (props) => {
      
      listData.push(a);
     })
-       await createLinkManagementExcel(listData);
-       message.success("Lưu thành công !")
+       const addImportExcel =await createLinkManagementExcel(listData);
+       addImportExcel.status === 1 ? message.success("Lưu thành công !") : message.error("không thành công !")
+       
   };
 
   const handleImport = ($event) => {
