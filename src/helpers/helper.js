@@ -343,6 +343,9 @@ export const getAllBrands = () => api.get(`${url.API_BRANDS}/getAll`);
 export const createLinkManagement = (data) =>
   api.create(`${url.API_LINK_MANAGEMENT}`, data);
 
+  export const createLinkManagementExcel = (data) =>
+  api.create(`${url.API_LINK_MANAGEMENT}-excel`, data);
+
 export const updateLinkManagement = (id, data) =>
   api.update(`${url.API_LINK_MANAGEMENT}/${id}`, data);
 export const deleteLinkManagement = (id) =>
