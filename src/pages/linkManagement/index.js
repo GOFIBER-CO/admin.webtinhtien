@@ -17,6 +17,7 @@ import {
   Pagination,
   Tooltip,
   Switch,
+  message,
 } from "antd";
 import { Container, Row, Col } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -37,6 +38,7 @@ import {
   getColabById,
   getAllDomain,
   getLoggedInUser,
+  createLinkManagementExcel,
 } from "../../helpers/helper";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
@@ -44,6 +46,8 @@ import { createLinkManagement } from "../../helpers/helper";
 import { useHistory } from "react-router-dom";
 import { AiFillEdit } from "react-icons/ai";
 import { ImBin2 } from "react-icons/im";
+import ModalLinkDocs from "./ModalLinkDocs";
+import { read, utils, writeFile } from "xlsx";
 const { Option } = Select;
 const { Search } = Input;
 
@@ -75,6 +79,20 @@ const LinkManagement = (props) => {
   const [sum, setSum] = useState(0);
   const [sumKey, setSumKey] = useState("");
 
+  const [isModalOpenLinkDocs, setIsModalOpenLinkDocs] = useState(false);
+
+  const showModalLinkDocs = () => {
+    setIsModalOpenLinkDocs(true);
+  };
+
+  const handleOkLinkDocs = () => {
+    setIsModalOpenLinkDocs(false);
+  };
+
+  const handleCancelLinkDocs = () => {
+    setIsModalOpenLinkDocs(false);
+  };
+
   const columns = [
     {
       title: "Domains",
@@ -87,6 +105,7 @@ const LinkManagement = (props) => {
           </Tooltip>
         );
       },
+      sorter: (a, b) => a.domain.name.localeCompare(b.domain.name),
       width: "10%",
     },
     {
@@ -100,6 +119,7 @@ const LinkManagement = (props) => {
           </Tooltip>
         );
       },
+      sorter: (a, b) => a.title.localeCompare(b.title),
       width: "10%",
     },
     {
@@ -113,11 +133,13 @@ const LinkManagement = (props) => {
           </Tooltip>
         </a>
       ),
+      sorter: (a, b) => a.keyword.localeCompare(b.keyword),
     },
     {
       title: "Chuyên mục",
       dataIndex: "category",
       key: "address",
+      sorter: (a, b) => a.category.localeCompare(b.category),
     },
     {
       title: "Link bài viết",
@@ -148,6 +170,7 @@ const LinkManagement = (props) => {
       dataIndex: "number_words",
       render: (value) => <>{value}</>,
       width: "7%",
+      sorter: (a, b) => a.number_words - b.number_words,
     },
     {
       title: "Số ảnh",
@@ -155,6 +178,7 @@ const LinkManagement = (props) => {
       dataIndex: "number_images",
       render: (value) => <>{value}</>,
       width: "7%",
+      sorter: (a, b) => a.number_images - b.number_images,
     },
     {
       title: "Số tiền",
@@ -168,6 +192,7 @@ const LinkManagement = (props) => {
           })}
         </>
       ),
+      sorter: (a, b) => a.total - b.total,
       ellipsis: true,
     },
     {
@@ -558,6 +583,35 @@ const LinkManagement = (props) => {
     const exportData = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(exportData, "Link" + fileExtension);
   };
+
+  const exportExcelMau = async () => {
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const whitelistExcel = data?.map((item, index) => {
+      return {
+        // STT: index + 1,
+        // "Tiêu đề": item?.title,
+        keyword: item?.keyword,
+        category: item?.category,
+        link_post: item?.link_post,
+        link_posted: item?.link_posted,
+        status: item?.status,
+        // "Chú thích : status = 1 là "
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(whitelistExcel, {
+      header: [
+        "QUẢN LÝ CỘNG TÁC VIÊN",
+        "Chú thích status = 1 là trạng thái đăng, status = 2 là trạng thái nháp",
+      ],
+    });
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const exportData = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(exportData, "SampleLink" + fileExtension);
+  };
+
   const [domainAdd, setDomainAdd] = useState([]);
   const [selectedDomainAdd, setSelectedDomainAdd] = useState("");
   const [colabAdd, setColabAdd] = useState([]);
@@ -716,6 +770,80 @@ const LinkManagement = (props) => {
     getUser();
     getListBrand();
   }, []);
+
+  //File.extension
+  //File.Filel.extension
+  const [movies, setMovies] = useState([]);
+  const [isModalOpenExcelMau, setIsModalOpenExcelMau] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpenExcelMau(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpenExcelMau(false);
+  };
+
+  const handleCancel = () => {
+    setMovies([]);
+    setIsModalOpenExcelMau(false);
+    form.resetFields();
+    
+  };
+  const onFinishExcelMau =async(values) => {
+    
+    let listData = []
+
+    movies.map((item) => {
+      
+      let a = {
+        link_post: item?.link_post,
+        link_posted: item?.link_posted,
+        status: item?.status,
+        category: item?.category,
+        keyword: item?.keyword,
+        collaboratorId: values?.collaboratorId,
+        domain: values?.domain,
+        price_per_word: values?.price_per_word,
+      };
+     
+     listData.push(a);
+    })
+       await createLinkManagementExcel(listData);
+       message.success("Lưu thành công !")
+  };
+
+  const handleImport = ($event) => {
+    const files = $event.target.files;
+    if (files.length) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const wb = read(event.target.result);
+        const sheets = wb.SheetNames;
+        if (sheets.length) {
+          const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
+          rows.map((item, index)=>{
+            if(!item?.category){
+              message.error(`File excel Category hàng thứ ${index + 2} không được để trống`)
+            }
+            if(!item?.keyword){
+              message.error(`File excel keyword hàng thứ ${index + 2} không được để trống`)
+            }
+            if(!item?.link_post){
+              message.error(`File excel link_post hàng thứ ${index + 2} không được để trống`)
+            }
+           
+          })
+          // if(rows)
+          console.log(rows, "rows");
+          // return
+          setMovies(rows);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  };
   return (
     <>
       {contextHolder}
@@ -842,27 +970,33 @@ const LinkManagement = (props) => {
                   })}
                 </p>
               </Col>
-              <Col style={{ width: "130px" }} lg="2">
-                <div>
-                  <Button
-                    style={
-                      data?.length !== 0
-                        ? {
-                            backgroundColor: "#026e39",
-                            border: "none",
-                            color: "white",
-                          }
-                        : {
-                            backgroundColor: "gray",
-                            border: "none",
-                            color: "black",
-                          }
-                    }
-                    onClick={() => exportExcel()}
-                    disabled={data?.length === 0}
-                  >
-                    Xuất excel
-                  </Button>
+              <Col style={{ width: "130px" }} lg="6">
+                <div style={{ display: "flex" }}>
+                  <Space>
+                    <Button
+                      style={
+                        data?.length !== 0
+                          ? {
+                              backgroundColor: "#026e39",
+                              border: "none",
+                              color: "white",
+                            }
+                          : {
+                              backgroundColor: "gray",
+                              border: "none",
+                              color: "black",
+                            }
+                      }
+                      onClick={() => exportExcel()}
+                      disabled={data?.length === 0}
+                    >
+                      Xuất excel
+                    </Button>
+                    <Button type="primary" onClick={() => exportExcelMau()}>
+                      Xuất file excel mẫu
+                    </Button>
+                    <Button onClick={showModal}>Import excel mẫu</Button>
+                  </Space>
                 </div>
               </Col>
             </Row>
@@ -871,7 +1005,7 @@ const LinkManagement = (props) => {
                 columns={columns}
                 dataSource={data}
                 pagination={false}
-                scroll={{ x: 1300, y: 600 }}
+                scroll={{ x: 1400, y: 600 }}
               />
             </Row>
             <Row style={{ display: "flex", float: "right" }}>
@@ -936,7 +1070,11 @@ const LinkManagement = (props) => {
             <Form.Item label="Link đã đăng" name="link_posted">
               <Input />
             </Form.Item>
-            <Form.Item label="Từ khóa" name="keyword">
+            <Form.Item
+              label="Từ khóa"
+              name="keyword"
+              rules={[{ required: true, message: "Nhập từ khóa " }]}
+            >
               <Input />
             </Form.Item>
             <Form.Item
@@ -971,6 +1109,120 @@ const LinkManagement = (props) => {
             </Form.Item>
           </Form>
         </Row>
+      </Modal>
+      <ModalLinkDocs
+        isModalOpen={isModalOpenLinkDocs}
+        handleOk={handleOkLinkDocs}
+        handleCancel={handleCancelLinkDocs}
+      />
+      <Modal
+        title="Import file excel"
+        open={isModalOpenExcelMau}
+        footer={false}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        bodyStyle={{ minHeight: "200px" }}
+      >
+        <Form
+          name="basic"
+          onFinish={onFinishExcelMau}
+          form={form}
+          initialValues={{ remember: true }}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="Domain"
+            name="domain"
+            rules={[{ required: true, message: "Vui lòng chọn domain!" }]}
+          >
+            <Select
+              onChange={(e) => setSelectedDomainAdd(e)}
+              value={selectedDomainAdd}
+              showSearch
+              optionFilterProp="label"
+            >
+              {domainAdd?.map((item) => {
+                return (
+                  <>
+                    <Option
+                      value={item?._id}
+                      key={item?.name}
+                      label={item?.name}
+                    >
+                      {item?.name}
+                    </Option>
+                  </>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Cộng tác viên"
+            name="collaboratorId"
+            rules={[
+              { required: true, message: "Vui lòng chọn cộng tác viên!" },
+            ]}
+          >
+            <Select>
+              {colabAdd?.map((item) => {
+                return (
+                  <>
+                    <Option value={item?._id}>{item?.name}</Option>
+                  </>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Số tiền mỗi từ"
+            name="price_per_word"
+            rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
+          >
+            <InputNumber type="number" />
+          </Form.Item>
+         <Form.Item>
+         <div style={{ height: "20px" }}>
+            <span
+              style={{
+                width: "150px",
+                textAlign: "center",
+                borderRadius: "6px",
+                background: "orange",
+                cursor: "pointer",
+                marginLeft: "10px",
+                display: "block",
+              }}
+            >
+              <input
+                style={{ display: "none" }}
+                type="file"
+                name="file"
+                className="custom-file-input"
+                id="inputGroupFile"
+                required
+                onChange={(e)=>handleImport(e)}
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              />
+              <label
+                style={{
+                  width: "150px",
+                  marginTop: "7px",
+                  cursor: "pointer",
+                }}
+                className="custom-file-label"
+                htmlFor="inputGroupFile"
+              >
+                file excel
+              </label>
+            </span>
+          </div>
+         </Form.Item>
+          <Form.Item className="mt-5" style={{ textAlign: "right" }}>
+            <Button type="primary" htmlType="submit">
+              Lưu
+            </Button>
+          </Form.Item>
+        </Form>
       </Modal>
     </>
   );

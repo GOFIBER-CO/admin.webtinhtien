@@ -745,7 +745,7 @@ const TeamDashboard = () => {
                     return index + 1;
                   }}
                 />
-                <Column title="Teams" dataIndex="name" key="name" />
+                <Column title="Teams" dataIndex="name" key="name"  sorter = {(a,b)=>a?.name.localeCompare(b?.name)} />
 
                 <Column
                   title="Thương hiệu"
@@ -755,7 +755,7 @@ const TeamDashboard = () => {
                     val?.map((item, index) => {
                       return <span key={index}>{item?.name} , </span>;
                     })
-                  }
+                  }              
                 />
                 <Column
                   title="Tổng tiền"
@@ -771,6 +771,7 @@ const TeamDashboard = () => {
                       </>
                     );
                   }}
+                  sorter={(a,b)=>a?.total - b?.total}
                 />
                 <Column
                   title="Hành động"

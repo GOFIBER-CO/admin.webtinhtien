@@ -516,7 +516,7 @@ const Domains = () => {
                     return index + 1;
                   }}
                 />
-                <Column title="Domains" dataIndex="name" key="name" />
+                <Column title="Domains" dataIndex="name" key="name" sorter= {(a,b)=>a?.name.localeCompare(b?.name)} />
 
                 <Column
                   title="Teams"
@@ -525,6 +525,7 @@ const Domains = () => {
                   render={(val, record) => {
                     return <>{val?.name}</>;
                   }}
+                  sorter= {(a,b)=>a?.team?.name.localeCompare(b?.team?.name)}
                 />
                 <Column
                   title="Brands"
@@ -533,6 +534,7 @@ const Domains = () => {
                   render={(val, record) => {
                     return <>{val?.name}</>;
                   }}
+                  sorter = {(a,b) => a?.brand?.name.localeCompare(b?.brand.name)}
                 />
                 <Column
                   title="Hoạt động"

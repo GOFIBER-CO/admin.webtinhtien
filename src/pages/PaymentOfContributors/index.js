@@ -159,12 +159,14 @@ const PaymentOfContributors = () => {
       render: (value) => {
         return value?.map((item) => item?.name)?.toString();
       },
+      sorter: (a,b)=> a?.domain[0]?.name.localeCompare(b?.domain[0]?.name) ,
     },
     {
       title: "Tên CTV",
       dataIndex: "name",
       width: "10%",
       editable: true,
+      sorter: (a,b)=> a?.name.localeCompare(b?.name) ,
     },
     {
       title: "STK",
@@ -177,18 +179,21 @@ const PaymentOfContributors = () => {
       dataIndex: "bank_name",
       width: "10%",
       editable: true,
+      sorter: (a,b)=> a?.bank_name.localeCompare(b?.bank_name) ,
     },
     {
       title: "Tên trên thẻ",
       dataIndex: "account_holder",
       width: "10%",
       editable: true,
+      sorter: (a,b)=> a?.account_holder.localeCompare(b?.account_holder) ,
     },
     {
       title: "Số từ",
       dataIndex: "number_words",
       width: "7%",
       editable: false,
+      sorter: (a,b)=> a?.number_words -b?.number_words ,
     },
     {
       title: "Số bài viết",
@@ -198,6 +203,7 @@ const PaymentOfContributors = () => {
       render: (value) => {
         return <>{value?.length}</>;
       },
+      sorter: (a,b)=> a?.link_management_ids?.length -b?.link_management_ids?.length ,
     },
     {
       title: "Thành tiền",
@@ -212,6 +218,7 @@ const PaymentOfContributors = () => {
           }) || 0
         );
       },
+      sorter: (a,b)=> a?.total -b?.total ,
     },
     {
       title: "Ghi chú",
@@ -799,7 +806,7 @@ const PaymentOfContributors = () => {
 
           <Form form={form} component={false}>
             <Table
-              scroll={{ x: 1300, y: 600 }}
+              scroll={{ x: 1400, y: 600 }}
               components={{
                 body: {
                   cell: EditableCell,
