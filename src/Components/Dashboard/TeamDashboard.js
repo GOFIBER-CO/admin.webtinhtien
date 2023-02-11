@@ -435,6 +435,11 @@ const TeamDashboard = () => {
               }
             }
           }
+          sheet.getCell(`K${count + 3}`).value =
+            total.toLocaleString("it-IT", {
+              style: "currency",
+              currency: "VND",
+            }) || 0;
           sheet.mergeCells(`B4:B${count + 2}`);
           sheet.getCell(`B4:B${count + 2}`).alignment = {
             vertical: "middle",
@@ -594,6 +599,11 @@ const TeamDashboard = () => {
             }
           }
         }
+        sheet.getCell(`K${count + 3}`).value =
+          total.toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+          }) || 0;
         sheet.mergeCells(`B4:B${count + 2}`);
         sheet.getCell(`B4:B${count + 2}`).alignment = {
           vertical: "middle",
@@ -603,8 +613,8 @@ const TeamDashboard = () => {
     }
 
     //saver
-    workbook.xlsx.writeBuffer().then(function (dataSetExport) {
-      const blob = new Blob([dataSetExport], {
+    workbook.xlsx.writeBuffer().then(function (dataSet) {
+      const blob = new Blob([dataSet], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
       const url = window.URL.createObjectURL(blob);
