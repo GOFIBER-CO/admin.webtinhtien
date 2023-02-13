@@ -404,6 +404,8 @@ export const getTeamByBrand = (
     `${url.API_TEAMS}/getTeamByBrand/${brandid}?pageSize=${pageSize}&pageIndex=${pageIndex}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
   );
 
+
+
 export const getAllDomain = () => api.get(`${url.API_DOMAINS}/getAll`);
 
 export const getAllBrand = () =>
@@ -425,5 +427,7 @@ export const getLinkManagementsByTeamUser = (teamId) =>
   api.get(
     `${url.API_LINK_MANAGEMENT}/getLinkManagementsByTeamUser?teamId=${teamId}`
   );
+
+export const exportDataTeams = (brand, team) => api.get(`${url.API_LINK_MANAGEMENT}-excel-teams?brand=${brand}&team=${team}`)
 export const getStatisticTeam = (teamId) =>
   api.get(`${url.API_TEAMS}/getStatisticTeam?teamId=${teamId}`);
