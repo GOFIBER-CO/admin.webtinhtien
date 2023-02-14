@@ -31,6 +31,7 @@ import {
   getAllBrand,
   getAllDomain,
   getAllDomains,
+  getLoggedInUser,
 } from "../../helpers/helper";
 import { useHistory } from "react-router-dom";
 import { format } from "echarts";
@@ -570,6 +571,17 @@ const PaymentOfContributors = () => {
   const [teamSelectedExport, setTeamSelectedExport] = useState({});
   const [domainExport, setDomainExport] = useState([]);
   const [domainSelectedExport, setDomainSelectedExport] = useState({});
+  const [user, setUser] = useState({})
+  const getUser = async() =>{
+      const user = await getLoggedInUser()
+      if (user?.role !== "Admin") {
+        setTeam({ key: user?.team?._id, value: user?.team?.name });
+      }
+      setUser(user);
+  }
+  useEffect(()=>{
+    getUser()
+  },[])
 
   const handleCloseModalExport = () => {
     setModalExportOne(false);
@@ -670,7 +682,7 @@ const PaymentOfContributors = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Quản lý CTV" pageTitle="CTV" slug="domains" />
+          <BreadCrumb title="Quản lý CTV asd" pageTitle="CTV" slug="domains" />
           <Row>
             <Col lg="2">
               <p className="custom-label">Tên thương hiệu</p>
@@ -696,6 +708,7 @@ const PaymentOfContributors = () => {
                 status={statusTeam}
                 allowClear
                 onClear={() => setTeam({})}
+                disabled={user?.role !== "Admin"}
               />
             </Col>
             <Col lg="2">
