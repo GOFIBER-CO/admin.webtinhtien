@@ -273,7 +273,6 @@ const LinkManagement = (props) => {
 
   const getListBrand = async () => {
     const listBrand = await getAllBrand();
-
     let user = await getLoggedInUser();
     let brandList = [];
     listBrand?.data?.map((item) => {
@@ -366,7 +365,6 @@ const LinkManagement = (props) => {
 
   useEffect(() => {
     getTeamListByBrand();
-
   }, [brand?.key]);
 
   useEffect(() => {
@@ -472,7 +470,6 @@ const LinkManagement = (props) => {
     setData(linkPost?.data);
   };
   const onFinish = async (values) => {
-
     setIsLoading(true);
     const dataReq = {
       link_post: values?.link_post,
@@ -563,12 +560,14 @@ const LinkManagement = (props) => {
     const listColab = await getLinkPostByColab(colab?.key, 10000, 1, "");
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-    const fileExtension = ".xlsx";
-   
-    const whitelistExcel = data?.map((item, index) => {
-   
+    const fileExtension = ".xlsx"; 
+    const whitelistExcel = data?.map((item, index) => {  
+      // console.log(item, 'data');
+      // return
       return {
         STT: index + 1,
+        "Thương hiệu": item?.collaborators[0]?.domain[0]?.brand[0]?.name,
+        "Team": item?.collaborators[0]?.domain[0]?.team[0]?.name,
         "Tiêu đề": item?.title,
         "Từ khóa": item?.keyword,
         "Chuyên mục": item?.category,
@@ -852,9 +851,7 @@ const LinkManagement = (props) => {
   };
 
   const handleImport = ($event) => {
-
     const files = $event.target.files;
-    console.log(files, 'flies');
     setFile(files[0].name)
     if (files.length) {
       const file = files[0];
