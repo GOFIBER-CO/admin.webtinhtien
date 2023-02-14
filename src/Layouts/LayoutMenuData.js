@@ -170,6 +170,8 @@ const Navdata = () => {
       label: "QUẢN LÝ THƯƠNG HIỆU",
       icon: "ri-bookmark-line",
       link: "/#",
+      disable: user?.role === "Member" ? true : false,
+
       stateVariables: isBrand,
       click: function (e) {
         e.preventDefault();
@@ -191,6 +193,8 @@ const Navdata = () => {
       label: "QUẢN LÝ TEAMS",
       icon: "ri-bookmark-line",
       link: "/#",
+      disable: user?.role === "Member" ? true : false,
+
       stateVariables: isTeam,
       click: function (e) {
         e.preventDefault();
@@ -212,6 +216,7 @@ const Navdata = () => {
       label: "QUẢN LÝ DOMAINS",
       icon: "ri-bookmark-line",
       link: "/#",
+      disable: user?.role === "Member" ? true : false,
       stateVariables: isDomains,
       click: function (e) {
         e.preventDefault();
