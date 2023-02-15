@@ -682,7 +682,7 @@ const PaymentOfContributors = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Quản lý CTV asd" pageTitle="CTV" slug="domains" />
+          <BreadCrumb title="Quản lý CTV" pageTitle="CTV" slug="domains" />
           <Row>
             <Col lg="2">
               <p className="custom-label">Tên thương hiệu</p>
