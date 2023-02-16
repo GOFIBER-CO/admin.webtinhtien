@@ -273,10 +273,12 @@ const Dashboard = (props) => {
               Domain: itemDomain?.name,
               CTV: itemColab?.name,
               "Tổng tiền":
-                itemColab?.total?.toLocaleString("it-IT", {
-                  style: "currency",
-                  currency: "VND",
-                }) || 0,
+                itemColab?.total
+                // ?.toLocaleString("it-IT", {
+                //   style: "currency",
+                //   currency: "VND",
+                // }) 
+                || 0,
             };
             exportList.push(a);
           });

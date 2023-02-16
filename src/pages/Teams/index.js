@@ -129,7 +129,7 @@ const Teams = () => {
       pageIndex: 1,
       search: "",
     };
-    const listTeams = await getPagingTeams(10000, 1, "");
+    const listTeams = await getPagingTeams(10000, 1, "","");
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
@@ -138,10 +138,13 @@ const Teams = () => {
         STT: index + 1,
         "Tên Team": item?.name,
         "Tổng tiền":
-          item?.total?.toLocaleString("it-IT", {
-            style: "currency",
-            currency: "VND",
-          }) || 0,
+          item?.total
+          // ?.toLocaleString("it-IT", {
+          //   style: "currency",
+          //   currency: "VND",
+          // }) 
+          
+          || 0,
       };
     });
 

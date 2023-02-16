@@ -180,10 +180,12 @@ const Domains = () => {
         STT: index + 1,
         "Tên Domains": item?.name,
         "Tổng tiền":
-          item?.total?.toLocaleString("it-IT", {
-            style: "currency",
-            currency: "VND",
-          }) || 0,
+          item?.total
+          // ?.toLocaleString("it-IT", {
+          //   style: "currency",
+          //   currency: "VND",
+          // }) 
+          || 0,
       };
     });
 

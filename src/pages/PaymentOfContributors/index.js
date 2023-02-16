@@ -544,10 +544,12 @@ const PaymentOfContributors = () => {
         "Tên trên thẻ": item?.account_holder,
         "Số lượng từ": item?.number_words,
         "Tổng số bài": item?.link_management_ids?.length || 0,
-        "Tổng tiền": item?.total?.toLocaleString("it-IT", {
-          style: "currency",
-          currency: "VND",
-        }),
+        "Tổng tiền": item?.total
+        // ?.toLocaleString("it-IT", {
+        //   style: "currency",
+        //   currency: "VND",
+        // })
+        || 0,
         "Xác nhận": item?.owner_confirm,
       };
     });
@@ -601,7 +603,7 @@ const PaymentOfContributors = () => {
     let team = [];
     domain?.map((item) => {
       if (!team?.find((x) => x?.key === item?.team[0]._id)) {
-        console.log(item, "aaaa");
+        // console.log(item, "aaaa");
         team.push({ key: item?.team[0]._id, value: item?.team[0].name });
       }
     });
@@ -656,17 +658,22 @@ const PaymentOfContributors = () => {
         "Link bài đăng": item?.link_posted,
         "Số từ": item?.number_words,
         "Số ảnh": item?.number_images,
-        "Tổng tiền": item?.total?.toLocaleString("it-IT", {
-          style: "currency",
-          currency: "VND",
-        }),
+        "Tổng tiền": item?.total
+        // ?.toLocaleString("it-IT", {
+        //   style: "currency",
+        //   currency: "VND",
+        // })
+        || 0,
         "Xác nhận": item?.status,
       };
     });
-    init["Tổng Tiền CTV"] = totalCTV.toLocaleString("it-IT", {
-      style: "currency",
-      currency: "VND",
-    });
+    init["Tổng Tiền CTV"] = totalCTV
+    // .toLocaleString("it-IT", {
+    //   style: "currency",
+    //   currency: "VND",
+    // })
+    
+    ;
     let whitelistExcel = [init, ...linkExportList];
     console.log(whitelistExcel);
     const ws = XLSX.utils.json_to_sheet(whitelistExcel, {

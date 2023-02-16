@@ -483,10 +483,12 @@ const CtvDashboard = () => {
         "Tên trên thẻ": item?.account_holder,
         "Số lượng từ": item?.number_words,
         "Tổng số bài": item?.link_management_ids?.length || 0,
-        "Tổng tiền": item?.total?.toLocaleString("it-IT", {
-          style: "currency",
-          currency: "VND",
-        }),
+        "Tổng tiền": item?.total || 0
+        // ?.toLocaleString("it-IT", {
+        //   style: "currency",
+        //   currency: "VND",
+        // })
+        ,
         "Xác nhận": item?.owner_confirm,
       };
     });
@@ -529,7 +531,7 @@ const CtvDashboard = () => {
   return (
     <React.Fragment>
       <div className="page-content">
-        <Container fluid>
+        <Container fluid> 
           <BreadCrumb title="Quản lý CTV" pageTitle="CTV" slug="domains" />
           <Row>
             <Col lg="2">

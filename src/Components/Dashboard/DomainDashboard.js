@@ -118,10 +118,12 @@ const DomainDashboard = () => {
         "Tên Team": item?.team?.name,
         "Tên thương hiệu": item?.brand?.name,
         "Tổng tiền":
-          item?.total?.toLocaleString("it-IT", {
-            style: "currency",
-            currency: "VND",
-          }) || 0,
+          item?.total
+          // ?.toLocaleString("it-IT", {
+          //   style: "currency",
+          //   currency: "VND",
+          // }) 
+          || 0,
       };
     });
 
