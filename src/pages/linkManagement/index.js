@@ -1,8 +1,19 @@
 import {
   Button,
+  Checkbox,
   Form,
   Input,
-  InputNumber, message, Modal, notification, Pagination, Select, Space, Spin, Switch, Table, Tooltip
+  InputNumber,
+  message,
+  Modal,
+  notification,
+  Pagination,
+  Select,
+  Space,
+  Spin,
+  Switch,
+  Table,
+  Tooltip,
 } from "antd";
 import "antd/es/style/index";
 import * as FileSaver from "file-saver";
@@ -14,7 +25,21 @@ import { Col, Container, Row } from "reactstrap";
 import * as XLSX from "xlsx";
 import { read, utils } from "xlsx";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { createLinkManagement, createLinkManagementExcel, deleteLinkManagement, exportDataTeams, getAllBrand, getAllDomain, getColabByDomainId, getDomainByTeam, getLinkManagementsByTeamUser, getLinkPostByColab, getLoggedInUser, getTeamByBrand, updateLinkManagement } from "../../helpers/helper";
+import {
+  createLinkManagement,
+  createLinkManagementExcel,
+  deleteLinkManagement,
+  exportDataTeams,
+  getAllBrand,
+  getAllDomain,
+  getColabByDomainId,
+  getDomainByTeam,
+  getLinkManagementsByTeamUser,
+  getLinkPostByColab,
+  getLoggedInUser,
+  getTeamByBrand,
+  updateLinkManagement,
+} from "../../helpers/helper";
 import ModalLinkDocs from "./ModalLinkDocs";
 import "./style.css";
 const { Option } = Select;
@@ -47,11 +72,10 @@ const LinkManagement = (props) => {
   const [linkByTeam, setLinkByTeam] = useState([]);
   const [sum, setSum] = useState(0);
   const [sumKey, setSumKey] = useState("");
-  const [brandListExcel, setBrandListExcel] = useState([])
-  const [teamListExcel, setTeamListExcel] = useState([])
-  const [brandExcel, setBrandExcel] = useState("")
-  const [teamExcel, setTeamExcel] = useState("")
-
+  const [brandListExcel, setBrandListExcel] = useState([]);
+  const [teamListExcel, setTeamListExcel] = useState([]);
+  const [brandExcel, setBrandExcel] = useState("");
+  const [teamExcel, setTeamExcel] = useState("");
 
   const [isModalOpenLinkDocs, setIsModalOpenLinkDocs] = useState(false);
 
@@ -205,7 +229,8 @@ const LinkManagement = (props) => {
       })
       .catch((error) => {
         api["error"]({
-          message: `Có lỗi xảy ra`,
+          message: error?.message || "Có lỗi xảy ra",
+
           description: error,
           placement: "top",
           duration: 3,
@@ -252,7 +277,9 @@ const LinkManagement = (props) => {
 
   const getTeamListByBrandExcel = async () => {
     if (brandExcel?.key || brandListExcel[0]?.key) {
-      const listTeam = await getTeamByBrand(brandExcel?.key || brandListExcel[0]?.key);
+      const listTeam = await getTeamByBrand(
+        brandExcel?.key || brandListExcel[0]?.key
+      );
       let teamListTemp = [];
       listTeam?.data?.map((item) => {
         let a = {
@@ -264,12 +291,9 @@ const LinkManagement = (props) => {
       });
       const teamList1 = teamListTemp;
       // setTeam(teamList1[0]);
-      setTeamListExcel(teamList1)
+      setTeamListExcel(teamList1);
     }
   };
-
-
-
 
   const getListBrand = async () => {
     const listBrand = await getAllBrand();
@@ -300,7 +324,7 @@ const LinkManagement = (props) => {
     brand?.key === undefined && setBrand(brandList[0]);
     setBrandList(brandList);
     // console.log(brandList,'brandList');
-    setBrandListExcel(brandList)
+    setBrandListExcel(brandList);
   };
 
   const getColapsByDomain = async (key) => {
@@ -371,8 +395,7 @@ const LinkManagement = (props) => {
     if (brandExcel?.key) {
       getTeamListByBrandExcel();
     }
-
-  }, [brandExcel?.key])
+  }, [brandExcel?.key]);
 
   useEffect(() => {
     getDomainListByTeam();
@@ -448,6 +471,7 @@ const LinkManagement = (props) => {
   };
 
   const handleOpenModal = () => {
+    setIsLoading(false);
     setOpenModal(true);
   };
   const handleCloseModal = () => {
@@ -481,28 +505,42 @@ const LinkManagement = (props) => {
       domain: values?.domain || "",
       price_per_word: values?.price_per_word,
       total: values?.total,
+      isPosted: values?.isPosted || false,
+      isDesign: values?.isDesign || false,
     };
-
+    console.log(values, "asdasdasd");
     if (!edit) {
-      const res = await createLinkManagement(dataReq).catch((error) => {
-        api["error"]({
-          message: `Có lỗi xảy ra`,
-          description: error?.message,
-          placement: "top",
-          duration: 3,
-        });
-      });
-      if (res?.success) {
-        getColapsByDomain(colab?.key);
-        handleGetLinkPostByColaps();
-        handleCloseModal();
+      const res = await createLinkManagement(dataReq)
+        .then((result) => {
+          if (result?.success) {
+            getColapsByDomain(colab?.key);
+            handleGetLinkPostByColaps();
+            handleCloseModal();
 
-        api["success"]({
-          message: `Thêm thành công`,
-          placement: "top",
-          duration: 2,
+            api["success"]({
+              message: `Thêm thành công`,
+              placement: "top",
+              duration: 2,
+            });
+          } else {
+            console.log(result, "asdasdasd");
+            api["error"]({
+              message: result?.message,
+              placement: "top",
+              duration: 3,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error, "asdasdasd");
+          api["error"]({
+            message: error?.message,
+            description: error?.message,
+            placement: "top",
+            duration: 3,
+          });
         });
-      }
+
       setIsLoading(false);
     } else {
       let dataUpdate = {
@@ -517,7 +555,8 @@ const LinkManagement = (props) => {
       const res = await updateLinkManagement(edit, dataUpdate).catch(
         (error) => {
           api["error"]({
-            message: `Có lỗi xảy ra`,
+            message: error?.message || "Có lỗi xảy ra",
+
             description: error,
             placement: "top",
             duration: 3,
@@ -560,14 +599,14 @@ const LinkManagement = (props) => {
     const listColab = await getLinkPostByColab(colab?.key, 10000, 1, "");
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-    const fileExtension = ".xlsx"; 
-    const whitelistExcel = data?.map((item, index) => {  
+    const fileExtension = ".xlsx";
+    const whitelistExcel = data?.map((item, index) => {
       // console.log(item, 'data');
       // return
       return {
         STT: index + 1,
         "Thương hiệu": item?.collaborators[0]?.domain[0]?.brand[0]?.name,
-        "Team": item?.collaborators[0]?.domain[0]?.team[0]?.name,
+        Team: item?.collaborators[0]?.domain[0]?.team[0]?.name,
         "Tiêu đề": item?.title,
         "Từ khóa": item?.keyword,
         "Chuyên mục": item?.category,
@@ -606,10 +645,13 @@ const LinkManagement = (props) => {
         link_post: item?.link_post,
         link_posted: item?.link_posted,
         status: item?.status,
-        total: ''
-        // "Chú thích : status = 1 là "
+        total: "",
+        isPosted: 1,
+        isDesign: 1,
       };
     });
+    whitelistExcel[0]["Chú thích"] =
+      "isPosted = 1 là bài tự đăng (1 là tự đăng(Cộng thêm 5k)), isDesign là tự thiết kế hình ảnh( 1 là tự thiết kế hình ảnh Cộng thêm 20k)";
     const ws = XLSX.utils.json_to_sheet(whitelistExcel, {
       header: [
         "QUẢN LÝ CỘNG TÁC VIÊN",
@@ -711,6 +753,12 @@ const LinkManagement = (props) => {
             Lưu ý: bài viết phải chuẩn định dạng google document. Nếu vẫn có lỗi
             bạn hãy copy nội dung qua một google document khác và thử lại.
           </p>
+          <Form.Item name="isPosted" valuePropName="checked">
+            <Checkbox name="isPosted">Đăng bài (+5000)</Checkbox>
+          </Form.Item>
+          <Form.Item name="isDesign" valuePropName="checked">
+            <Checkbox name="isDesign">Thiết kế hình ảnh (+20000)</Checkbox>
+          </Form.Item>
           <Form.Item label="Thêm theo tổng tiền bài viết">
             <Switch onChange={handleSwitchAdd} checked={switchAdd}></Switch>
           </Form.Item>
@@ -786,9 +834,9 @@ const LinkManagement = (props) => {
   const [movies, setMovies] = useState([]);
   const [isModalOpenExcelMau, setIsModalOpenExcelMau] = useState(false);
   const [isModalOpenExcelTeams, setIsModalOpenExcelTeams] = useState(false);
-  const [required, setRequired] = useState(false)
-  const [requireds, setRequireds] = useState(true)
-  const [file, setFile] = useState("")
+  const [required, setRequired] = useState(false);
+  const [requireds, setRequireds] = useState(true);
+  const [file, setFile] = useState("");
 
   const showModal = () => {
     setIsModalOpenExcelMau(true);
@@ -799,13 +847,12 @@ const LinkManagement = (props) => {
   };
 
   const handleCancel = () => {
-    setFile('');
-    setRequireds(true)
-    setRequired(false)
+    setFile("");
+    setRequireds(true);
+    setRequired(false);
     setMovies([]);
     setIsModalOpenExcelMau(false);
     form.resetFields();
-
   };
 
   const showModalExcelTeams = () => {
@@ -818,17 +865,13 @@ const LinkManagement = (props) => {
   };
 
   const handleCancelExcelTeams = () => {
-
     setIsModalOpenExcelTeams(false);
     form.resetFields();
-
   };
   const onFinishExcelMau = async (values) => {
-
-    let listData = []
-
-    movies.map((item) => {
-
+    let listData = [];
+    console.log(values, "asdasdsadasdasd");
+    movies?.map((item) => {
       let a = {
         link_post: item?.link_post,
         link_posted: item?.link_posted,
@@ -838,21 +881,28 @@ const LinkManagement = (props) => {
         collaboratorId: values?.collaboratorId,
         domain: values?.domain,
         price_per_word: item?.total ? null : values?.price_per_word,
-        total: item?.total
+        total: item?.total,
+        isPosted: item?.isPosted || 0,
+        isDesign: item?.isDesign || 0,
       };
 
-
       listData.push(a);
-    })
-
+    });
     const addImportExcel = await createLinkManagementExcel(listData);
-    addImportExcel.status === 1 ? message.success("Lưu thành công !") : message.error("không thành công !")
-
+    console.log(addImportExcel);
+    addImportExcel.status === 1
+      ? message.success(
+          `Lưu thành công ${addImportExcel?.countSuccess} và có ${addImportExcel?.countMatch} link bị trùng!`
+        )
+      : message.error("không thành công !");
+    setFile();
+    setMovies();
+    setIsModalOpenExcelMau(false);
   };
 
   const handleImport = ($event) => {
     const files = $event.target.files;
-    setFile(files[0].name)
+    setFile(files[0].name);
     if (files.length) {
       const file = files[0];
       const reader = new FileReader();
@@ -863,24 +913,29 @@ const LinkManagement = (props) => {
           const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
           rows.map((item, index) => {
             if (!item?.category) {
-              return message.error(`File excel Category hàng thứ ${index + 2} không được để trống`)
+              return message.error(
+                `File excel Category hàng thứ ${index + 2} không được để trống`
+              );
             }
             if (!item?.keyword) {
-              return message.error(`File excel keyword hàng thứ ${index + 2} không được để trống`)
+              return message.error(
+                `File excel keyword hàng thứ ${index + 2} không được để trống`
+              );
             }
             if (!item?.link_post) {
-              return message.error(`File excel link_post hàng thứ ${index + 2} không được để trống`)
+              return message.error(
+                `File excel link_post hàng thứ ${index + 2} không được để trống`
+              );
             }
 
             if (item.total) {
-              setRequired(true)
-              setRequireds(false)
-
+              setRequired(true);
+              setRequireds(false);
             } else {
-              setRequired(false)
-              setRequireds(true)
+              setRequired(false);
+              setRequireds(true);
             }
-          })
+          });
 
           setMovies(rows);
         }
@@ -890,26 +945,25 @@ const LinkManagement = (props) => {
   };
 
   const handleSelectBrandExcel = (value) => {
-    setBrandExcel(value)
-  }
+    setBrandExcel(value);
+  };
 
   const handleSelectTeamExcel = (value) => {
-    setTeamExcel(value)
-  }
+    setTeamExcel(value);
+  };
   const onClearBrandExcel = () => {
-    setBrandExcel({})
-    setTeamListExcel([])
-    setTeamExcel({})
-  }
+    setBrandExcel({});
+    setTeamListExcel([]);
+    setTeamExcel({});
+  };
 
   const exportDataTeam = async () => {
-    await exportDataTeams(brandExcel?.key, teamExcel?.key)
-  }
+    await exportDataTeams(brandExcel?.key, teamExcel?.key);
+  };
 
   useEffect(() => {
     exportDataTeam();
-  }, [])
-
+  }, []);
 
   return (
     <>
@@ -1025,12 +1079,12 @@ const LinkManagement = (props) => {
                   {(colab
                     ? colab?.total || 0
                     : domain
-                      ? domain?.total || 0
-                      : team
-                        ? team?.total || 0
-                        : brand
-                          ? brand?.total || 0
-                          : 0
+                    ? domain?.total || 0
+                    : team
+                    ? team?.total || 0
+                    : brand
+                    ? brand?.total || 0
+                    : 0
                   ).toLocaleString("it-IT", {
                     style: "currency",
                     currency: "VND",
@@ -1044,15 +1098,15 @@ const LinkManagement = (props) => {
                       style={
                         data?.length !== 0
                           ? {
-                            backgroundColor: "#026e39",
-                            border: "none",
-                            color: "white",
-                          }
+                              backgroundColor: "#026e39",
+                              border: "none",
+                              color: "white",
+                            }
                           : {
-                            backgroundColor: "gray",
-                            border: "none",
-                            color: "black",
-                          }
+                              backgroundColor: "gray",
+                              border: "none",
+                              color: "black",
+                            }
                       }
                       onClick={() => exportExcel()}
                       disabled={data?.length === 0}
@@ -1246,9 +1300,9 @@ const LinkManagement = (props) => {
           >
             <InputNumber type="number" disabled={required} />
           </Form.Item>
-          <Form.Item >
-            <div style={{ height: "20px", display: 'flex' }}>
-              <div style={{ width: '50%' }}>
+          <Form.Item>
+            <div style={{ height: "20px", display: "flex" }}>
+              <div style={{ width: "50%" }}>
                 <span
                   style={{
                     width: "150px",
@@ -1279,17 +1333,19 @@ const LinkManagement = (props) => {
                     className="custom-file-label"
                     htmlFor="inputGroupFile"
                   >
-                   Import file excel
+                    Import file excel
                   </label>
-
                 </span>
-                {file ? <span style={{ marginLeft: '10px' }}>{file}</span> : ""}
+                {file ? <span style={{ marginLeft: "10px" }}>{file}</span> : ""}
               </div>
-              <Button style={{ height: '37px' }} type="primary" onClick={() => exportExcelMau()}>
+              <Button
+                style={{ height: "37px" }}
+                type="primary"
+                onClick={() => exportExcelMau()}
+              >
                 Xuất file excel mẫu
               </Button>
             </div>
-
           </Form.Item>
           <Form.Item className="mt-5" style={{ textAlign: "right" }}>
             <Button type="primary" htmlType="submit">
@@ -1298,7 +1354,12 @@ const LinkManagement = (props) => {
           </Form.Item>
         </Form>
       </Modal>
-      <Modal title="Xuất excel theo teams" open={isModalOpenExcelTeams} onOk={handleOkExcelTeams} onCancel={handleCancelExcelTeams} >
+      <Modal
+        title="Xuất excel theo teams"
+        open={isModalOpenExcelTeams}
+        onOk={handleOkExcelTeams}
+        onCancel={handleCancelExcelTeams}
+      >
         <Col lg={12}>
           <p className="custom-label">Tên thương hiệu</p>
           <Select
@@ -1323,7 +1384,7 @@ const LinkManagement = (props) => {
             options={teamListExcel}
             allowClear
             onClear={() => setTeamExcel({})}
-          // disabled={user?.role !== "Admin"}
+            // disabled={user?.role !== "Admin"}
           ></Select>
         </Col>
       </Modal>
