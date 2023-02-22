@@ -36,15 +36,19 @@ const DomainDashboard = () => {
   const [idEdit, setIdEdit] = useState("");
   const [search, setSearch] = useState("");
   const [brandAll, setBrandAll] = useState([]);
-  const [selectedBrand, setSelectedBrand] = useState("")
-  const [teamList, setTeamList] = useState([])
-  const [team, setTeam] = useState("")
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [teamList, setTeamList] = useState([]);
+  const [team, setTeam] = useState("");
 
   const getDataDomains = () => {
-    getPagingDomains(pageSize, pageIndex, search, team?.key, selectedBrand?.key || "", [
-      dateRange[0].toISOString(),
-      dateRange[1].toISOString(),
-    ]).then((res) => {
+    getPagingDomains(
+      pageSize,
+      pageIndex,
+      search,
+      team?.key,
+      selectedBrand?.key || "",
+      [dateRange[0].toISOString(), dateRange[1].toISOString()]
+    ).then((res) => {
       setPageIndex(res.pageIndex);
       setPageSize(res.pageSize);
       setCount(res.count);
@@ -63,10 +67,10 @@ const DomainDashboard = () => {
     });
   };
 
-  const getTeamListByBrand = async()=>{
-    if(selectedBrand?.key){
-      const listTeam = await getTeamByBrand(selectedBrand?.key)
-      let teamListTemp = []
+  const getTeamListByBrand = async () => {
+    if (selectedBrand?.key) {
+      const listTeam = await getTeamByBrand(selectedBrand?.key);
+      let teamListTemp = [];
       listTeam?.data?.map((item) => {
         let a = {
           key: item?._id,
@@ -76,17 +80,17 @@ const DomainDashboard = () => {
         teamListTemp.push(a);
       });
       const teamList1 = teamListTemp;
-      setTeamList(teamList1)
+      setTeamList(teamList1);
     }
-  }
+  };
 
-  useEffect(()=>{
-    getTeamListByBrand()
-  },[selectedBrand?.key])
+  useEffect(() => {
+    getTeamListByBrand();
+  }, [selectedBrand?.key]);
 
-  const handleSelectTeam = (e) =>{
-    setTeam(e)
-  }
+  const handleSelectTeam = (e) => {
+    setTeam(e);
+  };
   useEffect(() => {
     getDataTeams();
     getDataDomains();
@@ -97,9 +101,9 @@ const DomainDashboard = () => {
     getDataDomains();
   };
 
-  const handleSelectBrand = (e) =>{
-    setSelectedBrand(e)
-  }
+  const handleSelectBrand = (e) => {
+    setSelectedBrand(e);
+  };
 
   const exportExcel = async () => {
     const dataReq = {
@@ -115,15 +119,16 @@ const DomainDashboard = () => {
       return {
         STT: index + 1,
         "Tên Domains": item?.name,
+        "Quản lý": item?.manager,
         "Tên Team": item?.team?.name,
         "Tên thương hiệu": item?.brand?.name,
         "Tổng tiền":
-          item?.total
+          item?.total ||
           // ?.toLocaleString("it-IT", {
           //   style: "currency",
           //   currency: "VND",
-          // }) 
-          || 0,
+          // })
+          0,
       };
     });
 
@@ -148,18 +153,25 @@ const DomainDashboard = () => {
   };
   const handleReset = async () => {
     setDateRange([dayjs().subtract(30, "days"), dayjs()]);
-    const res = await getPagingDomains(pageSize, pageIndex, search, team?.key || "", selectedBrand?.key || "", []);
+    const res = await getPagingDomains(
+      pageSize,
+      pageIndex,
+      search,
+      team?.key || "",
+      selectedBrand?.key || "",
+      []
+    );
     let dataTemp = res?.data?.map((item, index) => {
       return { ...item, key: index };
     });
     setData(dataTemp);
   };
 
-  const onClearBrand = () =>{
+  const onClearBrand = () => {
     setSelectedBrand({});
     setTeam({});
-    setTeamList([])
-  }
+    setTeamList([]);
+  };
   return (
     <React.Fragment>
       <div className="page-content">
@@ -179,20 +191,18 @@ const DomainDashboard = () => {
                 allowClear
                 onClear={() => onClearBrand()}
               >
-                {
-                  brandAll && 
-                  brandAll.map((item, index)=>{
+                {brandAll &&
+                  brandAll.map((item, index) => {
                     return (
                       <Option
-                              key={item?._id}
-                              value={item?._id}
-                              label={item?.name}
-                            >
-                              {item?.name}
-                            </Option>
-                    )
-                  })
-                }
+                        key={item?._id}
+                        value={item?._id}
+                        label={item?.name}
+                      >
+                        {item?.name}
+                      </Option>
+                    );
+                  })}
               </Select>
             </Col>
             <Col lg={2}>
@@ -204,7 +214,6 @@ const DomainDashboard = () => {
                 value={team}
                 onSelect={(key, value) => handleSelectTeam(value)}
                 options={teamList}
-
                 allowClear
                 onClear={() => setTeam({})}
               />
@@ -304,7 +313,18 @@ const DomainDashboard = () => {
                     return index + 1;
                   }}
                 />
-                <Column title="Domains" dataIndex="name" key="name" sorter={(a,b)=> a?.name.localeCompare(b?.name)} />
+                <Column
+                  title="Domains"
+                  dataIndex="name"
+                  key="name"
+                  sorter={(a, b) => a?.name.localeCompare(b?.name)}
+                />
+                <Column
+                  title="Quản lý"
+                  dataIndex="manager"
+                  key="manager"
+                  sorter={(a, b) => a?.name.localeCompare(b?.name)}
+                />
 
                 <Column
                   title="Teams"
@@ -313,7 +333,7 @@ const DomainDashboard = () => {
                   render={(val, record) => {
                     return <>{val?.name}</>;
                   }}
-                  sorter={(a,b)=> a?.team?.name.localeCompare(b?.team?.name)}
+                  sorter={(a, b) => a?.team?.name.localeCompare(b?.team?.name)}
                 />
                 <Column
                   title="Brands"
@@ -322,8 +342,11 @@ const DomainDashboard = () => {
                   render={(val, record) => {
                     return <>{val?.name}</>;
                   }}
-                  sorter={(a,b)=> a?.brand?.name.localeCompare(b?.brand?.name)}
+                  sorter={(a, b) =>
+                    a?.brand?.name.localeCompare(b?.brand?.name)
+                  }
                 />
+
                 <Column
                   title="Tổng tiền"
                   dataIndex="total"
@@ -338,7 +361,7 @@ const DomainDashboard = () => {
                       </>
                     );
                   }}
-                  sorter={(a,b)=> a?.total - b?.total}
+                  sorter={(a, b) => a?.total - b?.total}
                 />
               </Table>
               <Pagination

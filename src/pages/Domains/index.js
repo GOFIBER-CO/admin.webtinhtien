@@ -50,10 +50,9 @@ const Domains = () => {
   const [idEdit, setIdEdit] = useState("");
   const [search, setSearch] = useState("");
   const [brandAll, setBrandAll] = useState([]);
-  const [teamList, setTeamList] = useState([])
-  const [team,setTeam] = useState("")
+  const [teamList, setTeamList] = useState([]);
+  const [team, setTeam] = useState("");
   const ref = createRef();
-
 
   const onClose = () => {
     setVisibleForm(false);
@@ -66,7 +65,14 @@ const Domains = () => {
   };
 
   const getDataDomains = () => {
-    getPagingDomains(pageSize, pageIndex, search, team?.key || "",selectedBrand?.key || "",[] ).then((res) => {
+    getPagingDomains(
+      pageSize,
+      pageIndex,
+      search,
+      team?.key || "",
+      selectedBrand?.key || "",
+      []
+    ).then((res) => {
       setPageIndex(res.pageIndex);
       setPageSize(res.pageSize);
       setCount(res.count);
@@ -89,7 +95,7 @@ const Domains = () => {
     getDataTeams();
     getDataDomains();
     dataAllBrand();
-  }, [pageSize, pageIndex,selectedBrand]);
+  }, [pageSize, pageIndex, selectedBrand]);
 
   const onFinishFailed = () => {
     // message.error("Save failed!");
@@ -102,6 +108,7 @@ const Domains = () => {
       total: 0,
       team: data.team_id,
       brand: data.brand,
+      manager: data?.manager,
     };
     if (!data._id) {
       await insertDomains(dataDomains)
@@ -143,10 +150,9 @@ const Domains = () => {
     setSelectedBrand(e);
   };
 
-  const handleSelectTeam = (e) =>{
-    setTeam(e)
-  }
-
+  const handleSelectTeam = (e) => {
+    setTeam(e);
+  };
 
   const onEdit = (id) => {
     const dataEdit = data.filter((item) => item._id === id);
@@ -179,13 +185,14 @@ const Domains = () => {
       return {
         STT: index + 1,
         "Tên Domains": item?.name,
+        "Quản lý": item?.manager,
         "Tổng tiền":
-          item?.total
+          item?.total ||
           // ?.toLocaleString("it-IT", {
           //   style: "currency",
           //   currency: "VND",
-          // }) 
-          || 0,
+          // })
+          0,
       };
     });
 
@@ -198,33 +205,33 @@ const Domains = () => {
     FileSaver.saveAs(data, "Domains" + fileExtension);
   };
 
-  const getTeamListByBrand = async () =>{
-    if(selectedBrand?.key){
-        const listTeam = await getTeamByBrand(selectedBrand?.key)
-        let teamListTemp = [];
-        listTeam?.data?.map((item) => {
-          let a = {
-            key: item?._id,
-            value: item?.name,
-            total: item?.total,
-          };
-          teamListTemp.push(a);
-        });
-        const teamList1 = teamListTemp;
-        
-        setTeamList(teamList1)
-    }
-  }
+  const getTeamListByBrand = async () => {
+    if (selectedBrand?.key) {
+      const listTeam = await getTeamByBrand(selectedBrand?.key);
+      let teamListTemp = [];
+      listTeam?.data?.map((item) => {
+        let a = {
+          key: item?._id,
+          value: item?.name,
+          total: item?.total,
+        };
+        teamListTemp.push(a);
+      });
+      const teamList1 = teamListTemp;
 
-  useEffect(()=>{
-      getTeamListByBrand()
-  },[selectedBrand?.key])
-  
-  const onClearBrand = () =>{
-    setSelectedBrand({})
-    setTeamList([])
-    setTeam({})
-  }
+      setTeamList(teamList1);
+    }
+  };
+
+  useEffect(() => {
+    getTeamListByBrand();
+  }, [selectedBrand?.key]);
+
+  const onClearBrand = () => {
+    setSelectedBrand({});
+    setTeamList([]);
+    setTeam({});
+  };
   return (
     <React.Fragment>
       <div className="page-content">
@@ -364,6 +371,22 @@ const Domains = () => {
                     </Select>
                   </Form.Item>
                 </Col>
+                <Col>
+                  <Form.Item name="manager" label="Người quản lý">
+                    <Input
+                      placeholder="Người quản lý"
+                      name="manager"
+                      allowClear={true}
+                      onChange={(e) =>
+                        form.setFieldsValue({
+                          manager: e.target.value,
+                        })
+                      }
+                      // value={dataEdit}
+                      // defaultValue={dataEdit}
+                    />
+                  </Form.Item>
+                </Col>
                 <Form.Item>
                   <Space>
                     {idEdit ? (
@@ -398,18 +421,18 @@ const Domains = () => {
                 value={selectedBrand}
                 onSelect={(key, value) => handleSelectBrand(value)}
                 // options={domainList}
-                
+
                 allowClear
                 onClear={() => onClearBrand()}
               >
                 {brandAll &&
-                            brandAll?.map((item, index) => {
-                              return (
-                                <Option value={item._id} key={item._id}>
-                                  {item.name}
-                                </Option>
-                              );
-                            })}
+                  brandAll?.map((item, index) => {
+                    return (
+                      <Option value={item._id} key={item._id}>
+                        {item.name}
+                      </Option>
+                    );
+                  })}
               </Select>
             </Col>
             <Col lg="2">
@@ -421,7 +444,6 @@ const Domains = () => {
                 value={team}
                 onSelect={(key, value) => handleSelectTeam(value)}
                 options={teamList}
-                
                 allowClear
                 onClear={() => setTeam({})}
               >
@@ -436,8 +458,7 @@ const Domains = () => {
               </Select>
             </Col>
             <Col lg="4">
-              <div style={{marginTop:'24px'}}>
-             
+              <div style={{ marginTop: "24px" }}>
                 <InputGroup>
                   <Input
                     // value={searchText}
@@ -518,7 +539,18 @@ const Domains = () => {
                     return index + 1;
                   }}
                 />
-                <Column title="Domains" dataIndex="name" key="name" sorter= {(a,b)=>a?.name.localeCompare(b?.name)} />
+                <Column
+                  title="Domains"
+                  dataIndex="name"
+                  key="name"
+                  sorter={(a, b) => a?.name.localeCompare(b?.name)}
+                />
+                <Column
+                  title="Người quản lý"
+                  dataIndex="manager"
+                  key="manager"
+                  sorter={(a, b) => a?.manager?.localeCompare(b?.manager)}
+                />
 
                 <Column
                   title="Teams"
@@ -527,7 +559,7 @@ const Domains = () => {
                   render={(val, record) => {
                     return <>{val?.name}</>;
                   }}
-                  sorter= {(a,b)=>a?.team?.name.localeCompare(b?.team?.name)}
+                  sorter={(a, b) => a?.team?.name.localeCompare(b?.team?.name)}
                 />
                 <Column
                   title="Brands"
@@ -536,7 +568,7 @@ const Domains = () => {
                   render={(val, record) => {
                     return <>{val?.name}</>;
                   }}
-                  sorter = {(a,b) => a?.brand?.name.localeCompare(b?.brand.name)}
+                  sorter={(a, b) => a?.brand?.name.localeCompare(b?.brand.name)}
                 />
                 <Column
                   title="Hoạt động"

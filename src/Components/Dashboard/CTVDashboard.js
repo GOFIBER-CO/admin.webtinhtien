@@ -151,12 +151,30 @@ const CtvDashboard = () => {
 
   const columns = [
     {
+      title: "Domains",
+      dataIndex: "domain",
+      // width: "10%",
+      render: (value) => {
+        return value?.map((item) => item?.name)?.toString();
+      },
+      sorter: (a, b) => a?.domain[0]?.name.localeCompare(b?.domain[0]?.name),
+    },
+    {
+      title: "Quản lý",
+      dataIndex: "domains",
+      // width: "10%",
+      render: (_, record) => {
+        return record?.domain?.map((item) => item?.manager)?.toString();
+      },
+      sorter: (a, b) =>
+        a?.domain[0]?.manager?.localeCompare(b?.domain[0]?.manager),
+    },
+    {
       title: "Tên CTV",
       dataIndex: "name",
       width: "10%",
-      sorter: (a,b) => a?.name.localeCompare(b?.name),
+      sorter: (a, b) => a?.name.localeCompare(b?.name),
       editable: true,
-      
     },
     {
       title: "STK",
@@ -169,21 +187,21 @@ const CtvDashboard = () => {
       dataIndex: "bank_name",
       width: "12%",
       editable: true,
-      sorter: (a,b) => a?.bank_name.localeCompare(b?.bank_name),
+      sorter: (a, b) => a?.bank_name.localeCompare(b?.bank_name),
     },
     {
       title: "Tên trên thẻ",
       dataIndex: "account_holder",
       width: "10%",
       editable: true,
-      sorter: (a,b) => a?.bank_name.localeCompare(b?.bank_name),
+      sorter: (a, b) => a?.bank_name.localeCompare(b?.bank_name),
     },
     {
       title: "Số từ",
       dataIndex: "number_words",
       width: "7%",
       editable: false,
-      sorter: (a,b) => a?.number_words - b?.number_words
+      sorter: (a, b) => a?.number_words - b?.number_words,
     },
     {
       title: "Số bài viết",
@@ -193,7 +211,8 @@ const CtvDashboard = () => {
       render: (value) => {
         return <>{value?.length}</>;
       },
-      sorter: (a,b) => a?.link_management_ids.length - b?.link_management_ids?.length
+      sorter: (a, b) =>
+        a?.link_management_ids.length - b?.link_management_ids?.length,
     },
     {
       title: "Thành tiền",
@@ -208,7 +227,7 @@ const CtvDashboard = () => {
           }) || 0
         );
       },
-      sorter: (a,b) => a?.total - b?.total
+      sorter: (a, b) => a?.total - b?.total,
     },
     {
       title: "Ghi chú",
@@ -225,62 +244,62 @@ const CtvDashboard = () => {
         return <>{value}</>;
       },
     },
-    {
-      title: "Hành động",
-      dataIndex: "operation",
-      render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              onClick={() => save(record?._id)}
-              style={{
-                marginRight: 8,
-              }}
-            >
-              Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
-            </Popconfirm>
-          </span>
-        ) : (
-          <>
-            <Typography.Link
-              disabled={editingKey !== ""}
-              onClick={() =>
-                history.push(`/postsLink`, [
-                  { key: record?._id, value: record?.name },
-                  domain,
-                  brand,
-                ])
-              }
-            >
-              <ImEye />
-            </Typography.Link>
-            <Typography.Link
-              disabled={editingKey !== ""}
-              onClick={() => edit(record)}
-              style={{ marginRight: "7px", marginLeft: "7px" }}
-            >
-              <AiOutlineEdit />
-            </Typography.Link>
-            <Popconfirm
-              title="Sure to delete?"
-              onConfirm={() => handleDelete(record)}
-            >
-              <ImBin2
-                style={{
-                  color: "#e93600",
-                  cursor: "pointer",
-                  marginLeft: "5px",
-                }}
-              />
-            </Popconfirm>
-          </>
-        );
-      },
-    },
+    // {
+    //   title: "Hành động",
+    //   dataIndex: "operation",
+    //   render: (_, record) => {
+    //     const editable = isEditing(record);
+    //     return editable ? (
+    //       <span>
+    //         <Typography.Link
+    //           onClick={() => save(record?._id)}
+    //           style={{
+    //             marginRight: 8,
+    //           }}
+    //         >
+    //           Save
+    //         </Typography.Link>
+    //         <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+    //           <a>Cancel</a>
+    //         </Popconfirm>
+    //       </span>
+    //     ) : (
+    //       <>
+    //         <Typography.Link
+    //           disabled={editingKey !== ""}
+    //           onClick={() =>
+    //             history.push(`/postsLink`, [
+    //               { key: record?._id, value: record?.name },
+    //               domain,
+    //               brand,
+    //             ])
+    //           }
+    //         >
+    //           <ImEye />
+    //         </Typography.Link>
+    //         <Typography.Link
+    //           disabled={editingKey !== ""}
+    //           onClick={() => edit(record)}
+    //           style={{ marginRight: "7px", marginLeft: "7px" }}
+    //         >
+    //           <AiOutlineEdit />
+    //         </Typography.Link>
+    //         <Popconfirm
+    //           title="Sure to delete?"
+    //           onConfirm={() => handleDelete(record)}
+    //         >
+    //           <ImBin2
+    //             style={{
+    //               color: "#e93600",
+    //               cursor: "pointer",
+    //               marginLeft: "5px",
+    //             }}
+    //           />
+    //         </Popconfirm>
+    //       </>
+    //     );
+    //   },
+    // },
   ];
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
@@ -477,18 +496,18 @@ const CtvDashboard = () => {
       return {
         STT: index + 1,
         Domain: item?.domain?.map((item) => item.name).toString(),
+        "Quản lý": item?.domain?.map((item) => item?.manager).toString(),
         "Tên CTV": item?.name,
         "Số tài khoản": item?.stk,
         "Tên ngân hàng": item?.bank_name,
         "Tên trên thẻ": item?.account_holder,
         "Số lượng từ": item?.number_words,
         "Tổng số bài": item?.link_management_ids?.length || 0,
-        "Tổng tiền": item?.total || 0
+        "Tổng tiền": item?.total || 0,
         // ?.toLocaleString("it-IT", {
         //   style: "currency",
         //   currency: "VND",
         // })
-        ,
         "Xác nhận": item?.owner_confirm,
       };
     });
@@ -531,7 +550,7 @@ const CtvDashboard = () => {
   return (
     <React.Fragment>
       <div className="page-content">
-        <Container fluid> 
+        <Container fluid>
           <BreadCrumb title="Quản lý CTV" pageTitle="CTV" slug="domains" />
           <Row>
             <Col lg="2">

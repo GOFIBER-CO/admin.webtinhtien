@@ -107,6 +107,17 @@ const LinkManagement = (props) => {
       width: "10%",
     },
     {
+      title: "Quản lý",
+      dataIndex: "domains",
+      // width: "10%",
+      render: (_, record) => {
+        console.log(record, "asdasd");
+        return record?.domain?.manager?.toString();
+      },
+      sorter: (a, b) =>
+        a?.domain[0]?.manager?.localeCompare(b?.domain[0]?.manager),
+    },
+    {
       title: "Tiêu đề",
       dataIndex: "title",
       key: "title",

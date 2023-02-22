@@ -35,7 +35,7 @@ const columns = [
     title: "Tên thương hiệu",
     dataIndex: "name",
     key: "name",
-    sorter: (a,b) => a?.name.localeCompare(b?.name)
+    sorter: (a, b) => a?.name.localeCompare(b?.name),
   },
   {
     title: "Tổng tiền",
@@ -49,7 +49,7 @@ const columns = [
         }) || 0
       );
     },
-    sorter: (a,b) => a?.total - b?.total
+    sorter: (a, b) => a?.total - b?.total,
   },
   // {
   //   title: <button onClick={(e)=> console.log(e)}>Xuất Excel chi tiết</button>
@@ -156,7 +156,13 @@ const Dashboard = (props) => {
           title: "Tên Domains",
           dataIndex: "name",
           key: "name",
-          sorter: (a,b) => a?.name.localeCompare(b?.name)
+          sorter: (a, b) => a?.name.localeCompare(b?.name),
+        },
+        {
+          title: "Quản lý",
+          dataIndex: "manager",
+          key: "manager",
+          sorter: (a, b) => a?.manager.localeCompare(b?.manager),
         },
         {
           title: "Tổng số tiền",
@@ -170,7 +176,7 @@ const Dashboard = (props) => {
               }) || 0
             );
           },
-          sorter: (a,b) => a?.total - b?.total
+          sorter: (a, b) => a?.total - b?.total,
         },
       ];
       return (
@@ -197,7 +203,7 @@ const Dashboard = (props) => {
         title: "Team",
         dataIndex: "name",
         key: "name",
-        sorter: (a,b)=> a?.name.localeCompare(b?.name)
+        sorter: (a, b) => a?.name.localeCompare(b?.name),
       },
       {
         title: "Tổng số tiền",
@@ -211,7 +217,7 @@ const Dashboard = (props) => {
             }) || 0
           );
         },
-        sorter: (a,b)=> a?.total - b?.total
+        sorter: (a, b) => a?.total - b?.total,
       },
     ];
     return (
@@ -273,12 +279,12 @@ const Dashboard = (props) => {
               Domain: itemDomain?.name,
               CTV: itemColab?.name,
               "Tổng tiền":
-                itemColab?.total
+                itemColab?.total ||
                 // ?.toLocaleString("it-IT", {
                 //   style: "currency",
                 //   currency: "VND",
-                // }) 
-                || 0,
+                // })
+                0,
             };
             exportList.push(a);
           });

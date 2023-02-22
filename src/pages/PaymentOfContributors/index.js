@@ -156,23 +156,33 @@ const PaymentOfContributors = () => {
     {
       title: "Domains",
       dataIndex: "domain",
-      width: "10%",
+      // width: "10%",
       render: (value) => {
         return value?.map((item) => item?.name)?.toString();
       },
-      sorter: (a,b)=> a?.domain[0]?.name.localeCompare(b?.domain[0]?.name) ,
+      sorter: (a, b) => a?.domain[0]?.name.localeCompare(b?.domain[0]?.name),
+    },
+    {
+      title: "Quản lý",
+      dataIndex: "domains",
+      // width: "10%",
+      render: (_, record) => {
+        return record?.domain?.map((item) => item?.manager)?.toString();
+      },
+      sorter: (a, b) =>
+        a?.domain[0]?.manager?.localeCompare(b?.domain[0]?.manager),
     },
     {
       title: "Tên CTV",
       dataIndex: "name",
-      width: "10%",
+      // width: "10%",
       editable: true,
-      sorter: (a,b)=> a?.name.localeCompare(b?.name) ,
+      sorter: (a, b) => a?.name.localeCompare(b?.name),
     },
     {
       title: "STK",
       dataIndex: "stk",
-      width: "10%",
+      // width: "10%",
       editable: true,
     },
     {
@@ -180,21 +190,21 @@ const PaymentOfContributors = () => {
       dataIndex: "bank_name",
       width: "10%",
       editable: true,
-      sorter: (a,b)=> a?.bank_name.localeCompare(b?.bank_name) ,
+      sorter: (a, b) => a?.bank_name.localeCompare(b?.bank_name),
     },
     {
       title: "Tên trên thẻ",
       dataIndex: "account_holder",
       width: "10%",
       editable: true,
-      sorter: (a,b)=> a?.account_holder.localeCompare(b?.account_holder) ,
+      sorter: (a, b) => a?.account_holder.localeCompare(b?.account_holder),
     },
     {
       title: "Số từ",
       dataIndex: "number_words",
       width: "7%",
       editable: false,
-      sorter: (a,b)=> a?.number_words -b?.number_words ,
+      sorter: (a, b) => a?.number_words - b?.number_words,
     },
     {
       title: "Số bài viết",
@@ -204,12 +214,13 @@ const PaymentOfContributors = () => {
       render: (value) => {
         return <>{value?.length}</>;
       },
-      sorter: (a,b)=> a?.link_management_ids?.length -b?.link_management_ids?.length ,
+      sorter: (a, b) =>
+        a?.link_management_ids?.length - b?.link_management_ids?.length,
     },
     {
       title: "Thành tiền",
       dataIndex: "total",
-      width: "10%",
+      // width: "10%",
       editable: false,
       render: (value) => {
         return (
@@ -219,7 +230,7 @@ const PaymentOfContributors = () => {
           }) || 0
         );
       },
-      sorter: (a,b)=> a?.total -b?.total ,
+      sorter: (a, b) => a?.total - b?.total,
     },
     {
       title: "Ghi chú",
@@ -538,18 +549,20 @@ const PaymentOfContributors = () => {
       return {
         STT: index + 1,
         Domain: item?.domain?.map((item) => item.name).toString(),
+        "Quản lý": item?.domain?.map((item) => item.manager).toString(),
         "Tên CTV": item?.name,
         "Số tài khoản": item?.stk,
         "Tên ngân hàng": item?.bank_name,
         "Tên trên thẻ": item?.account_holder,
         "Số lượng từ": item?.number_words,
         "Tổng số bài": item?.link_management_ids?.length || 0,
-        "Tổng tiền": item?.total
-        // ?.toLocaleString("it-IT", {
-        //   style: "currency",
-        //   currency: "VND",
-        // })
-        || 0,
+        "Tổng tiền":
+          item?.total ||
+          // ?.toLocaleString("it-IT", {
+          //   style: "currency",
+          //   currency: "VND",
+          // })
+          0,
         "Xác nhận": item?.owner_confirm,
       };
     });
@@ -573,17 +586,17 @@ const PaymentOfContributors = () => {
   const [teamSelectedExport, setTeamSelectedExport] = useState({});
   const [domainExport, setDomainExport] = useState([]);
   const [domainSelectedExport, setDomainSelectedExport] = useState({});
-  const [user, setUser] = useState({})
-  const getUser = async() =>{
-      const user = await getLoggedInUser()
-      if (user?.role !== "Admin") {
-        setTeam({ key: user?.team?._id, value: user?.team?.name });
-      }
-      setUser(user);
-  }
-  useEffect(()=>{
-    getUser()
-  },[])
+  const [user, setUser] = useState({});
+  const getUser = async () => {
+    const user = await getLoggedInUser();
+    if (user?.role !== "Admin") {
+      setTeam({ key: user?.team?._id, value: user?.team?.name });
+    }
+    setUser(user);
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const handleCloseModalExport = () => {
     setModalExportOne(false);
@@ -658,22 +671,21 @@ const PaymentOfContributors = () => {
         "Link bài đăng": item?.link_posted,
         "Số từ": item?.number_words,
         "Số ảnh": item?.number_images,
-        "Tổng tiền": item?.total
-        // ?.toLocaleString("it-IT", {
-        //   style: "currency",
-        //   currency: "VND",
-        // })
-        || 0,
+        "Tổng tiền":
+          item?.total ||
+          // ?.toLocaleString("it-IT", {
+          //   style: "currency",
+          //   currency: "VND",
+          // })
+          0,
         "Xác nhận": item?.status,
       };
     });
-    init["Tổng Tiền CTV"] = totalCTV
+    init["Tổng Tiền CTV"] = totalCTV;
     // .toLocaleString("it-IT", {
     //   style: "currency",
     //   currency: "VND",
     // })
-    
-    ;
     let whitelistExcel = [init, ...linkExportList];
     console.log(whitelistExcel);
     const ws = XLSX.utils.json_to_sheet(whitelistExcel, {
