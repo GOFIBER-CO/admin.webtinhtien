@@ -14,8 +14,10 @@ import {
   Switch,
   Table,
   Tooltip,
+  DatePicker,
 } from "antd";
 import "antd/es/style/index";
+import dayjs from "dayjs";
 import * as FileSaver from "file-saver";
 import React, { useEffect, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
@@ -44,6 +46,7 @@ import ModalLinkDocs from "./ModalLinkDocs";
 import "./style.css";
 const { Option } = Select;
 const { Search } = Input;
+const { RangePicker } = DatePicker;
 
 //sample data
 
@@ -499,7 +502,8 @@ const LinkManagement = (props) => {
       brand?.key || "",
       team?.key || "",
       domain?.key || "",
-      colab?.key || ""
+      colab?.key || "",
+      [dateRange[0].toISOString(), dateRange[1].toISOString()]
     );
     setTotal(linkPost?.count);
     setData(linkPost?.data);
@@ -976,6 +980,15 @@ const LinkManagement = (props) => {
     exportDataTeam();
   }, []);
 
+  const [dateRange, setDateRange] = useState([
+    dayjs().subtract(30, "days"),
+    dayjs(),
+  ]);
+  const onDateRangeChange = (dates, dateStrings) => {
+    const date = [dates[0].toISOString(), dates[1].toISOString()];
+    setDateRange(dates);
+  };
+
   return (
     <>
       {contextHolder}
@@ -1042,16 +1055,6 @@ const LinkManagement = (props) => {
                   onClear={() => setColab({})}
                 />
               </Col>
-              <Col lg="1">
-                <br />
-                <Button
-                  style={{ height: 36, margin: "5px" }}
-                  type="primary"
-                  onClick={handleGetLinkPostByColaps}
-                >
-                  Lọc
-                </Button>
-              </Col>
             </Row>
             <Row>
               <Col lg="3">
@@ -1064,6 +1067,28 @@ const LinkManagement = (props) => {
                   onChange={(e) => setSearch(e.target.value)}
                   onSearch={onSearch}
                 />
+              </Col>
+              <Col lg="2">
+                <p className="custom-label">Lọc theo ngày</p>
+                <Space size={15}>
+                  <RangePicker
+                    style={{ height: "40px" }}
+                    defaultValue={dateRange}
+                    value={dateRange}
+                    allowClear={false}
+                    onChange={onDateRangeChange}
+                  />
+                </Space>
+              </Col>
+              <Col>
+                <br />
+                <Button
+                  style={{ height: 36, margin: "5px" }}
+                  type="primary"
+                  onClick={handleGetLinkPostByColaps}
+                >
+                  Lọc
+                </Button>
               </Col>
             </Row>
             <Row style={{ marginTop: "10px" }}>

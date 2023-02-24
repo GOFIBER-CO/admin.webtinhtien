@@ -312,7 +312,14 @@ export const deletePayment = (id) =>
 
 //Domains
 export const insertDomains = (data) => api.create(`${url.API_DOMAINS}`, data);
-export const getPagingDomains = (pageSize, pageIndex, search, team , brand, dateRange = []) =>
+export const getPagingDomains = (
+  pageSize,
+  pageIndex,
+  search,
+  team,
+  brand,
+  dateRange = []
+) =>
   api.get(
     `${url.API_DOMAINS}?pageSize=${pageSize}&pageIndex=${pageIndex}&search=${search}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}&team=${team}&brand=${brand}`
   );
@@ -343,7 +350,7 @@ export const getAllBrands = () => api.get(`${url.API_BRANDS}/getAll`);
 export const createLinkManagement = (data) =>
   api.create(`${url.API_LINK_MANAGEMENT}`, data);
 
-  export const createLinkManagementExcel = (data) =>
+export const createLinkManagementExcel = (data) =>
   api.create(`${url.API_LINK_MANAGEMENT}-excel`, data);
 
 export const updateLinkManagement = (id, data) =>
@@ -367,10 +374,11 @@ export const getLinkPostByColab = (
   brand,
   team,
   domain,
-  colab
+  colab,
+  dateRange
 ) =>
   api.get(
-    `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}&coladId=${colab}`
+    `${url.API_LINK_MANAGEMENT}/getLinkManagementsByCollaboratorId?pageIndex=${pageIndex}&pageSize=${pageSize}&search=${search}&brand=${brand}&team=${team}&domainId=${domain}&coladId=${colab}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
   );
 
 //Quản lý users
@@ -388,7 +396,13 @@ export const updateUsers = (id, body) => {
 
 //Teams
 
-export const getPagingTeams = (pageSize, pageIndex, search, brand, dateRange = []) =>
+export const getPagingTeams = (
+  pageSize,
+  pageIndex,
+  search,
+  brand,
+  dateRange = []
+) =>
   api.get(
     `${url.API_TEAMS}?search=${search}&pageSize=${pageSize}&pageIndex=${pageIndex}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}&brand=${brand}`
   );
@@ -403,8 +417,6 @@ export const getTeamByBrand = (
   api.get(
     `${url.API_TEAMS}/getTeamByBrand/${brandid}?pageSize=${pageSize}&pageIndex=${pageIndex}&dateFrom=${dateRange?.[0]}&dateTo=${dateRange?.[1]}`
   );
-
-
 
 export const getAllDomain = () => api.get(`${url.API_DOMAINS}/getAll`);
 
@@ -428,6 +440,7 @@ export const getLinkManagementsByTeamUser = (teamId) =>
     `${url.API_LINK_MANAGEMENT}/getLinkManagementsByTeamUser?teamId=${teamId}`
   );
 
-export const exportDataTeams = (brand, team) => api.get(`${url.API_LINK_MANAGEMENT}-excel-teams?brand=${brand}&team=${team}`)
+export const exportDataTeams = (brand, team) =>
+  api.get(`${url.API_LINK_MANAGEMENT}-excel-teams?brand=${brand}&team=${team}`);
 export const getStatisticTeam = (teamId) =>
   api.get(`${url.API_TEAMS}/getStatisticTeam?teamId=${teamId}`);
