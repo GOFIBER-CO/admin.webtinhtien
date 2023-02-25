@@ -889,11 +889,11 @@ const PaymentOfContributors = () => {
                     },
                   ]}
                 >
-                  <Select mode="multiple">
+                  <Select mode="multiple" showSearch optionFilterProp="label">
                     {listDomainAdd?.map((item) => {
                       return (
                         <>
-                          <Select.Option value={item?._id}>
+                          <Select.Option value={item?._id} label={item?.name}>
                             {item?.name}
                           </Select.Option>
                         </>
