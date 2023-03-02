@@ -37,7 +37,6 @@ const Roles = () => {
   const addRole = async (roleName) => {
     try {
       refLoading.current.continuousStart();
-      console.log(roleName);
       const result = await addNewRole(roleName);
       getRoles();
       toast.success("Add success");

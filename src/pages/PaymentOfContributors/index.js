@@ -687,7 +687,6 @@ const PaymentOfContributors = () => {
     //   currency: "VND",
     // })
     let whitelistExcel = [init, ...linkExportList];
-    console.log(whitelistExcel);
     const ws = XLSX.utils.json_to_sheet(whitelistExcel, {
       header: ["QUẢN LÝ CỘNG TÁC VIÊN"],
     });

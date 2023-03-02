@@ -11,7 +11,6 @@ const UserDetail = () => {
   // console.log("params: ", params);
   useEffect(() => {
     getPagingUsers().then((res) => {
-      console.log(res, 'res');
       // setUser(res);
     });
   }, []);

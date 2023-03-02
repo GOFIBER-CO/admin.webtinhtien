@@ -523,7 +523,6 @@ const LinkManagement = (props) => {
       isPosted: values?.isPosted || false,
       isDesign: values?.isDesign || false,
     };
-    console.log(values, "asdasdasd");
     if (!edit) {
       const res = await createLinkManagement(dataReq)
         .then((result) => {
@@ -538,7 +537,6 @@ const LinkManagement = (props) => {
               duration: 2,
             });
           } else {
-            console.log(result, "asdasdasd");
             api["error"]({
               message: result?.message,
               placement: "top",
@@ -547,7 +545,6 @@ const LinkManagement = (props) => {
           }
         })
         .catch((error) => {
-          console.log(error, "asdasdasd");
           api["error"]({
             message: error?.message,
             description: error?.message,
@@ -885,7 +882,6 @@ const LinkManagement = (props) => {
   };
   const onFinishExcelMau = async (values) => {
     let listData = [];
-    console.log(values, "asdasdsadasdasd");
     movies?.map((item) => {
       let a = {
         link_post: item?.link_post,
@@ -904,7 +900,6 @@ const LinkManagement = (props) => {
       listData.push(a);
     });
     const addImportExcel = await createLinkManagementExcel(listData);
-    console.log(addImportExcel);
     addImportExcel.status === 1
       ? message.success(
           `Lưu thành công ${addImportExcel?.countSuccess} và có ${addImportExcel?.countMatch} link bị trùng!`
