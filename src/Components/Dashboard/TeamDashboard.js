@@ -35,6 +35,7 @@ import dayjs from "dayjs";
 import { AiFillFileExcel } from "react-icons/ai";
 import { forEach } from "lodash";
 import { list } from "postcss";
+import moment from "moment/moment";
 const ExcelJS = require("exceljs");
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -288,7 +289,6 @@ const TeamDashboard = () => {
         if (data?.find((x) => x?._id === dataSet?._id)) {
           const sheet = workbook.addWorksheet(`${dataSet?.name}`);
           sheet.properties.defaultRowHeight = 20;
-
           let optionBorder = {
             top: { color: { argb: "000000" }, style: "thin" },
             left: { color: { argb: "000000" }, style: "thin" },
@@ -301,9 +301,9 @@ const TeamDashboard = () => {
             size: 12,
             bold: true,
           };
-          sheet.mergeCells("A1", "L2");
+          sheet.mergeCells("A1", "S2");
           sheet.getCell("A1").value = "Quản lý team";
-          sheet.getCell("A1", "L2").font = {
+          sheet.getCell("A1", "S2").font = {
             name: "Time New Romans",
             family: 4,
             size: 16,
@@ -313,8 +313,8 @@ const TeamDashboard = () => {
             vertical: "middle",
             horizontal: "center",
           };
-          sheet.getCell("A1", "L2").border = optionBorder;
-          sheet.getCell("A1", "L2").fill = {
+          sheet.getCell("A1", "S2").border = optionBorder;
+          sheet.getCell("A1", "S2").fill = {
             type: "pattern",
             pattern: "solid",
             fgColor: { argb: "ffffcc00" },
@@ -325,6 +325,8 @@ const TeamDashboard = () => {
             "Team",
             "Hậu đài",
             "CTV",
+            "Website",
+            "Quản lý",
             "Key",
             "Chuyên mục",
             "Link docs",
@@ -333,8 +335,14 @@ const TeamDashboard = () => {
             "Giá tiền",
             "Tổng tiền theo bài",
             "Trạng thái",
+            "Ngày đăng", //
+            "Tổng tiền theo website",
+            "STK",
+            "Ngân hàng",
+            "Tên TK ngân hàng",
           ];
-          for (let i = 1; i <= 12; i++) {
+          //BOlD HEADER
+          for (let i = 1; i <= 19; i++) {
             sheet.getCell(3, Number(i)).border = optionBorder;
             sheet.getCell(3, Number(i)).font = optionbold;
           }
@@ -357,6 +365,8 @@ const TeamDashboard = () => {
               border: optionBorder,
             },
             { key: "ctv", width: 15, border: optionBorder },
+            { key: "domains", width: 15, border: optionBorder },
+            { key: "domain_manager", width: 15, border: optionBorder },
             { key: "key", width: 20, border: optionBorder },
             { key: "category", width: 20, border: optionBorder },
             { key: "link_post", width: 20, border: optionBorder },
@@ -365,6 +375,12 @@ const TeamDashboard = () => {
             { key: "price_per_word", border: optionBorder },
             { key: "total", width: 20, border: optionBorder },
             { key: "status", width: 20, border: optionBorder },
+            { key: "updatedAt", width: 20, border: optionBorder }, //
+            { key: "total_domains", width: 30, border: optionBorder },
+
+            { key: "stk", width: 20, border: optionBorder },
+            { key: "bank_name", width: 20, border: optionBorder },
+            { key: "account_holder", width: 20, border: optionBorder },
           ];
           //Add dataSet
           let dataSetExport = [];
@@ -373,35 +389,57 @@ const TeamDashboard = () => {
           let countCTV = 0;
           let xBrand = 4;
           let yBrand = 4;
+          let mergeDomains = [];
           dataSet?.domains?.map((itemDomain, indexDomain) => {
+            let countTotalDomains = 0;
             itemDomain?.collaborators?.map((itemColab, indexColab) => {
               countCTV = 0;
               itemColab?.linkmanagements?.map((itemLink, indexLink) => {
+                countTotalDomains = countTotalDomains + itemLink?.total;
                 let a = {
                   stt: count,
                   team: dataSet?.name || "",
                   brand: itemDomain?.brand?.name || "",
                   ctv: itemColab?.name || "",
+                  domains: itemLink?.domains?.name || "",
+                  domain_manager: itemLink?.domains?.manager || "",
                   key: itemLink?.keyword || "",
                   category: itemLink?.category || "",
                   link_post: itemLink?.link_post || "",
                   link_posted: itemLink?.link_posted || "",
                   number_words: itemLink?.number_words || "",
                   price_per_word: itemLink?.price_per_word || "",
-                  total:
-                    itemLink?.total.toLocaleString("it-IT", {
-                      style: "currency",
-                      currency: "VND",
-                    }) || 0,
+                  total: itemLink?.total || 0,
                   status: itemLink?.status === 1 ? "Đã đăng" : "Chưa đăng",
+                  updatedAt: moment(itemLink?.updatedAt).format("DD/MM/YYYY"),
+                  stk: itemColab?.stk || "",
+                  bank_name: itemColab?.bank_name || "",
+                  account_holder: itemColab?.account_holder || "",
+                  total_domains: countTotalDomains,
                 };
                 total = total + itemLink.total;
                 dataSetExport.push(a);
                 sheet.addRow(a);
                 countCTV++;
                 count++;
+                if (
+                  itemLink?.domains?._id !==
+                  itemColab?.linkmanagements[indexLink + 1]?.domains?._id
+                ) {
+                  mergeDomains.push({
+                    domain: itemLink?.domains?.name,
+                    value: countTotalDomains,
+                    cutoff: [
+                      mergeDomains?.[mergeDomains.length - 1]?.cutoff?.[1] +
+                        1 || 4,
+                      count + 2,
+                    ],
+                  });
+                  countTotalDomains = 0;
+                }
               });
               if (itemColab?.linkmanagements.length !== 0) {
+                //merge colab Name
                 sheet.mergeCells(
                   `D${count + 3 - itemColab?.linkmanagements.length}:D${
                     count + 3 - 1
@@ -409,6 +447,49 @@ const TeamDashboard = () => {
                 );
                 sheet.getCell(
                   `D${count + 3 - itemColab?.linkmanagements.length}:D${
+                    count + 3 - 1
+                  }`
+                ).alignment = {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
+                //merge colab stk
+                sheet.mergeCells(
+                  `Q${count + 3 - itemColab?.linkmanagements.length}:Q${
+                    count + 3 - 1
+                  }`
+                );
+                sheet.getCell(
+                  `Q${count + 3 - itemColab?.linkmanagements.length}:Q${
+                    count + 3 - 1
+                  }`
+                ).alignment = {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
+                //merge colab bank
+                sheet.mergeCells(
+                  `R${count + 3 - itemColab?.linkmanagements.length}:R${
+                    count + 3 - 1
+                  }`
+                );
+                sheet.getCell(
+                  `R${count + 3 - itemColab?.linkmanagements.length}:R${
+                    count + 3 - 1
+                  }`
+                ).alignment = {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
+
+                //merge colab account_holder
+                sheet.mergeCells(
+                  `S${count + 3 - itemColab?.linkmanagements.length}:S${
+                    count + 3 - 1
+                  }`
+                );
+                sheet.getCell(
+                  `S${count + 3 - itemColab?.linkmanagements.length}:S${
                     count + 3 - 1
                   }`
                 ).alignment = {
@@ -435,7 +516,8 @@ const TeamDashboard = () => {
               }
             }
           }
-          sheet.getCell(`K${count + 3}`).value =
+
+          sheet.getCell(`M${count + 3}`).value =
             total.toLocaleString("it-IT", {
               style: "currency",
               currency: "VND",
@@ -445,6 +527,50 @@ const TeamDashboard = () => {
             vertical: "middle",
             horizontal: "center",
           };
+
+          // merge domains
+          mergeDomains?.map((item) => {
+            if (item?.cutoff[0] < item?.cutoff[1]) {
+              //merge total domains
+              sheet.mergeCells(`P${item.cutoff[0]}:P${item.cutoff[1]}`);
+              sheet.getCell(`P${item.cutoff[0]}:P${item.cutoff[1]}`).value =
+                item?.value;
+              sheet.getCell(`P${item.cutoff[0]}:P${item.cutoff[1]}`).alignment =
+                {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
+              //merge domains
+              sheet.mergeCells(`E${item.cutoff[0]}:E${item.cutoff[1]}`);
+
+              sheet.getCell(`E${item.cutoff[0]}:E${item.cutoff[1]}`).alignment =
+                {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
+              //merge manager
+              sheet.mergeCells(`F${item.cutoff[0]}:F${item.cutoff[1]}`);
+
+              sheet.getCell(`F${item.cutoff[0]}:F${item.cutoff[1]}`).alignment =
+                {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
+            } else {
+              sheet.getCell(`P${item.cutoff[0]}`).alignment = {
+                vertical: "middle",
+                horizontal: "center",
+              };
+              sheet.getCell(`E${item.cutoff[0]}`).alignment = {
+                vertical: "middle",
+                horizontal: "center",
+              };
+              sheet.getCell(`F${item.cutoff[0]}`).alignment = {
+                vertical: "middle",
+                horizontal: "center",
+              };
+            }
+          });
         }
       });
     } else {
@@ -465,9 +591,9 @@ const TeamDashboard = () => {
           size: 12,
           bold: true,
         };
-        sheet.mergeCells("A1", "L2");
+        sheet.mergeCells("A1", "S2");
         sheet.getCell("A1").value = "Quản lý team";
-        sheet.getCell("A1", "L2").font = {
+        sheet.getCell("A1", "S2").font = {
           name: "Time New Romans",
           family: 4,
           size: 16,
@@ -477,8 +603,8 @@ const TeamDashboard = () => {
           vertical: "middle",
           horizontal: "center",
         };
-        sheet.getCell("A1", "L2").border = optionBorder;
-        sheet.getCell("A1", "L2").fill = {
+        sheet.getCell("A1", "S2").border = optionBorder;
+        sheet.getCell("A1", "S2").fill = {
           type: "pattern",
           pattern: "solid",
           fgColor: { argb: "ffffcc00" },
@@ -489,6 +615,8 @@ const TeamDashboard = () => {
           "Team",
           "Hậu đài",
           "CTV",
+          "Website",
+          "Quản lý Website",
           "Key",
           "Chuyên mục",
           "Link docs",
@@ -497,8 +625,14 @@ const TeamDashboard = () => {
           "Giá tiền",
           "Tổng tiền theo bài",
           "Trạng thái",
+          "Ngày đăng", //
+          "Tổng tiền theo website",
+
+          "STK",
+          "Ngân hàng",
+          "Tên TK ngân hàng",
         ];
-        for (let i = 1; i <= 12; i++) {
+        for (let i = 1; i <= 19; i++) {
           sheet.getCell(3, Number(i)).border = optionBorder;
           sheet.getCell(3, Number(i)).font = optionbold;
         }
@@ -520,7 +654,10 @@ const TeamDashboard = () => {
             width: 20,
             border: optionBorder,
           },
+
           { key: "ctv", width: 15, border: optionBorder },
+          { key: "domains", width: 15, border: optionBorder },
+          { key: "domain_manager", width: 15, border: optionBorder },
           { key: "key", width: 20, border: optionBorder },
           { key: "category", width: 20, border: optionBorder },
           { key: "link_post", width: 20, border: optionBorder },
@@ -529,6 +666,12 @@ const TeamDashboard = () => {
           { key: "price_per_word", border: optionBorder },
           { key: "total", width: 20, border: optionBorder },
           { key: "status", width: 20, border: optionBorder },
+          { key: "updatedAt", width: 20, border: optionBorder }, //
+          { key: "total_domains", width: 20, border: optionBorder },
+
+          { key: "stk", width: 20, border: optionBorder },
+          { key: "bank_name", width: 20, border: optionBorder },
+          { key: "account_holder", width: 20, border: optionBorder },
         ];
         //Add dataSet
         let dataSetExport = [];
@@ -537,35 +680,60 @@ const TeamDashboard = () => {
         let countCTV = 0;
         let xBrand = 4;
         let yBrand = 4;
+        let mergeDomains = [];
+
         dataSet?.domains?.map((itemDomain, indexDomain) => {
+          let countTotalDomains = 0;
           itemDomain?.collaborators?.map((itemColab, indexColab) => {
             countCTV = 0;
             itemColab?.linkmanagements?.map((itemLink, indexLink) => {
+              //check neu khong phai domain nay
+
+              countTotalDomains = countTotalDomains + itemLink?.total;
               let a = {
                 stt: count,
                 team: dataSet?.name || "",
                 brand: itemDomain?.brand?.name || "",
                 ctv: itemColab?.name || "",
+                domains: itemLink?.domains?.name || "",
+                domain_manager: itemLink?.domains?.manager || "",
                 key: itemLink?.keyword || "",
                 category: itemLink?.category || "",
                 link_post: itemLink?.link_post || "",
                 link_posted: itemLink?.link_posted || "",
                 number_words: itemLink?.number_words || "",
                 price_per_word: itemLink?.price_per_word || "",
-                total:
-                  itemLink?.total.toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  }) || 0,
+                total: itemLink?.total || 0,
                 status: itemLink?.status === 1 ? "Đã đăng" : "Chưa đăng",
+                updatedAt: moment(itemLink?.updatedAt).format("DD/MM/YYYY"),
+                stk: itemColab?.stk || "",
+                bank_name: itemColab?.bank_name || "",
+                account_holder: itemColab?.account_holder || "",
+                total_domains: countTotalDomains,
               };
               total = total + itemLink.total;
               dataSetExport.push(a);
               sheet.addRow(a);
               countCTV++;
               count++;
+              if (
+                itemLink?.domains?._id !==
+                itemColab?.linkmanagements[indexLink + 1]?.domains?._id
+              ) {
+                mergeDomains.push({
+                  domain: itemLink?.domains?.name,
+                  value: countTotalDomains,
+                  cutoff: [
+                    mergeDomains?.[mergeDomains.length - 1]?.cutoff?.[1] + 1 ||
+                      4,
+                    count + 2,
+                  ],
+                });
+                countTotalDomains = 0;
+              }
             });
             if (itemColab?.linkmanagements.length !== 0) {
+              //merge colab Name
               sheet.mergeCells(
                 `D${count + 3 - itemColab?.linkmanagements.length}:D${
                   count + 3 - 1
@@ -573,6 +741,49 @@ const TeamDashboard = () => {
               );
               sheet.getCell(
                 `D${count + 3 - itemColab?.linkmanagements.length}:D${
+                  count + 3 - 1
+                }`
+              ).alignment = {
+                vertical: "middle",
+                horizontal: "center",
+              };
+              //merge colab stk
+              sheet.mergeCells(
+                `Q${count + 3 - itemColab?.linkmanagements.length}:Q${
+                  count + 3 - 1
+                }`
+              );
+              sheet.getCell(
+                `Q${count + 3 - itemColab?.linkmanagements.length}:Q${
+                  count + 3 - 1
+                }`
+              ).alignment = {
+                vertical: "middle",
+                horizontal: "center",
+              };
+              //merge colab bank
+              sheet.mergeCells(
+                `R${count + 3 - itemColab?.linkmanagements.length}:R${
+                  count + 3 - 1
+                }`
+              );
+              sheet.getCell(
+                `R${count + 3 - itemColab?.linkmanagements.length}:R${
+                  count + 3 - 1
+                }`
+              ).alignment = {
+                vertical: "middle",
+                horizontal: "center",
+              };
+
+              //merge colab account_holder
+              sheet.mergeCells(
+                `S${count + 3 - itemColab?.linkmanagements.length}:S${
+                  count + 3 - 1
+                }`
+              );
+              sheet.getCell(
+                `S${count + 3 - itemColab?.linkmanagements.length}:S${
                   count + 3 - 1
                 }`
               ).alignment = {
@@ -599,7 +810,7 @@ const TeamDashboard = () => {
             }
           }
         }
-        sheet.getCell(`K${count + 3}`).value =
+        sheet.getCell(`M${count + 3}`).value =
           total.toLocaleString("it-IT", {
             style: "currency",
             currency: "VND",
@@ -609,6 +820,46 @@ const TeamDashboard = () => {
           vertical: "middle",
           horizontal: "center",
         };
+        // merge domains
+        mergeDomains?.map((item) => {
+          if (item?.cutoff[0] < item?.cutoff[1]) {
+            //merge total domains
+            sheet.mergeCells(`P${item.cutoff[0]}:P${item.cutoff[1]}`);
+            sheet.getCell(`P${item.cutoff[0]}:P${item.cutoff[1]}`).value =
+              item?.value;
+            sheet.getCell(`P${item.cutoff[0]}:P${item.cutoff[1]}`).alignment = {
+              vertical: "middle",
+              horizontal: "center",
+            };
+            //merge domains
+            sheet.mergeCells(`E${item.cutoff[0]}:E${item.cutoff[1]}`);
+
+            sheet.getCell(`E${item.cutoff[0]}:E${item.cutoff[1]}`).alignment = {
+              vertical: "middle",
+              horizontal: "center",
+            };
+            //merge manager
+            sheet.mergeCells(`F${item.cutoff[0]}:F${item.cutoff[1]}`);
+
+            sheet.getCell(`F${item.cutoff[0]}:F${item.cutoff[1]}`).alignment = {
+              vertical: "middle",
+              horizontal: "center",
+            };
+          } else {
+            sheet.getCell(`P${item.cutoff[0]}`).alignment = {
+              vertical: "middle",
+              horizontal: "center",
+            };
+            sheet.getCell(`E${item.cutoff[0]}`).alignment = {
+              vertical: "middle",
+              horizontal: "center",
+            };
+            sheet.getCell(`F${item.cutoff[0]}`).alignment = {
+              vertical: "middle",
+              horizontal: "center",
+            };
+          }
+        });
       }
     }
 
@@ -745,7 +996,12 @@ const TeamDashboard = () => {
                     return index + 1;
                   }}
                 />
-                <Column title="Teams" dataIndex="name" key="name"  sorter = {(a,b)=>a?.name.localeCompare(b?.name)} />
+                <Column
+                  title="Teams"
+                  dataIndex="name"
+                  key="name"
+                  sorter={(a, b) => a?.name.localeCompare(b?.name)}
+                />
 
                 <Column
                   title="Thương hiệu"
@@ -755,7 +1011,7 @@ const TeamDashboard = () => {
                     val?.map((item, index) => {
                       return <span key={index}>{item?.name} , </span>;
                     })
-                  }              
+                  }
                 />
                 <Column
                   title="Tổng tiền"
@@ -771,7 +1027,7 @@ const TeamDashboard = () => {
                       </>
                     );
                   }}
-                  sorter={(a,b)=>a?.total - b?.total}
+                  sorter={(a, b) => a?.total - b?.total}
                 />
                 <Column
                   title="Hành động"
