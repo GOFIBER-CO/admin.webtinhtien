@@ -562,6 +562,7 @@ const LinkManagement = (props) => {
         status: values?.status || 1,
         price_per_word: values?.price_per_word,
         total: values?.total,
+        isTotal: switchAdd,
         collaboratorId: values?.collaboratorId || "",
       };
       const res = await updateLinkManagement(edit, dataUpdate).catch(
@@ -597,7 +598,7 @@ const LinkManagement = (props) => {
     form.setFieldValue("collaboratorId", value?.collaborators[0]?._id);
     form.setFieldValue("price_per_word", value?.price_per_word);
     form.setFieldValue("total", value?.total);
-    value?.price_per_word ? setEditByTotal(false) : setEditByTotal(true);
+    value?.price_per_word ? setSwitchAdd(false) : setSwitchAdd(true);
     setEdit(value?._id);
     handleOpenModal();
   };
@@ -703,8 +704,10 @@ const LinkManagement = (props) => {
 
   const handleSwitchAdd = () => {
     setSwitchAdd(!switchAdd);
-    form.setFieldValue("price_per_word", "");
-    form.setFieldValue("total", "");
+    if (!edit) {
+      form.setFieldValue("price_per_word", "");
+      form.setFieldValue("total", "");
+    }
   };
   const ShowEditLink = () => {
     if (!edit) {
@@ -801,7 +804,7 @@ const LinkManagement = (props) => {
           <Form.Item name="collaboratorId" hidden></Form.Item>
           <Form.Item name="link_posted" hidden></Form.Item>
 
-          {!editByTotal && (
+          {/* {!editByTotal && (
             <Form.Item
               label="Số tiền mỗi từ"
               name="price_per_word"
@@ -818,6 +821,27 @@ const LinkManagement = (props) => {
               rules={[{ required: true, message: "Nhập tổng tiền bài viết" }]}
             >
               <InputNumber type="number" />
+            </Form.Item>
+          )} */}
+          <Form.Item label="Sửa theo tổng tiền bài viết">
+            <Switch onChange={handleSwitchAdd} checked={switchAdd}></Switch>
+          </Form.Item>
+          {!switchAdd && (
+            <Form.Item
+              label="Số tiền mỗi từ"
+              name="price_per_word"
+              rules={[{ required: true, message: "Nhập số tiền mỗi từ" }]}
+            >
+              <InputNumber type="number" />
+            </Form.Item>
+          )}
+          {switchAdd && (
+            <Form.Item
+              label="Tổng tiền bài viết"
+              name="total"
+              rules={[{ required: true, message: "Nhập số tiền bài viết" }]}
+            >
+              <InputNumber type="number" name="total" />
             </Form.Item>
           )}
         </>
