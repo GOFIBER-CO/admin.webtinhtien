@@ -387,8 +387,6 @@ const TeamDashboard = () => {
           let count = 1;
           let total = 0;
           let countCTV = 0;
-          let xBrand = 4;
-          let yBrand = 4;
           let mergeDomains = [];
           dataSet?.domains?.map((itemDomain, indexDomain) => {
             let countTotalDomains = 0;
@@ -437,6 +435,7 @@ const TeamDashboard = () => {
                   });
                   countTotalDomains = 0;
                 }
+                
               });
               if (itemColab?.linkmanagements.length !== 0) {
                 //merge colab Name
@@ -496,26 +495,50 @@ const TeamDashboard = () => {
                   vertical: "middle",
                   horizontal: "center",
                 };
-              }
+              }  
             });
+            
           });
-          for (let i = 4; i < count + 4; i++) {
-            if (
-              sheet.getCell(`C${i}`).value === sheet.getCell(`C${i - 1}`).value
-            ) {
-              yBrand++;
-            } else {
-              if (yBrand > xBrand) {
-                sheet.mergeCells(`C${xBrand}:C${yBrand}`);
-                sheet.getCell(`C${xBrand}:C${yBrand}`).alignment = {
+
+          // for (let i = 4; i < count + 4; i++) {
+          //   if (
+          //     sheet.getCell(`C${i}`).value === sheet.getCell(`C${i - 1}`).value
+          //   ) {
+          //     yBrand++;
+          //   } else {
+          //     if (yBrand > xBrand) {
+          //       sheet.mergeCells(`C${xBrand}:C${yBrand}`);
+          //       sheet.getCell(`C${xBrand}:C${yBrand}`).alignment = {
+          //         vertical: "middle",
+          //         horizontal: "center",
+          //       };
+          //       xBrand = yBrand + 1;
+          //       yBrand++;
+          //     }
+          //   }
+          // }
+          // merge brand
+          let a = 4;
+          let b = 4;
+
+          for( let i = a; i < count + 3; i++){
+            if(sheet.getCell(`C${i}`).value !== sheet.getCell(`C${i + 1}`).value){
+              if(b !== i ){
+                sheet.mergeCells(`C${b}:C${i}`);
+                sheet.getCell(`C${b}:C${i}`).alignment = {
                   vertical: "middle",
                   horizontal: "center",
                 };
-                xBrand = yBrand + 1;
-                yBrand++;
+              }else{
+                  sheet.getCell(`C${b}:C${i}`).alignment = {
+                    vertical: "middle",
+                    horizontal: "center",
+                  };
               }
-            }
+              b = i + 1;
+            }          
           }
+
 
           sheet.getCell(`M${count + 3}`).value =
             total.toLocaleString("it-IT", {
@@ -793,23 +816,43 @@ const TeamDashboard = () => {
             }
           });
         });
-        for (let i = 4; i < count + 4; i++) {
-          if (
-            sheet.getCell(`C${i}`).value === sheet.getCell(`C${i - 1}`).value
-          ) {
-            yBrand++;
-          } else {
-            if (yBrand > xBrand) {
-              sheet.mergeCells(`C${xBrand}:C${yBrand}`);
-              sheet.getCell(`C${xBrand}:C${yBrand}`).alignment = {
-                vertical: "middle",
-                horizontal: "center",
-              };
-              xBrand = yBrand + 1;
-              yBrand++;
-            }
+        // for (let i = 4; i < count + 4; i++) {
+        //   if (
+        //     sheet.getCell(`C${i}`).value === sheet.getCell(`C${i - 1}`).value
+        //   ) {
+        //     yBrand++;
+        //   } else {
+        //     if (yBrand > xBrand) {
+        //       sheet.mergeCells(`C${xBrand}:C${yBrand}`);
+        //       sheet.getCell(`C${xBrand}:C${yBrand}`).alignment = {
+        //         vertical: "middle",
+        //         horizontal: "center",
+        //       };
+        //       xBrand = yBrand + 1;
+        //       yBrand++;
+        //     }
+        //   }
+        // }
+        let a = 4;
+          let b = 4;
+
+          for( let i = a; i < count + 3; i++){
+            if(sheet.getCell(`C${i}`).value !== sheet.getCell(`C${i + 1}`).value){
+              if(b !== i ){
+                sheet.mergeCells(`C${b}:C${i}`);
+                sheet.getCell(`C${b}:C${i}`).alignment = {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
+              }else{
+                sheet.getCell(`C${b}:C${i}`).alignment = {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
+              }
+              b = i + 1;
+            }          
           }
-        }
         sheet.getCell(`M${count + 3}`).value =
           total.toLocaleString("it-IT", {
             style: "currency",
