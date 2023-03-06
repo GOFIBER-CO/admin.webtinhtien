@@ -24,7 +24,7 @@ import Teams from "../pages/Teams";
 import TeamDashboard from "../Components/Dashboard/TeamDashboard";
 import DomainDashboard from "../Components/Dashboard/DomainDashboard";
 import CtvDashboard from "../Components/Dashboard/CTVDashboard";
-import Order from "../pages/Order";
+import Orders from "../pages/Order/index";
 // import OrderManagement from "./../pages/Brands";
 
 const authProtectedRoutes = [
@@ -61,7 +61,7 @@ const authProtectedRoutes = [
   },
   {
     path: "/postsOrder",
-    component: Domains,
+    component: Orders,
   },
 ];
 

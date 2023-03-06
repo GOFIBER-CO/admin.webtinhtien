@@ -444,3 +444,13 @@ export const exportDataTeams = (brand, team) =>
   api.get(`${url.API_LINK_MANAGEMENT}-excel-teams?brand=${brand}&team=${team}`);
 export const getStatisticTeam = (teamId) =>
   api.get(`${url.API_TEAMS}/getStatisticTeam?teamId=${teamId}`);
+
+//
+export const getListOrderPosts = (userId, title, status) => {
+  return api.get(
+    `${url.API_ORDER_POST}/list?userId=${userId}&title=${title}&status=${status}`
+  );
+};
+export const deleteRecord = (id) => {
+  return api.delete(`${url.API_ORDER_POST}/delete/${id}`);
+};
