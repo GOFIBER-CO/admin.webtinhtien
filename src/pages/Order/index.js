@@ -22,6 +22,8 @@ import { Link } from "react-router-dom";
 
 const { Option } = Select;
 const Orders = () => {
+  const [pageIndex, setPageIndex] = useState();
+  const [pageSize, setPageSize] = useState(5);
   const [visibleForm, setVisibleForm] = useState(false);
   const [drawerTitle, setDrawerTitle] = useState("");
   const [orderPostData, setOrderPostData] = useState([]);
@@ -32,20 +34,6 @@ const Orders = () => {
   const showDrawer = () => {
     setVisibleForm(true);
   };
-  const dataSource = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
-    },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
-    },
-  ];
 
   const columns = [
     {
@@ -129,7 +117,7 @@ const Orders = () => {
   const getListData = async () => {
     const resUserData = JSON.parse(sessionStorage.getItem("authUser"));
     const userId = resUserData?.id;
-    const result = await getListOrderPosts(userId, "", "");
+    const result = await getListOrderPosts(userId, pageSize, pageIndex, "", "");
     setOrderPostData(result?.data);
   };
   useEffect(() => {
@@ -216,18 +204,14 @@ const Orders = () => {
             dataSource={orderPostData}
             columns={columns}
             pagination={{
-              showSizeChanger:true,
-              pageSizeOptions:[5,10,20,30,40,50],
-              pageSize:5,
-              current:1,
-              onChange:(newIndex,newPageSize)=>{
-                setPageIndex(newIndex)
-                setPageSize(newPageSize)
-              }
-            }}
-            
-            onChange={{
-              
+              showSizeChanger: true,
+              pageSizeOptions: [5, 10, 20, 30, 40, 50],
+              pageSize: 5,
+              current: 1,
+              onChange: (newIndex, newPageSize) => {
+                setPageIndex(newIndex);
+                setPageSize(newPageSize);
+              },
             }}
             rowKey="_id"
           />
