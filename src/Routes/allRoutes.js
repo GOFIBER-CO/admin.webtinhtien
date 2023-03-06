@@ -7,6 +7,7 @@ import DashboardAnalytics from "../pages/DashboardAnalytics";
 
 //login
 import Login from "../pages/Authentication/Login";
+import Register from "../pages/Authentication/Register";
 import Logout from "../pages/Authentication/Logout";
 
 //users management
@@ -61,6 +62,7 @@ const authProtectedRoutes = [
 const publicRoutes = [
   // Authentication Page
   { path: "/login", component: Login },
+  { path: "/register", component: Register },
   { path: "/logout", component: Logout },
 
   // {
