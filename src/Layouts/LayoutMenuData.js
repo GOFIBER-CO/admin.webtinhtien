@@ -19,6 +19,7 @@ const Navdata = () => {
   const [isLinks, setIsLinks] = useState(false);
   const [isMedia, setIsMedia] = useState(false);
   const [isTeam, setIsTeam] = useState(false);
+  const [isOrder, setIsOrder] = useState(false);
   const [isRedirect, setIsRedirect] = useState(false);
   const [isBanners, setIsBanners] = useState(false);
   const [isStatistics, setIsStatistics] = useState(false);
@@ -100,6 +101,9 @@ const Navdata = () => {
     if (iscurrentState !== "Team") {
       setIsTeam(false);
     }
+    if (iscurrentState !== "PostsOrder") {
+      setIsOrder(false);
+    }
   }, [
     history,
     iscurrentState,
@@ -119,6 +123,7 @@ const Navdata = () => {
     isBrand,
     isUser,
     isTeam,
+    isOrder,
   ]);
 
   const menuItems = [
@@ -303,6 +308,28 @@ const Navdata = () => {
           label: "Users",
           link: "/users",
           parentId: "user-management",
+        },
+      ],
+    },
+    {
+      // id: "postsLink-management",
+      id: "postsOrder-management",
+      label: "QUẢN LÝ Order",
+      icon: "ri-bookmark-line",
+      link: "/#",
+      stateVariables: isOrder,
+      click: function (e) {
+        e.preventDefault();
+        setIsOrder(!isOrder);
+        setIscurrentState("PostsOrder");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "postsOrder",
+          label: "Quản lí bài viết",
+          link: "/postsOrder",
+          parentId: "postsOrder-management",
         },
       ],
     },
