@@ -27,6 +27,10 @@ const TableData = ({
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (_) => {
+        const rs = { "-1": "Chưa nhận", 0: "Đã nhận", 1: "Hoàn thành" }[_];
+        return <>{rs}</>;
+      },
     },
     {
       title: "Payment Status",
