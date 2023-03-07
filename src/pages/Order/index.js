@@ -28,14 +28,11 @@ const Orders = () => {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [orderPostData, setOrderPostData] = useState([]);
-  console.log("orderPostData: ", orderPostData);
   const [open, setOpen] = useState(false);
   const [titleDrawer, setTitleDrawer] = useState("");
   const [dataDrawer, setDataDrawer] = useState({});
   const [totalDocs, setTotalDocs] = useState(0);
   const [search, setSearch] = useState({});
-  console.log("search: ", search);
-
   const showDrawer = () => {
     setDataDrawer({});
     setTitleDrawer("Tạo mới");
