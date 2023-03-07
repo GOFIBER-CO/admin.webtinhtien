@@ -1,0 +1,17 @@
+.selected {
+  width: 100%;
+}
+.selected#status {
+  width: 100% !important;
+  position: relative;
+  top: 0;
+  left: 0;
+  margin: 0;
+}
+.selected .ant-select-selector {
+  height: auto !important;
+  width: 100% !important;
+}
+.ant-picker {
+  padding: 5px 11px 5px !important;
+}
