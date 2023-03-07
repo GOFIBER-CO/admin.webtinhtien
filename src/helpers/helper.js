@@ -1,3 +1,4 @@
+import { data } from "autoprefixer";
 import { APIClient } from "./api_helper";
 import * as url from "./url_helper";
 import axios from "axios";
@@ -447,16 +448,20 @@ export const getStatisticTeam = (teamId) =>
 
 //
 export const getListOrderPosts = (
-  userId,
   pageSize,
   pageIndex,
-  title,
-  status
+  data
 ) => {
-  return api.get(
-    `${url.API_ORDER_POST}/list?userId=${userId}&pageSize=${pageSize}&pageIndex=${pageIndex}&title=${title}&status=${status}`
+  return api.create(
+    `${url.API_ORDER_POST}/list?pageSize=${pageSize}&pageIndex=${pageIndex}`,data
   );
 };
 export const deleteRecord = (id) => {
   return api.delete(`${url.API_ORDER_POST}/delete/${id}`);
+};
+export const createOrderPost = (data) => {
+  return axios.post(`${url.API_ORDER_POST}/insert`, data);
+};
+export const updateRecord = (data) => {
+  return axios.patch(`${url.API_ORDER_POST}/update`, data);
 };

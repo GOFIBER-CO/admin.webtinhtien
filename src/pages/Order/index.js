@@ -1,7 +1,6 @@
 import React, { createRef, useEffect, useState } from "react";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { AiOutlineDelete } from "react-icons/ai";
-// import { Col, Container, Row } from "reactstrap";
 import {
   Select,
   Drawer,
@@ -10,31 +9,45 @@ import {
   Input,
   Button,
   Table,
-  Pagination,
   Space,
   Popconfirm,
+  Tag,
+  Form,
+  DatePicker,
 } from "antd";
+
 import { getListOrderPosts, deleteRecord } from "./../../helpers/helper";
 import { Container } from "reactstrap";
 import moment from "moment/moment";
-// import { moment } from 'moment';
-import { Link } from "react-router-dom";
+import AddEditOrderPost from "./AddEditOrderPost";
 
-const { Option } = Select;
 const Orders = () => {
+  const { RangePicker } = DatePicker;
+
   const [pageIndex, setPageIndex] = useState();
   const [pageSize, setPageSize] = useState(5);
-  const [visibleForm, setVisibleForm] = useState(false);
-  const [drawerTitle, setDrawerTitle] = useState("");
   const [orderPostData, setOrderPostData] = useState([]);
-  console.log("orderPostData: ", orderPostData);
-  const onClose = () => {
-    setVisibleForm(false);
-  };
+  const [open, setOpen] = useState(false);
+  const [titleDrawer, setTitleDrawer] = useState("");
+  const [dataDrawer, setDataDrawer] = useState({});
+  //
+
   const showDrawer = () => {
-    setVisibleForm(true);
+    setDataDrawer({});
+    setTitleDrawer("Tạo mới");
+    setOpen(true);
   };
 
+  const onClose = () => {
+    setOpen(false);
+    setDataDrawer({});
+  };
+  const onEditOrderPost = (id) => {
+    const resData = orderPostData.filter((item) => item?._id === id);
+    setDataDrawer(resData[0]);
+    setTitleDrawer("Chỉnh sửa");
+    setOpen(true);
+  };
   const columns = [
     {
       title: "Title",
@@ -70,9 +83,34 @@ const Orders = () => {
       },
     },
     {
+      title: "Từ khóa",
+      dataIndex: "keyword",
+      key: "keyword",
+      render: (text, value) => {
+        return text?.map((item) => {
+          return (
+            <>
+              <Tag color="green">{item}</Tag>
+            </>
+          );
+        });
+      },
+    },
+    {
       title: "Số tiền mỗi từ",
       dataIndex: "moneyPerWord",
       key: "moneyPerWord",
+      render: (text, value) => {
+        console.log("text: ", typeof text);
+        return (
+          <>
+            {Number(text).toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </>
+        );
+      },
     },
     {
       title: "Ngày tạo",
@@ -89,17 +127,10 @@ const Orders = () => {
       render: (text, value) => {
         return (
           <Space size="middle">
-            {/* <Link to={{ pathname: "/users/" + val.id }}>View</Link> */}
-            {/* <Link to={{ pathname: "/users/" + val.id }}>
-            <i className="ri-eye-line action-icon"></i>
-          </Link> */}
-            {/* <Link to={{ pathname: "/user/add/" + val.id }}> */}
-            <i className="ri-pencil-line action-icon"></i>
-            {/* </Link> */}
-
-            {/* <Link to={{ pathname: "/user/add/" + val.id }}>Edit</Link> */}
-            {/* <a>Add</a>
-          <a>Edit</a> */}
+            <i
+              className="ri-pencil-line action-icon"
+              onClick={() => onEditOrderPost(text)}
+            ></i>
             <Popconfirm
               title="Are you sure to delete this user?"
               onConfirm={() => confirm(text)}
@@ -117,8 +148,7 @@ const Orders = () => {
   const getListData = async () => {
     const resUserData = JSON.parse(sessionStorage.getItem("authUser"));
     const userId = resUserData?.id;
-    const result = await getListOrderPosts(userId, pageSize, pageIndex, "", "");
-    console.log("result: ", result);
+    const result = await getListOrderPosts( pageSize, pageIndex);
     setOrderPostData(result?.data);
   };
   useEffect(() => {
@@ -126,14 +156,13 @@ const Orders = () => {
   }, [pageIndex, pageSize]);
   //
   const confirm = async (id) => {
-    console.log("id: ", id);
     const rs = await deleteRecord(id);
     if (rs?.status === 200) {
       getListData();
     }
-    console.log("rs: ", rs);
-
-    // console.log(user, 'user');
+  };
+  const onFinish = (value) => {
+    console.log("value: ", value);
   };
   return (
     <React.Fragment>
@@ -143,64 +172,51 @@ const Orders = () => {
             title="Bài viết"
             pageTitle="Quản lý bài viết"
           ></BreadCrumb>
-          <Row className="mb-3">
-            <Drawer
-              title={drawerTitle}
-              placement={"right"}
-              width={"30%"}
-              onClose={onClose}
-              open={visibleForm}
-              bodyStyle={{
-                paddingBottom: 80,
-              }}
-              style={{ marginTop: "70px" }}
-            ></Drawer>
-          </Row>
-          <Row gutter={[16, 16]} style={{ marginBottom: "1rem" }}>
-            <Col span={6}>
-              <Input size="middle" />
-            </Col>
-            <Col span={6}>
-              <Select
-                style={{ width: 200 }}
-                placeholder="Search to Select"
-                options={[
-                  {
-                    value: "1",
-                    label: "Not Identified",
-                  },
-                  {
-                    value: "2",
-                    label: "Closed",
-                  },
-                  {
-                    value: "3",
-                    label: "Communicated",
-                  },
-                  {
-                    value: "4",
-                    label: "Identified",
-                  },
-                  {
-                    value: "5",
-                    label: "Resolved",
-                  },
-                  {
-                    value: "6",
-                    label: "Cancelled",
-                  },
-                ]}
-              />
-            </Col>
-          </Row>
-          <Row gutter={[16, 16]} style={{ marginBottom: "3rem" }}>
-            <Col span={3}>
-              <Button type="primary">Tìm kiếm</Button>
-            </Col>
-            <Col span={21} style={{ textAlign: "right" }}>
-              <Button type="primary">Tạo mới</Button>
-            </Col>
-          </Row>
+          <Form layout="vertical" onFinish={onFinish}>
+            <Row gutter={[16, 16]} style={{ marginBottom: "1rem" }}>
+              <Col span={4}>
+                <Form.Item label="Tên bài viết" name="title">
+                  <Input size="middle" placeholder="Tìm kiếm theo tiêu đề" />
+                </Form.Item>
+              </Col>
+              <Col span={3}>
+                <Form.Item label="Trạng thái" name="status" initialValue="-1">
+                  <Select style={{ height: "25px !important" }}>
+                    <Select.Option value="-1">Chưa nhận</Select.Option>
+                    <Select.Option value="0">CTV đã nhận</Select.Option>
+                    <Select.Option value="1">Đã hoàn thành</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item label="Từ khóa" name="keyword">
+                  <Input placeholder="Tìm kiếm theo từ khóa" />
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item
+                  name="range-picker"
+                  label="Thời gian"
+                  // {...rangeConfig}
+                >
+                  <RangePicker />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={[16, 16]} style={{ marginBottom: "3rem" }}>
+              <Col span={3}>
+                <Button type="primary" htmlType="submit">
+                  Tìm kiếm
+                </Button>
+              </Col>
+              <Col span={21} style={{ textAlign: "right" }}>
+                <Button type="primary" onClick={showDrawer}>
+                  Tạo mới
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+
           <Table
             dataSource={orderPostData}
             columns={columns}
@@ -208,7 +224,7 @@ const Orders = () => {
               showSizeChanger: true,
               pageSizeOptions: [5, 10, 20, 30, 40, 50],
               pageSize: pageSize,
-              current: 1,
+              current: pageIndex,
               onChange: (newIndex, newPageSize) => {
                 setPageIndex(newIndex);
                 setPageSize(newPageSize);
@@ -216,16 +232,21 @@ const Orders = () => {
             }}
             rowKey="_id"
           />
-          {/* <Row style={{ textAlign: "right", marginTop: "2rem" }}>
-            <Col span={24}>
-              <Pagination
-                showSizeChanger
-                // onShowSizeChange={onShowSizeChange}
-                current={1}
-                total={orderPostData?.length}
+          <Row>
+            <Drawer
+              title={titleDrawer}
+              placement="right"
+              onClose={onClose}
+              open={open}
+              style={{ marginTop: "70px" }}
+            >
+              <AddEditOrderPost
+                dataDrawer={dataDrawer}
+                close={onClose}
+                getListData={getListData}
               />
-            </Col>
-          </Row> */}
+            </Drawer>
+          </Row>
         </Container>
       </div>
     </React.Fragment>
