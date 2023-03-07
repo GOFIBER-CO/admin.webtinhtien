@@ -58,6 +58,7 @@ const Orders = () => {
     {
       title: "Mô tả",
       dataIndex: "desc",
+      width: "15%",
       key: "desc",
     },
     {
