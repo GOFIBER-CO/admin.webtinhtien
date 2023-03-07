@@ -15,3 +15,6 @@
 .ant-picker {
   padding: 5px 11px 5px !important;
 }
+#moneyPerWord .ant-input-number{
+  width: 100%;
+}

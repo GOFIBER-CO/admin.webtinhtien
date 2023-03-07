@@ -15,6 +15,7 @@ import {
   Tag,
   Form,
   DatePicker,
+  InputNumber,
 } from "antd";
 
 import { getListOrderPosts, deleteRecord } from "./../../helpers/helper";
@@ -114,6 +115,14 @@ const Orders = () => {
       },
     },
     {
+      title: "Trạng thái thanh toán",
+      dataIndex: "paymentStatus",
+      key: "paymentStatus",
+      render: (text, value) => {
+        return <>{text ? "Đã thanh toán" : "Chưa thanh toán"}</>;
+      },
+    },
+    {
       title: "Ngày tạo",
       dataIndex: "createdAt",
       key: "createdAt",
@@ -166,7 +175,9 @@ const Orders = () => {
     const data = {
       title: value?.title,
       status: value?.status,
+      paymentStatus: value?.paymentStatus,
       keyword: value?.keyword,
+      moneyPerWord: value?.moneyPerWord,
       createdAt: value?.["range-picker"],
       // dateForm: new Date(value?.["range-picker"]?.[0]?.$d).getTime(),
       // dateTo: new Date(value?.["range-picker"]?.[1]?.$d).getTime(),
@@ -203,9 +214,35 @@ const Orders = () => {
                   </Form.Item>
                 </div>
               </Col>
+              <Col span={3}>
+                <div className="selected">
+                  <Form.Item
+                    label="Trạng thái thanh toán"
+                    name="paymentStatus"
+                    initialValue="2"
+                  >
+                    <Select>
+                      <Select.Option value="2">Tất cả</Select.Option>
+                      <Select.Option value="0">Chưa thanh toán</Select.Option>
+                      <Select.Option value="1">Đã thanh toán</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </div>
+              </Col>
               <Col span={4}>
                 <Form.Item label="Từ khóa" name="keyword">
                   <Input placeholder="Tìm kiếm theo từ khóa" />
+                </Form.Item>
+              </Col>
+              <Col span={2}>
+                <Form.Item
+                  label="Số tiền mỗi từ"
+                  name="moneyPerWord"
+                  style={{ width: "100%" }}
+                >
+                  <div style={{ width: "100%" }}>
+                    <InputNumber min={1} controls={false} />
+                  </div>
                 </Form.Item>
               </Col>
               <Col span={4}>

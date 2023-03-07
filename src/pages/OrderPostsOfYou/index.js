@@ -7,11 +7,15 @@ import SearchConponent from "./SearchConponent";
 import TableData from "./TableConponent";
 
 export default function OrderPostsOfYou() {
+  let user = sessionStorage.getItem("authUser");
+  console.log(JSON.parse(user),'truong yes')
   const [pageSize, setPageSize] = useState(10);
   const [pageIndex, setPageIndex] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
   const [data, setData] = useState([]);
-  const [search, setSearch] = useState({});
+  const [search, setSearch] = useState({
+    ctv:JSON.parse(user)?.id||""
+  });
   const handleSearch = (values) => {
     console.log(new URLSearchParams(values).toString(), "searchValye");
   };
