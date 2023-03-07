@@ -7,6 +7,7 @@ import DashboardAnalytics from "../pages/DashboardAnalytics";
 
 //login
 import Login from "../pages/Authentication/Login";
+import Register from "../pages/Authentication/Register";
 import Logout from "../pages/Authentication/Logout";
 
 //users management
@@ -25,6 +26,8 @@ import TeamDashboard from "../Components/Dashboard/TeamDashboard";
 import DomainDashboard from "../Components/Dashboard/DomainDashboard";
 import CtvDashboard from "../Components/Dashboard/CTVDashboard";
 import Orders from "../pages/Order/index";
+import OrderPostNotReceived from "../pages/OrderPostNotReceived";
+import OrderPostOfYou from "../pages/OrderPostsOfYou";
 // import OrderManagement from "./../pages/Brands";
 
 const authProtectedRoutes = [
@@ -39,6 +42,8 @@ const authProtectedRoutes = [
   { path: "/users/:id", component: UserDetail },
   { path: "/profile", component: UserProfile },
   { path: "/payment", component: PaymentOfContributors },
+  { path: "/postsNotReceived", component: OrderPostNotReceived },
+  { path: "/postOfYou", component: OrderPostOfYou },
   {
     path: "/teams",
     component: Teams,
@@ -68,6 +73,7 @@ const authProtectedRoutes = [
 const publicRoutes = [
   // Authentication Page
   { path: "/login", component: Login },
+  { path: "/register", component: Register },
   { path: "/logout", component: Logout },
 
   // {

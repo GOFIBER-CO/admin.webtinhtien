@@ -10,7 +10,7 @@ export const DELETE_ROLES = "/api/role/delete";
 export const UPDATE_ROLES = "/api/role/editRole";
 
 //REGISTER
-export const POST_FAKE_REGISTER = "/auth/signup";
+export const POST_FAKE_REGISTER = "/api/users/signup";
 
 //LOGIN
 export const POST_FAKE_LOGIN = "/auth/signin";

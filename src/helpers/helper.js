@@ -462,3 +462,7 @@ export const createOrderPost = (data) => {
 export const updateOrderPost = (data) => {
   return axios.patch(`${url.API_ORDER_POST}/update`, data);
 };
+
+export const receivedPost = (id) => {
+  return axios.put(`${url.API_ORDER_POST}/received-post/${id}`);
+};

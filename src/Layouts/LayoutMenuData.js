@@ -137,6 +137,7 @@ const Navdata = () => {
       icon: "ri-dashboard-2-line",
       link: "/dashboard",
       stateVariables: isDashboard,
+      disable: user?.role === "CTV" ? true : false,
       click: function (e) {
         e.preventDefault();
         setIsDashboard(!isDashboard);
@@ -175,7 +176,7 @@ const Navdata = () => {
       label: "QUẢN LÝ THƯƠNG HIỆU",
       icon: "ri-bookmark-line",
       link: "/#",
-      disable: user?.role === "Member" ? true : false,
+      disable: user?.role === "Member" || user?.role === "CTV" ? true : false,
 
       stateVariables: isBrand,
       click: function (e) {
@@ -198,7 +199,7 @@ const Navdata = () => {
       label: "QUẢN LÝ TEAMS",
       icon: "ri-bookmark-line",
       link: "/#",
-      disable: user?.role === "Member" ? true : false,
+      disable: user?.role === "Member" || user?.role === "CTV" ? true : false,
 
       stateVariables: isTeam,
       click: function (e) {
@@ -221,7 +222,7 @@ const Navdata = () => {
       label: "QUẢN LÝ DOMAINS",
       icon: "ri-bookmark-line",
       link: "/#",
-      disable: user?.role === "Member" ? true : false,
+      disable: user?.role === "Member" || user?.role === "CTV" ? true : false,
       stateVariables: isDomains,
       click: function (e) {
         e.preventDefault();
@@ -243,6 +244,7 @@ const Navdata = () => {
       label: "QUẢN LÝ THANH TOÁN",
       icon: "ri-user-2-line",
       link: "/#",
+      disable: user?.role === "CTV" ? true : false,
       stateVariables: isPayment,
       click: function (e) {
         e.preventDefault();
@@ -270,6 +272,7 @@ const Navdata = () => {
       label: "QUẢN LÝ LINK",
       icon: "ri-bookmark-line",
       link: "/#",
+      disable: user?.role === "CTV" ? true : false,
       stateVariables: isPostsLink,
       click: function (e) {
         e.preventDefault();
@@ -326,6 +329,18 @@ const Navdata = () => {
           id: "postsOrder",
           label: "Quản lí bài viết",
           link: "/postsOrder",
+          parentId: "postsOrder-management",
+        },
+        {
+          id: "postsNotReceivedOrder",
+          label: "Bài viết chưa nhận",
+          link: "/postsNotReceived",
+          parentId: "postsOrder-management",
+        },
+        {
+          id: "postOfYou",
+          label: "Bài viết của bạn",
+          link: "/postOfYou",
           parentId: "postsOrder-management",
         },
       ],
