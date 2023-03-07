@@ -311,7 +311,7 @@ const Navdata = () => {
     {
       // id: "postsLink-management",
       id: "postsOrder-management",
-      label: "QUẢN LÝ Order",
+      label: "QUẢN LÝ POSTS",
       icon: "ri-bookmark-line",
       link: "/#",
       stateVariables: isOrder,
