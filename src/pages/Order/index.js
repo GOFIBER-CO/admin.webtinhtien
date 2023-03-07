@@ -118,11 +118,12 @@ const Orders = () => {
     const resUserData = JSON.parse(sessionStorage.getItem("authUser"));
     const userId = resUserData?.id;
     const result = await getListOrderPosts(userId, pageSize, pageIndex, "", "");
+    console.log("result: ", result);
     setOrderPostData(result?.data);
   };
   useEffect(() => {
     getListData();
-  }, []);
+  }, [pageIndex, pageSize]);
   //
   const confirm = async (id) => {
     console.log("id: ", id);
@@ -206,7 +207,7 @@ const Orders = () => {
             pagination={{
               showSizeChanger: true,
               pageSizeOptions: [5, 10, 20, 30, 40, 50],
-              pageSize: 5,
+              pageSize: pageSize,
               current: 1,
               onChange: (newIndex, newPageSize) => {
                 setPageIndex(newIndex);
