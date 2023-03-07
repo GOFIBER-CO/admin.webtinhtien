@@ -24,6 +24,9 @@ import Teams from "../pages/Teams";
 import TeamDashboard from "../Components/Dashboard/TeamDashboard";
 import DomainDashboard from "../Components/Dashboard/DomainDashboard";
 import CtvDashboard from "../Components/Dashboard/CTVDashboard";
+import Orders from "../pages/Order/index";
+// import OrderManagement from "./../pages/Brands";
+
 const authProtectedRoutes = [
   // { path: "/pages-starter", component: Starter },
   { path: "/dashboard-analytics", component: DashboardAnalytics },
@@ -55,6 +58,10 @@ const authProtectedRoutes = [
     path: "/",
     exact: true,
     component: () => <Redirect to="/dashboard-analytics" />,
+  },
+  {
+    path: "/postsOrder",
+    component: Orders,
   },
 ];
 
