@@ -331,6 +331,18 @@ const Navdata = () => {
           link: "/postsOrder",
           parentId: "postsOrder-management",
         },
+        {
+          id: "postsNotReceivedOrder",
+          label: "Bài viết chưa nhận",
+          link: "/postsNotReceived",
+          parentId: "postsOrder-management",
+        },
+        {
+          id: "postOfYou",
+          label: "Bài viết của bạn",
+          link: "/postOfYou",
+          parentId: "postsOrder-management",
+        },
       ],
     },
     // {

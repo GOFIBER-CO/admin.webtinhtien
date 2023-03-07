@@ -447,13 +447,10 @@ export const getStatisticTeam = (teamId) =>
   api.get(`${url.API_TEAMS}/getStatisticTeam?teamId=${teamId}`);
 
 //
-export const getListOrderPosts = (
-  pageSize,
-  pageIndex,
-  data
-) => {
+export const getListOrderPosts = (pageSize, pageIndex, data) => {
   return api.create(
-    `${url.API_ORDER_POST}/list?pageSize=${pageSize}&pageIndex=${pageIndex}`,data
+    `${url.API_ORDER_POST}/list?pageSize=${pageSize}&pageIndex=${pageIndex}`,
+    data
   );
 };
 export const deleteRecord = (id) => {
@@ -464,4 +461,8 @@ export const createOrderPost = (data) => {
 };
 export const updateRecord = (data) => {
   return axios.patch(`${url.API_ORDER_POST}/update`, data);
+};
+
+export const receivedPost = (id) => {
+  return axios.put(`${url.API_ORDER_POST}/received-post/${id}`);
 };

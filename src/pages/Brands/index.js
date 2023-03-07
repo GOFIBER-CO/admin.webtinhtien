@@ -75,7 +75,6 @@ const Brands = () => {
           }
         })
         .catch((err) => {
-          // console.log(err,'ee');
           message.error("save feild!");
         });
     }
@@ -122,13 +121,13 @@ const Brands = () => {
         STT: index + 1,
         "Tên thương hiệu": item?.name,
         "Tổng tiền":
-          item?.total
+          item?.total ||
           // ?.toLocaleString("it-IT", {
           //   style: "currency",
           //   currency: "VND",
-          // }) 
-          
-          || 0,
+          // })
+
+          0,
       };
     });
 
@@ -311,7 +310,12 @@ const Brands = () => {
                   }}
                 />
 
-                <Column title="Thương hiệu" dataIndex="name" key="name" sorter={(a,b)=> a?.name.localeCompare(b?.name)} />
+                <Column
+                  title="Thương hiệu"
+                  dataIndex="name"
+                  key="name"
+                  sorter={(a, b) => a?.name.localeCompare(b?.name)}
+                />
                 <Column
                   title="Hoạt động"
                   key="action"
