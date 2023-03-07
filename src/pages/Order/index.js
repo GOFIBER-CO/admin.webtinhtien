@@ -1,3 +1,4 @@
+import "./style.css";
 import React, { createRef, useEffect, useState } from "react";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -24,13 +25,16 @@ import AddEditOrderPost from "./AddEditOrderPost";
 const Orders = () => {
   const { RangePicker } = DatePicker;
 
-  const [pageIndex, setPageIndex] = useState();
+  const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [orderPostData, setOrderPostData] = useState([]);
+  console.log("orderPostData: ", orderPostData);
   const [open, setOpen] = useState(false);
   const [titleDrawer, setTitleDrawer] = useState("");
   const [dataDrawer, setDataDrawer] = useState({});
-  //
+  const [totalDocs, setTotalDocs] = useState(0);
+  const [search, setSearch] = useState({});
+  console.log("search: ", search);
 
   const showDrawer = () => {
     setDataDrawer({});
@@ -50,7 +54,7 @@ const Orders = () => {
   };
   const columns = [
     {
-      title: "Title",
+      title: "Tên bài viết",
       dataIndex: "title",
       key: "title",
     },
@@ -101,7 +105,6 @@ const Orders = () => {
       dataIndex: "moneyPerWord",
       key: "moneyPerWord",
       render: (text, value) => {
-        console.log("text: ", typeof text);
         return (
           <>
             {Number(text).toLocaleString("vi-VN", {
@@ -146,23 +149,34 @@ const Orders = () => {
     },
   ];
   const getListData = async () => {
-    const resUserData = JSON.parse(sessionStorage.getItem("authUser"));
-    const userId = resUserData?.id;
-    const result = await getListOrderPosts( pageSize, pageIndex);
+    const result = await getListOrderPosts(pageSize, pageIndex, search);
     setOrderPostData(result?.data);
+    setTotalDocs(result?.totalItem);
   };
   useEffect(() => {
     getListData();
   }, [pageIndex, pageSize]);
-  //
+
   const confirm = async (id) => {
     const rs = await deleteRecord(id);
     if (rs?.status === 200) {
       getListData();
     }
   };
-  const onFinish = (value) => {
-    console.log("value: ", value);
+  const onFinish = async (value) => {
+    setPageIndex(1);
+    const data = {
+      title: value?.title,
+      status: value?.status,
+      keyword: value?.keyword,
+      createdAt: value?.["range-picker"],
+      // dateForm: new Date(value?.["range-picker"]?.[0]?.$d).getTime(),
+      // dateTo: new Date(value?.["range-picker"]?.[1]?.$d).getTime(),
+    };
+    setSearch(data);
+    const result = await getListOrderPosts(pageSize, pageIndex, data);
+    setOrderPostData(result?.data);
+    setTotalDocs(result?.totalItem);
   };
   return (
     <React.Fragment>
@@ -180,13 +194,16 @@ const Orders = () => {
                 </Form.Item>
               </Col>
               <Col span={3}>
-                <Form.Item label="Trạng thái" name="status" initialValue="-1">
-                  <Select style={{ height: "25px !important" }}>
-                    <Select.Option value="-1">Chưa nhận</Select.Option>
-                    <Select.Option value="0">CTV đã nhận</Select.Option>
-                    <Select.Option value="1">Đã hoàn thành</Select.Option>
-                  </Select>
-                </Form.Item>
+                <div className="selected">
+                  <Form.Item label="Trạng thái" name="status" initialValue="2">
+                    <Select>
+                      <Select.Option value="2">Tất cả</Select.Option>
+                      <Select.Option value="-1">Chưa nhận</Select.Option>
+                      <Select.Option value="0">CTV đã nhận</Select.Option>
+                      <Select.Option value="1">Đã hoàn thành</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </div>
               </Col>
               <Col span={4}>
                 <Form.Item label="Từ khóa" name="keyword">
@@ -221,6 +238,7 @@ const Orders = () => {
             dataSource={orderPostData}
             columns={columns}
             pagination={{
+              total: totalDocs,
               showSizeChanger: true,
               pageSizeOptions: [5, 10, 20, 30, 40, 50],
               pageSize: pageSize,
@@ -234,6 +252,7 @@ const Orders = () => {
           />
           <Row>
             <Drawer
+              closable={false}
               title={titleDrawer}
               placement="right"
               onClose={onClose}

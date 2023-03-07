@@ -5,10 +5,9 @@ import {
   handleArrayToString,
   handleKeyWord,
 } from "../../../helpers/convertKeyword";
-import { createOrderPost, updateRecord } from "../../../helpers/helper";
+import { createOrderPost, updateOrderPost } from "../../../helpers/helper";
 
 const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
-  console.log("dataDrawer: ", dataDrawer);
   const [form] = Form.useForm();
   useEffect(() => {
     if (Object.keys(dataDrawer)?.length === 0) {
@@ -34,7 +33,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
       keyword: newKeyword,
     };
     if (value?.id) {
-      const result = await updateRecord(data);
+      const result = await updateOrderPost(data);
       if (result?.status === 200) {
         close();
 
@@ -60,8 +59,14 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="Title" name="title">
-              <Input placeholder="..." name="title" />
+            <Form.Item
+              label="Title"
+              name="title"
+              rules={[
+                { required: true, message: "Vui lòng nhập tên bài viết!" },
+              ]}
+            >
+              <Input placeholder="Tên bài viết" name="title" />
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -70,7 +75,11 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="Số tiền mỗi từ" name="moneyPerWord">
+            <Form.Item
+              label="Số tiền mỗi từ"
+              name="moneyPerWord"
+              rules={[{ required: true, message: "Vui lòng nhập số tiền!" }]}
+            >
               <InputNumber min={1} controls={false} />
             </Form.Item>
           </Col>
@@ -78,6 +87,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
             <Form.Item
               label={`Keyword (Mỗi keyword cách nhau bởi "Enter")`}
               name="keyword"
+              rules={[{ required: true, message: "Vui lòng nhập từ khóa !" }]}
             >
               <TextArea rows={4} />
             </Form.Item>
