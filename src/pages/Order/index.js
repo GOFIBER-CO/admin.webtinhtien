@@ -19,14 +19,21 @@ import {
   message,
 } from "antd";
 
-import { getListOrderPosts, deleteRecord } from "./../../helpers/helper";
+import {
+  getListOrderPosts,
+  deleteRecord,
+  checkPermissionScreen,
+  getCTV,
+} from "./../../helpers/helper";
 import { Container } from "reactstrap";
 import moment from "moment/moment";
 import AddEditOrderPost from "./AddEditOrderPost";
+import { useLocation, useParams } from "react-router-dom";
+import Page403 from "../403";
 
 const Orders = () => {
   const { RangePicker } = DatePicker;
-
+  const location = useLocation();
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [orderPostData, setOrderPostData] = useState([]);
@@ -35,6 +42,22 @@ const Orders = () => {
   const [dataDrawer, setDataDrawer] = useState({});
   const [totalDocs, setTotalDocs] = useState(0);
   const [search, setSearch] = useState({});
+  const [listCTV, setListCTV] = useState([]);
+  const [checkRole, setCheckRole] = useState(true);
+  const checkScreen = async () => {
+    const permission = await checkPermissionScreen(location.pathname);
+    setCheckRole(permission.status);
+  };
+
+  const getListCTV = async () => {
+    const ctvs = await getCTV();
+    setListCTV(ctvs?.users);
+  };
+  useEffect(() => {
+    checkScreen();
+    getListCTV();
+  }, []);
+
   const showDrawer = () => {
     setDataDrawer({});
     setTitleDrawer("Tạo mới");
@@ -206,6 +229,7 @@ const Orders = () => {
       moneyPerWord: value?.moneyPerWord,
       createdAt: value?.["range-picker"],
       status: value?.status,
+      ctv: value?.ctv,
       // dateForm: new Date(value?.["range-picker"]?.[0]?.$d).getTime(),
       // dateTo: new Date(value?.["range-picker"]?.[1]?.$d).getTime(),
     };
@@ -224,12 +248,12 @@ const Orders = () => {
           ></BreadCrumb>
           <Form layout="vertical" onFinish={onFinish}>
             <Row gutter={[16, 16]} style={{ marginBottom: "1rem" }}>
-              <Col span={4}>
+              <Col span={6}>
                 <Form.Item label="Tên bài viết" name="title">
                   <Input size="middle" placeholder="Tìm kiếm theo tiêu đề" />
                 </Form.Item>
               </Col>
-              <Col span={3}>
+              <Col span={6}>
                 <div className="selected">
                   <Form.Item
                     label="Trạng thái công tác viên"
@@ -245,7 +269,7 @@ const Orders = () => {
                   </Form.Item>
                 </div>
               </Col>
-              <Col span={3}>
+              <Col span={6}>
                 <div className="selected">
                   <Form.Item
                     label="Trạng thái thanh toán"
@@ -260,7 +284,7 @@ const Orders = () => {
                   </Form.Item>
                 </div>
               </Col>
-              <Col span={3}>
+              <Col span={6}>
                 <div className="selected">
                   <Form.Item
                     label="Trạng thái bài viết"
@@ -276,12 +300,12 @@ const Orders = () => {
                   </Form.Item>
                 </div>
               </Col>
-              <Col span={4}>
+              <Col span={6}>
                 <Form.Item label="Từ khóa" name="keyword">
                   <Input placeholder="Tìm kiếm theo từ khóa" />
                 </Form.Item>
               </Col>
-              <Col span={2}>
+              <Col span={6}>
                 <Form.Item
                   label="Số tiền mỗi từ"
                   name="moneyPerWord"
@@ -292,13 +316,23 @@ const Orders = () => {
                   </div>
                 </Form.Item>
               </Col>
-              <Col span={4}>
-                <Form.Item
-                  name="range-picker"
-                  label="Thời gian"
-                  // {...rangeConfig}
-                >
-                  <RangePicker />
+              <Col span={6}>
+                <Form.Item name="range-picker" label="Thời gian">
+                  <RangePicker style={{ width: "100%" }} />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item name="ctv" label="CTV">
+                  <Select className="select-ctv">
+                    <Select.Option value={""} key={"all"}>
+                      All
+                    </Select.Option>
+                    {listCTV?.map((item, index) => (
+                      <Select.Option value={item?.id} key={index}>
+                        {item?.fullName}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 </Form.Item>
               </Col>
             </Row>

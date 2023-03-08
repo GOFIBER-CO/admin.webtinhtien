@@ -21,6 +21,7 @@ export default function SearchConponent({ handleSearch }) {
         style={{ display: "flex" }}
         layout="vertical"
         onFinish={handleSearch}
+        id="form-search-post-of-you"
       >
         <Row gutter={[10, 10]} className={"order-post-not-received-search"}>
           <Col span={5}>
@@ -39,14 +40,7 @@ export default function SearchConponent({ handleSearch }) {
               <RangePicker size="small" />
             </Form.Item>
           </Col>
-          <Col span={5}>
-            <Form.Item label="Giá tiền cho mỗi từ" name={"moneyPerWord"}>
-              <InputNumber
-                placeholder="Giá tiền cho mỗi từ"
-                style={{ width: "100%" }}
-              />
-            </Form.Item>
-          </Col>
+
           <Col span={4}>
             <div className="selected">
               <Form.Item

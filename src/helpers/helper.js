@@ -466,3 +466,11 @@ export const updateOrderPost = (data) => {
 export const receivedPost = (id) => {
   return axios.put(`${url.API_ORDER_POST}/received-post/${id}`);
 };
+
+export const checkPermissionScreen = (screen) => {
+  return axios.post(`${url.API_USERS}/user/permissionScreen`, { screen });
+};
+
+export const getCTV = () => {
+  return axios.get(`${url.API_USERS}/user/getCTV`);
+};
