@@ -1,3 +1,7 @@
 .ant-picker {
     padding: 4px 11px 4px !important;
  }
+ .selected .ant-select-selector {
+    height: auto !important;
+    width: 100% !important;
+  }

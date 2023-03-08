@@ -13,27 +13,27 @@ const TableData = ({
 }) => {
   const columns = [
     {
-      title: "Title",
+      title: "Tên bài viêt",
       dataIndex: "title",
       key: "name",
     },
 
     {
-      title: "Money Per Word",
+      title: "Số tiền cho mỗi từ",
       dataIndex: "moneyPerWord",
       key: "moneyPerWord",
     },
+    // {
+    //   title: "Status",
+    //   dataIndex: "status",
+    //   key: "status",
+    //   render: (_) => {
+    //     const rs = { "-1": "Chưa nhận", 0: "Đã nhận", 1: "Hoàn thành" }[_];
+    //     return <>{rs}</>;
+    //   },
+    // },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (_) => {
-        const rs = { "-1": "Chưa nhận", 0: "Đã nhận", 1: "Hoàn thành" }[_];
-        return <>{rs}</>;
-      },
-    },
-    {
-      title: "Payment Status",
+      title: "Trạng thái thanh toán",
       dataIndex: "paymentStatus",
       key: "paymentStatus",
       render: (_) =>
@@ -41,7 +41,11 @@ const TableData = ({
           <BsCheckCircle color="green" />
         ) : (
           <Popover content="Đang chờ thanh toán">
-            <MdPendingActions color="red" size={20} />
+            <MdPendingActions
+              color="red"
+              size={20}
+              style={{ cursor: "pointer" }}
+            />
           </Popover>
         ),
     },

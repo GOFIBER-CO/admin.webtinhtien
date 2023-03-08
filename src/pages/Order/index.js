@@ -16,6 +16,7 @@ import {
   Form,
   DatePicker,
   InputNumber,
+  message,
 } from "antd";
 
 import { getListOrderPosts, deleteRecord } from "./../../helpers/helper";
@@ -44,62 +45,80 @@ const Orders = () => {
     setOpen(false);
     setDataDrawer({});
   };
-  const onEditOrderPost = (id) => {
-    const resData = orderPostData.filter((item) => item?._id === id);
-    setDataDrawer(resData[0]);
-    setTitleDrawer("Chỉnh sửa");
-    setOpen(true);
+  const onEditOrderPost = (id, value) => {
+    if (value["ctv"] == null) {
+      const resData = orderPostData.filter((item) => item?._id === id);
+      setDataDrawer(resData[0]);
+      setTitleDrawer("Chỉnh sửa");
+      setOpen(true);
+    }
   };
   const columns = [
     {
+      align: "center",
       title: "Tên bài viết",
       dataIndex: "title",
       key: "title",
+      render: (text, value) => {
+        return (
+          <>
+            <p style={{ textAlign: "left" }}>{text}</p>
+          </>
+        );
+      },
     },
     {
+      align: "center",
       title: "Mô tả",
       dataIndex: "desc",
       width: "15%",
       key: "desc",
+      render: (text, value) => {
+        return (
+          <>
+            <p style={{ textAlign: "left" }}>{text}</p>
+          </>
+        );
+      },
     },
     {
-      title: "Trạng thái",
+      align: "center",
+      title: "Trạng thái bài viết",
       dataIndex: "status",
       key: "status",
       render: (text, result) => {
-        let rs = "";
-        switch (text) {
-          case -1:
-            rs = "Đang chờ";
-            break;
-          case 0:
-            rs = "Đã nhận";
-            break;
-          case 1:
-            rs = "Hoàn thành";
-            break;
-          default:
-            rs = "Đang chờ";
-            break;
-        }
+        let rs = { 0: "Ẩn", 1: "Đã đăng" }[text];
         return <>{rs}</>;
       },
     },
     {
+      align: "center",
+      title: "Trạng thái cộng tác viên",
+      dataIndex: "statusOrderPost",
+      key: "statusOrderPost",
+      render: (text, result) => {
+        let rs = { "-1": "Đang chờ", 0: "Đã nhận", 1: "Hoàn thành" }[text];
+        return <>{rs}</>;
+      },
+    },
+    {
+      align: "center",
       title: "Từ khóa",
       dataIndex: "keyword",
       key: "keyword",
+      width:"15%",
       render: (text, value) => {
         return text?.map((item) => {
           return (
             <>
-              <Tag color="green">{item}</Tag>
+              <Tag color="green" style={{marginBottom:"7px"}}>{item}</Tag>
             </>
           );
         });
       },
     },
     {
+      align: "center",
       title: "Số tiền mỗi từ",
       dataIndex: "moneyPerWord",
       key: "moneyPerWord",
@@ -115,6 +134,7 @@ const Orders = () => {
       },
     },
     {
+      align: "center",
       title: "Trạng thái thanh toán",
       dataIndex: "paymentStatus",
       key: "paymentStatus",
@@ -123,6 +143,7 @@ const Orders = () => {
       },
     },
     {
+      align: "center",
       title: "Ngày tạo",
       dataIndex: "createdAt",
       key: "createdAt",
@@ -131,6 +152,7 @@ const Orders = () => {
       },
     },
     {
+      align: "center",
       title: "Hành động",
       dataIndex: "_id",
       key: "_id",
@@ -139,16 +161,20 @@ const Orders = () => {
           <Space size="middle">
             <i
               className="ri-pencil-line action-icon"
-              onClick={() => onEditOrderPost(text)}
+              onClick={() => onEditOrderPost(text, value)}
             ></i>
             <Popconfirm
+              disabled={value["ctv"]?.length > 0 ? true : false}
               title="Are you sure to delete this user?"
               onConfirm={() => confirm(text)}
               // onCancel={cancel}
               okText="Yes"
               cancelText="No"
             >
-              <i className="ri-delete-bin-line action-icon"></i>
+              <i
+                className="ri-delete-bin-line action-icon"
+                // style={{ cursor: "not-allowed" }}
+              ></i>
             </Popconfirm>
           </Space>
         );
@@ -174,11 +200,12 @@ const Orders = () => {
     setPageIndex(1);
     const data = {
       title: value?.title,
-      status: value?.status,
+      statusOrderPost: value?.statusOrderPost,
       paymentStatus: value?.paymentStatus,
       keyword: value?.keyword,
       moneyPerWord: value?.moneyPerWord,
       createdAt: value?.["range-picker"],
+      status: value?.status,
       // dateForm: new Date(value?.["range-picker"]?.[0]?.$d).getTime(),
       // dateTo: new Date(value?.["range-picker"]?.[1]?.$d).getTime(),
     };
@@ -204,10 +231,14 @@ const Orders = () => {
               </Col>
               <Col span={3}>
                 <div className="selected">
-                  <Form.Item label="Trạng thái" name="status" initialValue="2">
+                  <Form.Item
+                    label="Trạng thái công tác viên"
+                    name="statusOrderPost"
+                    initialValue="2"
+                  >
                     <Select>
                       <Select.Option value="2">Tất cả</Select.Option>
-                      <Select.Option value="-1">Chưa nhận</Select.Option>
+                      <Select.Option value="-1">Đang chờ</Select.Option>
                       <Select.Option value="0">CTV đã nhận</Select.Option>
                       <Select.Option value="1">Đã hoàn thành</Select.Option>
                     </Select>
@@ -225,6 +256,22 @@ const Orders = () => {
                       <Select.Option value="2">Tất cả</Select.Option>
                       <Select.Option value="0">Chưa thanh toán</Select.Option>
                       <Select.Option value="1">Đã thanh toán</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </div>
+              </Col>
+              <Col span={3}>
+                <div className="selected">
+                  <Form.Item
+                    label="Trạng thái bài viết"
+                    name="status"
+                    initialValue="2"
+                  >
+                    <Select>
+                      <Select.Option value="2">Tất cả</Select.Option>
+                      <Select.Option value="0">Ẩn</Select.Option>
+                      <Select.Option value="1">Hiện</Select.Option>
+                      {/* <Select.Option value="3">Hết hạn</Select.Option> */}
                     </Select>
                   </Form.Item>
                 </div>
@@ -287,7 +334,7 @@ const Orders = () => {
           />
           <Row>
             <Drawer
-              closable={false}
+              // closable={false}
               title={titleDrawer}
               placement="right"
               onClose={onClose}
