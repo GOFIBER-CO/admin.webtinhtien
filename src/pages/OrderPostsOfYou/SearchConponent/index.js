@@ -40,14 +40,7 @@ export default function SearchConponent({ handleSearch }) {
               <RangePicker size="small" />
             </Form.Item>
           </Col>
-          <Col span={5}>
-            <Form.Item label="Giá tiền cho mỗi từ" name={"moneyPerWord"}>
-              <InputNumber
-                placeholder="Giá tiền cho mỗi từ"
-                style={{ width: "100%" }}
-              />
-            </Form.Item>
-          </Col>
+
           <Col span={4}>
             <div className="selected">
               <Form.Item

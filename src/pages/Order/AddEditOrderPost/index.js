@@ -17,6 +17,7 @@ import {
 } from "../../../helpers/convertKeyword";
 import { createOrderPost, updateOrderPost } from "../../../helpers/helper";
 import moment from "moment/moment";
+import dayjs from "dayjs";
 
 const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
   const disabledDate = (current) => {
@@ -36,7 +37,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
         minWord: dataDrawer?.minWord,
         keyword: handleArrayToString(dataDrawer?.keyword),
         status: dataDrawer?.status.toString(),
-        // expired: moment(dataDrawer?.expired),
+        expired: dayjs(dataDrawer?.expired),
       });
     }
   }, [dataDrawer]);
@@ -115,16 +116,17 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
                 },
               ]}
             >
-              {Object.keys(dataDrawer).length === 0 ? (
+              {/* {Object.keys(dataDrawer).length === 0 ? (
                 <DatePicker disabledDate={disabledDate} format="DD/MM/YYYY" />
-              ) : (
-                // <DatePicker format="DD/MM/YYYY" />
-                <DatePicker
-                  disabledDate={disabledDate}
-                  format="DD/MM/YYYY"
-                  // defaultValue={"10/3/2023"}
-                />
-              )}
+              ) : ( */}
+
+              <DatePicker
+                disabledDate={disabledDate}
+                format="DD/MM/YYYY"
+
+                // defaultValue={"10/3/2023"}
+              />
+              {/* // )} */}
             </Form.Item>
           </Col>
           <Col span={24}>

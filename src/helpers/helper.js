@@ -470,3 +470,7 @@ export const receivedPost = (id) => {
 export const checkPermissionScreen = (screen) => {
   return axios.post(`${url.API_USERS}/user/permissionScreen`, { screen });
 };
+
+export const getCTV = () => {
+  return axios.get(`${url.API_USERS}/user/getCTV`);
+};

@@ -21,3 +21,6 @@
 span.anticon.anticon-close {
   display: flex;
 }
+.select-ctv .ant-select-selector{
+  height: auto !important;
+}
