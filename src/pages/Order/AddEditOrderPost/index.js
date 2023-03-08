@@ -56,7 +56,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
       <Form onFinish={onFinish} layout="vertical" form={form}>
         <Row>
           <Col span={24}>
-            <Form.Item label="" name="id">
+            <Form.Item label="" name="id" hidden>
               <Input type="hidden" name="id" />
             </Form.Item>
           </Col>

@@ -18,14 +18,20 @@ import {
   InputNumber,
 } from "antd";
 
-import { getListOrderPosts, deleteRecord } from "./../../helpers/helper";
+import {
+  getListOrderPosts,
+  deleteRecord,
+  checkPermissionScreen,
+} from "./../../helpers/helper";
 import { Container } from "reactstrap";
 import moment from "moment/moment";
 import AddEditOrderPost from "./AddEditOrderPost";
+import { useLocation, useParams } from "react-router-dom";
+import Page403 from "../403";
 
 const Orders = () => {
   const { RangePicker } = DatePicker;
-
+  const location = useLocation();
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [orderPostData, setOrderPostData] = useState([]);
@@ -34,6 +40,15 @@ const Orders = () => {
   const [dataDrawer, setDataDrawer] = useState({});
   const [totalDocs, setTotalDocs] = useState(0);
   const [search, setSearch] = useState({});
+  const [checkRole, setCheckRole] = useState(true);
+  const checkScreen = async () => {
+    const permission = await checkPermissionScreen(location.pathname);
+    setCheckRole(permission.status);
+  };
+  useEffect(() => {
+    checkScreen();
+  }, []);
+
   const showDrawer = () => {
     setDataDrawer({});
     setTitleDrawer("Tạo mới");
@@ -189,120 +204,128 @@ const Orders = () => {
   };
   return (
     <React.Fragment>
-      <div className="page-content">
-        <Container fluid>
-          <BreadCrumb
-            title="Bài viết"
-            pageTitle="Quản lý bài viết"
-          ></BreadCrumb>
-          <Form layout="vertical" onFinish={onFinish}>
-            <Row gutter={[16, 16]} style={{ marginBottom: "1rem" }}>
-              <Col span={4}>
-                <Form.Item label="Tên bài viết" name="title">
-                  <Input size="middle" placeholder="Tìm kiếm theo tiêu đề" />
-                </Form.Item>
-              </Col>
-              <Col span={3}>
-                <div className="selected">
-                  <Form.Item label="Trạng thái" name="status" initialValue="2">
-                    <Select>
-                      <Select.Option value="2">Tất cả</Select.Option>
-                      <Select.Option value="-1">Chưa nhận</Select.Option>
-                      <Select.Option value="0">CTV đã nhận</Select.Option>
-                      <Select.Option value="1">Đã hoàn thành</Select.Option>
-                    </Select>
+      {checkRole === true ? (
+        <div className="page-content">
+          <Container fluid>
+            <BreadCrumb
+              title="Bài viết"
+              pageTitle="Quản lý bài viết"
+            ></BreadCrumb>
+            <Form layout="vertical" onFinish={onFinish}>
+              <Row gutter={[16, 16]} style={{ marginBottom: "1rem" }}>
+                <Col span={4}>
+                  <Form.Item label="Tên bài viết" name="title">
+                    <Input size="middle" placeholder="Tìm kiếm theo tiêu đề" />
                   </Form.Item>
-                </div>
-              </Col>
-              <Col span={3}>
-                <div className="selected">
-                  <Form.Item
-                    label="Trạng thái thanh toán"
-                    name="paymentStatus"
-                    initialValue="2"
-                  >
-                    <Select>
-                      <Select.Option value="2">Tất cả</Select.Option>
-                      <Select.Option value="0">Chưa thanh toán</Select.Option>
-                      <Select.Option value="1">Đã thanh toán</Select.Option>
-                    </Select>
-                  </Form.Item>
-                </div>
-              </Col>
-              <Col span={4}>
-                <Form.Item label="Từ khóa" name="keyword">
-                  <Input placeholder="Tìm kiếm theo từ khóa" />
-                </Form.Item>
-              </Col>
-              <Col span={2}>
-                <Form.Item
-                  label="Số tiền mỗi từ"
-                  name="moneyPerWord"
-                  style={{ width: "100%" }}
-                >
-                  <div style={{ width: "100%" }}>
-                    <InputNumber min={1} controls={false} />
+                </Col>
+                <Col span={3}>
+                  <div className="selected">
+                    <Form.Item
+                      label="Trạng thái"
+                      name="status"
+                      initialValue="2"
+                    >
+                      <Select>
+                        <Select.Option value="2">Tất cả</Select.Option>
+                        <Select.Option value="-1">Chưa nhận</Select.Option>
+                        <Select.Option value="0">CTV đã nhận</Select.Option>
+                        <Select.Option value="1">Đã hoàn thành</Select.Option>
+                      </Select>
+                    </Form.Item>
                   </div>
-                </Form.Item>
-              </Col>
-              <Col span={4}>
-                <Form.Item
-                  name="range-picker"
-                  label="Thời gian"
-                  // {...rangeConfig}
-                >
-                  <RangePicker />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={[16, 16]} style={{ marginBottom: "3rem" }}>
-              <Col span={3}>
-                <Button type="primary" htmlType="submit">
-                  Tìm kiếm
-                </Button>
-              </Col>
-              <Col span={21} style={{ textAlign: "right" }}>
-                <Button type="primary" onClick={showDrawer}>
-                  Tạo mới
-                </Button>
-              </Col>
-            </Row>
-          </Form>
+                </Col>
+                <Col span={3}>
+                  <div className="selected">
+                    <Form.Item
+                      label="Trạng thái thanh toán"
+                      name="paymentStatus"
+                      initialValue="2"
+                    >
+                      <Select>
+                        <Select.Option value="2">Tất cả</Select.Option>
+                        <Select.Option value="0">Chưa thanh toán</Select.Option>
+                        <Select.Option value="1">Đã thanh toán</Select.Option>
+                      </Select>
+                    </Form.Item>
+                  </div>
+                </Col>
+                <Col span={4}>
+                  <Form.Item label="Từ khóa" name="keyword">
+                    <Input placeholder="Tìm kiếm theo từ khóa" />
+                  </Form.Item>
+                </Col>
+                <Col span={2}>
+                  <Form.Item
+                    label="Số tiền mỗi từ"
+                    name="moneyPerWord"
+                    style={{ width: "100%" }}
+                  >
+                    <div style={{ width: "100%" }}>
+                      <InputNumber min={1} controls={false} />
+                    </div>
+                  </Form.Item>
+                </Col>
+                <Col span={4}>
+                  <Form.Item
+                    name="range-picker"
+                    label="Thời gian"
+                    // {...rangeConfig}
+                  >
+                    <RangePicker />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={[16, 16]} style={{ marginBottom: "3rem" }}>
+                <Col span={3}>
+                  <Button type="primary" htmlType="submit">
+                    Tìm kiếm
+                  </Button>
+                </Col>
+                <Col span={21} style={{ textAlign: "right" }}>
+                  <Button type="primary" onClick={showDrawer}>
+                    Tạo mới
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
 
-          <Table
-            dataSource={orderPostData}
-            columns={columns}
-            pagination={{
-              total: totalDocs,
-              showSizeChanger: true,
-              pageSizeOptions: [5, 10, 20, 30, 40, 50],
-              pageSize: pageSize,
-              current: pageIndex,
-              onChange: (newIndex, newPageSize) => {
-                setPageIndex(newIndex);
-                setPageSize(newPageSize);
-              },
-            }}
-            rowKey="_id"
-          />
-          <Row>
-            <Drawer
-              closable={false}
-              title={titleDrawer}
-              placement="right"
-              onClose={onClose}
-              open={open}
-              style={{ marginTop: "70px" }}
-            >
-              <AddEditOrderPost
-                dataDrawer={dataDrawer}
-                close={onClose}
-                getListData={getListData}
-              />
-            </Drawer>
-          </Row>
-        </Container>
-      </div>
+            <Table
+              dataSource={orderPostData}
+              columns={columns}
+              pagination={{
+                total: totalDocs,
+                showSizeChanger: true,
+                pageSizeOptions: [5, 10, 20, 30, 40, 50],
+                pageSize: pageSize,
+                current: pageIndex,
+                onChange: (newIndex, newPageSize) => {
+                  setPageIndex(newIndex);
+                  setPageSize(newPageSize);
+                },
+              }}
+              rowKey="_id"
+            />
+            <Row>
+              <Drawer
+                closable={false}
+                title={titleDrawer}
+                placement="right"
+                onClose={onClose}
+                open={open}
+                style={{ marginTop: "70px" }}
+              >
+                <AddEditOrderPost
+                  dataDrawer={dataDrawer}
+                  close={onClose}
+                  getListData={getListData}
+                />
+              </Drawer>
+            </Row>
+          </Container>
+        </div>
+      ) : (
+        <Page403 />
+      )}
     </React.Fragment>
   );
 };

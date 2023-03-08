@@ -21,6 +21,7 @@ export default function SearchConponent({ handleSearch }) {
         style={{ display: "flex" }}
         layout="vertical"
         onFinish={handleSearch}
+        id="form-search-post-of-you"
       >
         <Row gutter={10} className={"order-post-not-received-search"}>
           <Col md={5}>
