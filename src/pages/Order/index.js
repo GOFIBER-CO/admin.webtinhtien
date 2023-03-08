@@ -68,13 +68,11 @@ const Orders = () => {
     setOpen(false);
     setDataDrawer({});
   };
-  const onEditOrderPost = (id, value) => {
-    if (value["ctv"] == null) {
-      const resData = orderPostData.filter((item) => item?._id === id);
-      setDataDrawer(resData[0]);
-      setTitleDrawer("Chỉnh sửa");
-      setOpen(true);
-    }
+  const onEditOrderPost = (id) => {
+    const resData = orderPostData.filter((item) => item?._id === id);
+    setDataDrawer(resData[0]);
+    setTitleDrawer("Chỉnh sửa");
+    setOpen(true);
   };
   const columns = [
     {
@@ -110,7 +108,7 @@ const Orders = () => {
       dataIndex: "status",
       key: "status",
       render: (text, result) => {
-        let rs = { 0: "Ẩn", 1: "Đã đăng" }[text];
+        let rs = { 0: "Ẩn", 1: "Đã đăng", 3: "Hết hạn" }[text];
         return <>{rs}</>;
       },
     },
@@ -186,7 +184,7 @@ const Orders = () => {
           <Space size="middle">
             <i
               className="ri-pencil-line action-icon"
-              onClick={() => onEditOrderPost(text, value)}
+              onClick={() => onEditOrderPost(text)}
             ></i>
             <Popconfirm
               disabled={value["ctv"]?.length > 0 ? true : false}
@@ -370,6 +368,7 @@ const Orders = () => {
           />
           <Row>
             <Drawer
+              className="customDrawer"
               // closable={false}
               title={titleDrawer}
               placement="right"

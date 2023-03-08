@@ -13,6 +13,7 @@ export default function OrderPostNotReceived() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState({ statusOrderPost: -1 });
   const handleSearch = (values) => {
+    console.log("valádfasdfues: ", values);
     values.statusOrderPost = -1;
     setSearch(values);
     getData(values);

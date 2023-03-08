@@ -44,7 +44,7 @@ export default function SearchConponent({ handleSearch }) {
           <Col span={4}>
             <div className="selected">
               <Form.Item
-                label="Trạng thái"
+                label="Trạng thái thanh toán"
                 name={"paymentStatus"}
                 initialValue="2"
               >

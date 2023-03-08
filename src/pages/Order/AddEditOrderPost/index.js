@@ -8,9 +8,10 @@ import {
   message,
   DatePicker,
   Select,
+  Rate,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { React, useEffect } from "react";
+import { React, useEffect, useState } from "react";
 import {
   handleArrayToString,
   handleKeyWord,
@@ -20,6 +21,9 @@ import moment from "moment/moment";
 import dayjs from "dayjs";
 
 const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
+  console.log("dataDrawer: ", dataDrawer);
+  const desc = ["Quá tệ", "Tạm được", "Bình thường", "Tốt", "Tuyệt vời"];
+  const [value, setValue] = useState(3);
   const disabledDate = (current) => {
     // Không cho phép chọn ngày trong quá khứ
     return current && current < moment().endOf("day").subtract(1, "day");
@@ -38,6 +42,8 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
         keyword: handleArrayToString(dataDrawer?.keyword),
         status: dataDrawer?.status.toString(),
         expired: dayjs(dataDrawer?.expired),
+        note: dataDrawer?.note,
+        star: dataDrawer?.star,
       });
     }
   }, [dataDrawer]);
@@ -54,7 +60,6 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
       const result = await createOrderPost(value);
       if (result?.status === 200) {
         close();
-
         message.success(`Create Success! `);
       }
     }
@@ -62,7 +67,13 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
   };
   return (
     <>
-      <Form onFinish={onFinish} layout="vertical" form={form}>
+      <Form
+        style={{ paddingBottom: "6rem" }}
+        onFinish={onFinish}
+        layout="vertical"
+        form={form}
+        disabled={dataDrawer["statusOrderPost"] !== -1 ? true : false}
+      >
         <Row>
           <Col span={24}>
             <Form.Item label="" name="id" hidden>
@@ -116,10 +127,6 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
                 },
               ]}
             >
-              {/* {Object.keys(dataDrawer).length === 0 ? (
-                <DatePicker disabledDate={disabledDate} format="DD/MM/YYYY" />
-              ) : ( */}
-
               <DatePicker
                 disabledDate={disabledDate}
                 format="DD/MM/YYYY"
@@ -143,6 +150,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
               label="Trạng thái bài viết"
               name="status"
               initialValue="1"
+              hidden={dataDrawer["statusOrderPost"] !== -1}
             >
               <Select>
                 <Select.Option value="0">Ẩn</Select.Option>
@@ -150,9 +158,35 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
               </Select>
             </Form.Item>
           </Col>
+
+          <Col span={24}>
+            <Form.Item
+              label="Đánh giá"
+              name="star"
+              initialValue={value}
+              hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
+              // hidden={true}
+            >
+              <Rate tooltips={desc} onChange={setValue} value={value} />
+              {value ? (
+                <span className="ant-rate-text">{desc[value - 1]}</span>
+              ) : (
+                ""
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="Nội dung đánh giá"
+              name="note"
+              hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
+            >
+              <TextArea rows={4} disabled={false} />
+            </Form.Item>
+          </Col>
           <Col span={24}>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" disabled={false}>
                 {Object.keys(dataDrawer)?.length > 0 ? "Chỉnh sửa" : "Thêm mới"}
               </Button>
             </Form.Item>
