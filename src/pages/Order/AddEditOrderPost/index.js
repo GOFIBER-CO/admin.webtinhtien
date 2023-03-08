@@ -19,6 +19,7 @@ import { createOrderPost, updateOrderPost } from "../../../helpers/helper";
 import moment from "moment/moment";
 
 const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
+  console.log("dataDrawer: ", dataDrawer);
   const disabledDate = (current) => {
     // Không cho phép chọn ngày trong quá khứ
     return current && current < moment().endOf("day").subtract(1, "day");
@@ -61,7 +62,12 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
   };
   return (
     <>
-      <Form onFinish={onFinish} layout="vertical" form={form}>
+      <Form
+        onFinish={onFinish}
+        layout="vertical"
+        form={form}
+        disabled={dataDrawer?.ctv == null ? false : true}
+      >
         <Row>
           <Col span={24}>
             <Form.Item label="" name="id" hidden>
@@ -141,6 +147,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
               label="Trạng thái bài viết"
               name="status"
               initialValue="1"
+              hidden={dataDrawer["statusOrderPost"] !== -1}
             >
               <Select>
                 <Select.Option value="0">Ẩn</Select.Option>

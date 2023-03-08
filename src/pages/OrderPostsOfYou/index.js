@@ -16,11 +16,19 @@ export default function OrderPostsOfYou() {
   const [search, setSearch] = useState({
     ctv: JSON.parse(user)?.id || "",
   });
-  const handleSearch = (values) => {
-    console.log(new URLSearchParams(values).toString(), "searchValye");
+  const handleSearch = async (values) => {
+    console.log("vsadfadsalues: ", values);
+    setSearch({
+      ...values,
+      ctv: JSON.parse(user)?.id || "",
+    });
+    await getData();
+    // console.log(new URLSearchParams(values).toString(), "searchValye");
   };
   const getData = async () => {
+    // const getListPost = await getListOrderPosts(pageSize, pageIndex, search);
     const getListPost = await getListOrderPosts(pageSize, pageIndex, search);
+    console.log("getListPost: ", getListPost);
     setTotalDocs(getListPost?.totalItem);
     setData(getListPost.data);
   };
@@ -38,7 +46,7 @@ export default function OrderPostsOfYou() {
             />
             <Row gutter={[20, 20]}>
               <Col md={24}>
-                <SearchConponent handleSearch={handleSearch} />
+                <SearchConponent handleSearch={() => handleSearch} />
               </Col>
               <Col md={24}>
                 <TableData

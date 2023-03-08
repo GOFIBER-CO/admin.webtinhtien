@@ -45,13 +45,11 @@ const Orders = () => {
     setOpen(false);
     setDataDrawer({});
   };
-  const onEditOrderPost = (id, value) => {
-    if (value["ctv"] == null) {
-      const resData = orderPostData.filter((item) => item?._id === id);
-      setDataDrawer(resData[0]);
-      setTitleDrawer("Chỉnh sửa");
-      setOpen(true);
-    }
+  const onEditOrderPost = (id) => {
+    const resData = orderPostData.filter((item) => item?._id === id);
+    setDataDrawer(resData[0]);
+    setTitleDrawer("Chỉnh sửa");
+    setOpen(true);
   };
   const columns = [
     {
@@ -106,12 +104,14 @@ const Orders = () => {
       title: "Từ khóa",
       dataIndex: "keyword",
       key: "keyword",
-      width:"15%",
+      width: "15%",
       render: (text, value) => {
         return text?.map((item) => {
           return (
             <>
-              <Tag color="green" style={{marginBottom:"7px"}}>{item}</Tag>
+              <Tag color="green" style={{ marginBottom: "7px" }}>
+                {item}
+              </Tag>
             </>
           );
         });
@@ -161,7 +161,7 @@ const Orders = () => {
           <Space size="middle">
             <i
               className="ri-pencil-line action-icon"
-              onClick={() => onEditOrderPost(text, value)}
+              onClick={() => onEditOrderPost(text)}
             ></i>
             <Popconfirm
               disabled={value["ctv"]?.length > 0 ? true : false}
