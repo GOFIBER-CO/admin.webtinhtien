@@ -25,7 +25,11 @@ const TableData = ({
       dataIndex: "moneyPerWord",
       key: "moneyPerWord",
     },
-
+    {
+      title: "Số từ tối thiếu",
+      dataIndex: "minWord",
+      key: "minWord",
+    },
     {
       title: "Keyword",
       key: "keyword",
