@@ -10,6 +10,7 @@ const TableData = ({
   setPageSize,
   setPageIndex,
   data,
+  getData,
 }) => {
   const columns = [
     {
@@ -86,7 +87,7 @@ const TableData = ({
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <RefundPost record={record} />
+          <RefundPost record={record} getData={getData} />
           <UpdatePost record={record} />
         </Space>
       ),
