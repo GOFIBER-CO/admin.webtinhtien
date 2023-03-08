@@ -8,7 +8,6 @@ import TableData from "./TableConponent";
 
 export default function OrderPostsOfYou() {
   let user = sessionStorage.getItem("authUser");
-  console.log(JSON.parse(user), "truong yes");
   const [pageSize, setPageSize] = useState(10);
   const [pageIndex, setPageIndex] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
@@ -17,13 +16,11 @@ export default function OrderPostsOfYou() {
     ctv: JSON.parse(user)?.id || "",
   });
   const handleSearch = async (values) => {
-    console.log("vsadfadsalues: ", values);
+    console.log(values, "search");
     setSearch({
       ...values,
       ctv: JSON.parse(user)?.id || "",
     });
-    await getData();
-    // console.log(new URLSearchParams(values).toString(), "searchValye");
   };
   const getData = async () => {
     // const getListPost = await getListOrderPosts(pageSize, pageIndex, search);
@@ -33,8 +30,9 @@ export default function OrderPostsOfYou() {
     setData(getListPost.data);
   };
   useEffect(() => {
+    console.log(search, "search");
     getData();
-  }, []);
+  }, [search, pageSize, pageIndex]);
   return (
     <React.Fragment>
       <div className="post-not-received-container">
@@ -46,7 +44,7 @@ export default function OrderPostsOfYou() {
             />
             <Row gutter={[20, 20]}>
               <Col md={24}>
-                <SearchConponent handleSearch={() => handleSearch} />
+                <SearchConponent handleSearch={handleSearch} />
               </Col>
               <Col md={24}>
                 <TableData

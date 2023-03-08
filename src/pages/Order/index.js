@@ -108,7 +108,7 @@ const Orders = () => {
       dataIndex: "status",
       key: "status",
       render: (text, result) => {
-        let rs = { 0: "Ẩn", 1: "Đã đăng" }[text];
+        let rs = { 0: "Ẩn", 1: "Đã đăng", 3: "Hết hạn" }[text];
         return <>{rs}</>;
       },
     },
@@ -368,6 +368,7 @@ const Orders = () => {
           />
           <Row>
             <Drawer
+              className="customDrawer"
               // closable={false}
               title={titleDrawer}
               placement="right"
