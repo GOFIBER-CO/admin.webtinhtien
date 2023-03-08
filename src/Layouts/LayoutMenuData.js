@@ -314,7 +314,7 @@ const Navdata = () => {
     {
       // id: "postsLink-management",
       id: "postsOrder-management",
-      label: "QUẢN LÝ POSTS",
+      label: "ORDER POSTS",
       icon: "ri-bookmark-line",
       link: "/#",
       stateVariables: isOrder,
@@ -326,6 +326,7 @@ const Navdata = () => {
       },
       subItems: [
         {
+          disabled: user?.role === "CTV" ? true : false,
           id: "postsOrder",
           label: "Quản lí bài viết",
           link: "/postsOrder",

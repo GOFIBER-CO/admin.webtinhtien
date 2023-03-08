@@ -18,6 +18,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
         title: dataDrawer?.title,
         desc: dataDrawer?.desc,
         moneyPerWord: dataDrawer?.moneyPerWord,
+        minWord: dataDrawer?.minWord,
         keyword: handleArrayToString(dataDrawer?.keyword),
       });
     }
@@ -29,6 +30,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
       id: value?.id,
       title: value?.title,
       desc: value?.desc,
+      minWord: value?.minWord,
       moneyPerWord: value?.moneyPerWord,
       keyword: newKeyword,
     };
@@ -79,6 +81,17 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
               label="Số tiền mỗi từ"
               name="moneyPerWord"
               rules={[{ required: true, message: "Vui lòng nhập số tiền!" }]}
+            >
+              <InputNumber min={1} controls={false} />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="Số từ tối thiểu"
+              name="minWord"
+              rules={[
+                { required: true, message: "Vui lòng nhập số từ tối thiểu!" },
+              ]}
             >
               <InputNumber min={1} controls={false} />
             </Form.Item>
