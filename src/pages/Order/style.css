@@ -15,6 +15,9 @@
 .ant-picker {
   padding: 5px 11px 5px !important;
 }
-#moneyPerWord .ant-input-number{
+#moneyPerWord .ant-input-number {
   width: 100%;
+}
+span.anticon.anticon-close {
+  display: flex;
 }

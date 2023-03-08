@@ -1,4 +1,14 @@
-import { Col, Input, InputNumber, Row, Form, Button, message } from "antd";
+import {
+  Col,
+  Input,
+  InputNumber,
+  Row,
+  Form,
+  Button,
+  message,
+  DatePicker,
+  Select,
+} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { React, useEffect } from "react";
 import {
@@ -6,8 +16,13 @@ import {
   handleKeyWord,
 } from "../../../helpers/convertKeyword";
 import { createOrderPost, updateOrderPost } from "../../../helpers/helper";
+import moment from "moment/moment";
 
 const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
+  const disabledDate = (current) => {
+    // Không cho phép chọn ngày trong quá khứ
+    return current && current < moment().endOf("day").subtract(1, "day");
+  };
   const [form] = Form.useForm();
   useEffect(() => {
     if (Object.keys(dataDrawer)?.length === 0) {
@@ -20,29 +35,22 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
         moneyPerWord: dataDrawer?.moneyPerWord,
         minWord: dataDrawer?.minWord,
         keyword: handleArrayToString(dataDrawer?.keyword),
+        status: dataDrawer?.status.toString(),
+        // expired: moment(dataDrawer?.expired),
       });
     }
   }, [dataDrawer]);
 
   const onFinish = async (value) => {
-    const newKeyword = await handleKeyWord(value?.keyword);
-    const data = {
-      id: value?.id,
-      title: value?.title,
-      desc: value?.desc,
-      minWord: value?.minWord,
-      moneyPerWord: value?.moneyPerWord,
-      keyword: newKeyword,
-    };
+    value["keyword"] = handleKeyWord(value?.keyword);
     if (value?.id) {
-      const result = await updateOrderPost(data);
+      const result = await updateOrderPost(value);
       if (result?.status === 200) {
         close();
-
         message.success(`Update Success! `);
       }
     } else {
-      const result = await createOrderPost(data);
+      const result = await createOrderPost(value);
       if (result?.status === 200) {
         close();
 
@@ -82,7 +90,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
               name="moneyPerWord"
               rules={[{ required: true, message: "Vui lòng nhập số tiền!" }]}
             >
-              <InputNumber min={1} controls={false} />
+              <InputNumber min={1} controls={false} style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -93,7 +101,30 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
                 { required: true, message: "Vui lòng nhập số từ tối thiểu!" },
               ]}
             >
-              <InputNumber min={1} controls={false} />
+              <InputNumber min={1} controls={false} style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="Thời gian hoàn thành"
+              name="expired"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng thêm  thời gian hoàn thành!",
+                },
+              ]}
+            >
+              {Object.keys(dataDrawer).length === 0 ? (
+                <DatePicker disabledDate={disabledDate} format="DD/MM/YYYY" />
+              ) : (
+                // <DatePicker format="DD/MM/YYYY" />
+                <DatePicker
+                  disabledDate={disabledDate}
+                  format="DD/MM/YYYY"
+                  // defaultValue={"10/3/2023"}
+                />
+              )}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -103,6 +134,18 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
               rules={[{ required: true, message: "Vui lòng nhập từ khóa !" }]}
             >
               <TextArea rows={4} />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="Trạng thái bài viết"
+              name="status"
+              initialValue="1"
+            >
+              <Select>
+                <Select.Option value="0">Ẩn</Select.Option>
+                <Select.Option value="1">Đăng</Select.Option>
+              </Select>
             </Form.Item>
           </Col>
           <Col span={24}>

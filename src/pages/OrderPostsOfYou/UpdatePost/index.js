@@ -1,13 +1,28 @@
-import { Button, Drawer } from "antd";
-import { useState } from "react";
+import { Button, Drawer, Form, Input, InputNumber, Tag, message } from "antd";
+import { useEffect, useState } from "react";
 import { GrDocumentUpdate } from "react-icons/gr";
+import { updateOrderPost } from "../../../helpers/helper";
+
 const UpdatePost = ({ record }) => {
+  const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
     setOpen(true);
   };
   const onClose = () => {
     setOpen(false);
+  };
+  useEffect(() => {
+    form.setFieldsValue(record);
+  }, []);
+  const onFinish = async (value) => {
+    let flat = false;
+    if (flat) {
+      const rs = await updateOrderPost(value);
+      console.log("rs: ", rs);
+    } else {
+      message.warning(`Số từ không đủ so với yêu câu`);
+    }
   };
   return (
     <>
@@ -24,9 +39,51 @@ const UpdatePost = ({ record }) => {
         onClose={onClose}
         open={open}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <Form
+          name="basic"
+          form={form}
+          autoComplete="off"
+          layout="vertical"
+          onFinish={onFinish}
+        >
+          <Form.Item label="Title" name="_id" hidden>
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="Title" name="title">
+            <Input disabled />
+          </Form.Item>
+
+          <Form.Item label="Descriptions" name="desc">
+            <Input.TextArea disabled />
+          </Form.Item>
+          <Form.Item label="Money Per Word" name="moneyPerWord">
+            <InputNumber
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `${value} VND`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              disabled
+            />
+          </Form.Item>
+          <Form.Item label="Số từ tối thiểu" name="minWord">
+            <InputNumber disabled />
+          </Form.Item>
+          <Form.Item label="Keyword" name="keyword">
+            {record?.keyword?.map((item) => (
+              <Tag key={item} color={"cyan"}>
+                {item}
+              </Tag>
+            ))}
+          </Form.Item>
+          <Form.Item label="Đường dẫn bài viết" name="link">
+            <Input style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Gửi
+            </Button>
+          </Form.Item>
+        </Form>
       </Drawer>
     </>
   );

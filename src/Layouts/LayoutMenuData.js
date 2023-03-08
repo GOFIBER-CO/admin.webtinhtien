@@ -334,13 +334,13 @@ const Navdata = () => {
         },
         {
           id: "postsNotReceivedOrder",
-          label: "Bài viết chưa nhận",
+          label: "Danh sách bài biết mới",
           link: "/postsNotReceived",
           parentId: "postsOrder-management",
         },
         {
           id: "postOfYou",
-          label: "Bài viết của bạn",
+          label: "Danh sách bài viết của bạn",
           link: "/postOfYou",
           parentId: "postsOrder-management",
         },
