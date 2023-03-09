@@ -474,3 +474,7 @@ export const checkPermissionScreen = (screen) => {
 export const getCTV = () => {
   return axios.get(`${url.API_USERS}/user/getCTV`);
 };
+//COUNT WORD
+export const countWord = (data) => {
+  return axios.post(`${url.API_COUNT_WORD_GG_DOCS}`, data);
+};

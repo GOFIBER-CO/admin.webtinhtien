@@ -1,7 +1,7 @@
 import { Button, Drawer, Form, Input, InputNumber, Tag, message } from "antd";
 import { useEffect, useState } from "react";
 import { GrDocumentUpdate } from "react-icons/gr";
-import { updateOrderPost } from "../../../helpers/helper";
+import { countWord, updateOrderPost } from "../../../helpers/helper";
 
 const UpdatePost = ({ record }) => {
   const [form] = Form.useForm();
@@ -16,13 +16,14 @@ const UpdatePost = ({ record }) => {
     form.setFieldsValue(record);
   }, []);
   const onFinish = async (value) => {
-    let flat = false;
-    if (flat) {
-      const rs = await updateOrderPost(value);
-      console.log("rs: ", rs);
-    } else {
-      message.warning(`Số từ không đủ so với yêu câu`);
-    }
+      const rs = await countWord(value);
+      if (Object.keys(rs?.data)?.length > 0) {
+        message.success(`Thành công`);
+        setOpen(false);
+      } else {
+        message.warning(
+          "Số từ chưa đạt điều kiện " + rs?.message + " từ"
+        );
   };
   return (
     <>

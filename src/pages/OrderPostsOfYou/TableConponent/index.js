@@ -11,6 +11,7 @@ const TableData = ({
   setPageIndex,
   data,
 }) => {
+
   const columns = [
     {
       title: "Tên bài viêt",
@@ -68,6 +69,12 @@ const TableData = ({
           })}
         </>
       ),
+    },
+    {
+      title: "Hạn",
+      dataIndex: "expired",
+      key: "expired",
+      render: (_) => moment(_).format("DD-MM-YYYY"),
     },
     {
       title: "CreatedAt",

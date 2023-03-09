@@ -72,7 +72,12 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
         onFinish={onFinish}
         layout="vertical"
         form={form}
-        disabled={dataDrawer["statusOrderPost"] !== -1 ? true : false}
+        disabled={
+          dataDrawer["statusOrderPost"] !== -1 &&
+          Object.keys(dataDrawer).length > 0
+            ? true
+            : false
+        }
       >
         <Row>
           <Col span={24}>
