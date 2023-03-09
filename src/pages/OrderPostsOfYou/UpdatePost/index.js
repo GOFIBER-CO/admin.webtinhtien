@@ -16,14 +16,13 @@ const UpdatePost = ({ record }) => {
     form.setFieldsValue(record);
   }, []);
   const onFinish = async (value) => {
-      const rs = await countWord(value);
-      if (Object.keys(rs?.data)?.length > 0) {
-        message.success(`Thành công`);
-        setOpen(false);
-      } else {
-        message.warning(
-          "Số từ chưa đạt điều kiện " + rs?.message + " từ"
-        );
+    const rs = await countWord(value);
+    if (Object.keys(rs?.data)?.length > 0) {
+      message.success(`Thành công`);
+      setOpen(false);
+    } else {
+      message.warning("Số từ chưa đạt điều kiện " + rs?.message + " từ");
+    }
   };
   return (
     <>
