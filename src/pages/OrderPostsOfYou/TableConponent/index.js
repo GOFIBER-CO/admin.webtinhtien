@@ -11,7 +11,6 @@ const TableData = ({
   setPageIndex,
   data,
 }) => {
-
   const columns = [
     {
       title: "Tên bài viêt",
@@ -37,9 +36,13 @@ const TableData = ({
       title: "Trạng thái thanh toán",
       dataIndex: "paymentStatus",
       key: "paymentStatus",
+
       render: (_) =>
         _ ? (
-          <BsCheckCircle color="green" />
+          <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
+            <BsCheckCircle color="green" />
+            <span>Đã duyệt</span>
+          </div>
         ) : (
           <Popover content="Đang chờ thanh toán">
             <MdPendingActions
@@ -82,12 +85,12 @@ const TableData = ({
       key: "createdAt",
       render: (_) => moment(_).format("DD-MM-YYYY"),
     },
-    {
-      title: "UpdatedAt",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render: (_) => moment(_).format("DD-MM-YYYY"),
-    },
+    // {
+    //   title: "UpdatedAt",
+    //   dataIndex: "updatedAt",
+    //   key: "updatedAt",
+    //   render: (_) => moment(_).format("DD-MM-YYYY"),
+    // },
     {
       title: "Action",
       key: "action",

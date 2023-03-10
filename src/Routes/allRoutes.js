@@ -28,6 +28,8 @@ import CtvDashboard from "../Components/Dashboard/CTVDashboard";
 import Orders from "../pages/Order/index";
 import OrderPostNotReceived from "../pages/OrderPostNotReceived";
 import OrderPostOfYou from "../pages/OrderPostsOfYou";
+import OrderPostApproved from "../pages/OrderPostApproved";
+
 // import OrderManagement from "./../pages/Brands";
 
 const authProtectedRoutes = [
@@ -44,6 +46,8 @@ const authProtectedRoutes = [
   { path: "/payment", component: PaymentOfContributors },
   { path: "/postsNotReceived", component: OrderPostNotReceived },
   { path: "/postOfYou", component: OrderPostOfYou },
+  { path: "/approved", component: OrderPostApproved },
+
   {
     path: "/teams",
     component: Teams,

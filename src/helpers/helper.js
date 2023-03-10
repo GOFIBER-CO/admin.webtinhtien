@@ -459,6 +459,9 @@ export const deleteRecord = (id) => {
 export const createOrderPost = (data) => {
   return axios.post(`${url.API_ORDER_POST}/insert`, data);
 };
+export const updateBankingOrderPost = (data) => {
+  return axios.patch(`${url.API_ORDER_POST}/update/banking`, data);
+};
 export const updateOrderPost = (data) => {
   return axios.patch(`${url.API_ORDER_POST}/update`, data);
 };

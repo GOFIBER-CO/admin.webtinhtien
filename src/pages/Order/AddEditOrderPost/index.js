@@ -9,8 +9,10 @@ import {
   DatePicker,
   Select,
   Rate,
+  Space,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
+
 import { React, useEffect, useState } from "react";
 import {
   handleArrayToString,
@@ -19,11 +21,13 @@ import {
 import { createOrderPost, updateOrderPost } from "../../../helpers/helper";
 import moment from "moment/moment";
 import dayjs from "dayjs";
+import { IoOpenOutline } from "react-icons/io5";
+import Banking from "../Banking";
 
 const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
   console.log("dataDrawer: ", dataDrawer);
   const desc = ["Quá tệ", "Tạm được", "Bình thường", "Tốt", "Tuyệt vời"];
-  const [value, setValue] = useState(3);
+  const [valueStar, setValueStar] = useState(0);
   const disabledDate = (current) => {
     // Không cho phép chọn ngày trong quá khứ
     return current && current < moment().endOf("day").subtract(1, "day");
@@ -44,12 +48,16 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
         expired: dayjs(dataDrawer?.expired),
         note: dataDrawer?.note,
         star: dataDrawer?.star,
+        link: dataDrawer?.link,
       });
     }
   }, [dataDrawer]);
-
+  const openWebsite = () => {
+    window.open(dataDrawer?.link, "_blank");
+  };
   const onFinish = async (value) => {
     value["keyword"] = handleKeyWord(value?.keyword);
+    value["star"] = valueStar;
     if (value?.id) {
       const result = await updateOrderPost(value);
       if (result?.status === 200) {
@@ -68,7 +76,6 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
   return (
     <>
       <Form
-        style={{ paddingBottom: "6rem" }}
         onFinish={onFinish}
         layout="vertical"
         form={form}
@@ -79,121 +86,183 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
             : false
         }
       >
-        <Row>
-          <Col span={24}>
-            <Form.Item label="" name="id" hidden>
-              <Input type="hidden" name="id" />
-            </Form.Item>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Row>
+              <Col span={24} style={{ display: "none" }}>
+                <Form.Item label="" name="id" hidden>
+                  <Input type="hidden" name="id" />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Title"
+                  name="title"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập tên bài viết!" },
+                  ]}
+                >
+                  <Input placeholder="Tên bài viết" name="title" />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item label="Mô tả" name="desc">
+                  <TextArea rows={4} />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label={`Keyword (Mỗi keyword cách nhau bởi "Enter")`}
+                  name="keyword"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập từ khóa !" },
+                  ]}
+                >
+                  <TextArea rows={4} />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Đánh giá"
+                  name="star"
+                  hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
+                  // hidden={true}
+                >
+                  <Rate tooltips={desc} onChange={setValueStar} value={valueStar} />
+                  {valueStar ? (
+                    <span className="ant-rate-text">{desc[valueStar - 1]}</span>
+                  ) : (
+                    ""
+                  )}
+                </Form.Item>
+              </Col>
+            </Row>
           </Col>
-          <Col span={24}>
-            <Form.Item
-              label="Title"
-              name="title"
-              rules={[
-                { required: true, message: "Vui lòng nhập tên bài viết!" },
-              ]}
-            >
-              <Input placeholder="Tên bài viết" name="title" />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label="Mô tả" name="desc">
-              <TextArea rows={4} />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              label="Số tiền mỗi từ"
-              name="moneyPerWord"
-              rules={[{ required: true, message: "Vui lòng nhập số tiền!" }]}
-            >
-              <InputNumber min={1} controls={false} style={{ width: "100%" }} />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              label="Số từ tối thiểu"
-              name="minWord"
-              rules={[
-                { required: true, message: "Vui lòng nhập số từ tối thiểu!" },
-              ]}
-            >
-              <InputNumber min={1} controls={false} style={{ width: "100%" }} />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              label="Thời gian hoàn thành"
-              name="expired"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng thêm  thời gian hoàn thành!",
-                },
-              ]}
-            >
-              <DatePicker
-                disabledDate={disabledDate}
-                format="DD/MM/YYYY"
+          <Col span={12}>
+            <Row>
+              <Col span={24}>
+                <Form.Item
+                  label="Số tiền mỗi từ"
+                  name="moneyPerWord"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập số tiền!" },
+                  ]}
+                >
+                  <InputNumber
+                    min={1}
+                    controls={false}
+                    style={{ width: "100%" }}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Số từ tối thiểu"
+                  name="minWord"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập số từ tối thiểu!",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    min={1}
+                    controls={false}
+                    style={{ width: "100%" }}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Thời gian hoàn thành"
+                  name="expired"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng thêm  thời gian hoàn thành!",
+                    },
+                  ]}
+                >
+                  <DatePicker
+                    disabledDate={disabledDate}
+                    format="DD/MM/YYYY"
 
-                // defaultValue={"10/3/2023"}
-              />
-              {/* // )} */}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              label={`Keyword (Mỗi keyword cách nhau bởi "Enter")`}
-              name="keyword"
-              rules={[{ required: true, message: "Vui lòng nhập từ khóa !" }]}
-            >
-              <TextArea rows={4} />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              label="Trạng thái bài viết"
-              name="status"
-              initialValue="1"
-              hidden={dataDrawer["statusOrderPost"] !== -1}
-            >
-              <Select>
-                <Select.Option value="0">Ẩn</Select.Option>
-                <Select.Option value="1">Đăng</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                    // defaultValue={"10/3/2023"}
+                  />
+                  {/* // )} */}
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Trạng thái bài viết"
+                  name="status"
+                  initialValue="1"
+                  hidden={
+                    dataDrawer["statusOrderPost"] !== -1 &&
+                    dataDrawer["statusOrderPost"] !== undefined
+                      ? true
+                      : false
+                  }
+                >
+                  <Select>
+                    <Select.Option value="0">Ẩn</Select.Option>
+                    <Select.Option value="1">Đăng</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Đường dẫn bài viết"
+                  name="link"
+                  hidden={dataDrawer["statusOrderPost"] !== 1}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-evenly",
+                      gap: "1rem",
+                    }}
+                  >
+                    <Input value={dataDrawer?.link} />
+                    <IoOpenOutline
+                      size={25}
+                      style={{ cursor: "pointer" }}
+                      onClick={openWebsite}
+                    />
+                  </div>
+                </Form.Item>
+              </Col>
 
-          <Col span={24}>
-            <Form.Item
-              label="Đánh giá"
-              name="star"
-              initialValue={value}
-              hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
-              // hidden={true}
-            >
-              <Rate tooltips={desc} onChange={setValue} value={value} />
-              {value ? (
-                <span className="ant-rate-text">{desc[value - 1]}</span>
-              ) : (
-                ""
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              label="Nội dung đánh giá"
-              name="note"
-              hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
-            >
-              <TextArea rows={4} disabled={false} />
-            </Form.Item>
+              <Col span={24}>
+                <Form.Item
+                  label="Nội dung đánh giá"
+                  name="note"
+                  hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
+                >
+                  <TextArea rows={4} disabled={false} />
+                </Form.Item>
+              </Col>
+            </Row>
           </Col>
           <Col span={24}>
             <Form.Item>
-              <Button type="primary" htmlType="submit" disabled={false}>
-                {Object.keys(dataDrawer)?.length > 0 ? "Chỉnh sửa" : "Thêm mới"}
-              </Button>
+              <Space>
+                <Button type="primary" htmlType="submit" disabled={false}>
+                  {Object.keys(dataDrawer)?.length > 0
+                    ? "Chỉnh sửa"
+                    : "Thêm mới"}
+                </Button>
+                {/* <Button
+                  htmlType="button"
+                  hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
+                  disabled={dataDrawer["statusOrderPost"] === 1 ? false : true}
+                >
+                  Chuyển tiền
+                </Button> */}
+                <Banking dataDrawer={dataDrawer} onclose={close} />
+              </Space>
             </Form.Item>
           </Col>
         </Row>

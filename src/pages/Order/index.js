@@ -17,6 +17,7 @@ import {
   DatePicker,
   InputNumber,
   message,
+  Modal,
 } from "antd";
 
 import {
@@ -48,7 +49,13 @@ const Orders = () => {
     const permission = await checkPermissionScreen(location.pathname);
     setCheckRole(permission.status);
   };
-
+  const onDeleteClick = (value) => {
+    if (value["ctv"]) {
+      if (Object.keys(value["ctv"])?.length > 0) {
+        message.warning("Bài viết đã có người nhận, không thể xóa.");
+      }
+    }
+  };
   const getListCTV = async () => {
     const ctvs = await getCTV();
     setListCTV(ctvs?.users);
@@ -162,7 +169,7 @@ const Orders = () => {
       dataIndex: "paymentStatus",
       key: "paymentStatus",
       render: (text, value) => {
-        return <>{text ? "Đã thanh toán" : "Chưa thanh toán"}</>;
+        return <>{text ? "Đã duyệt" : "Đang xét duyệt"}</>;
       },
     },
     {
@@ -187,7 +194,7 @@ const Orders = () => {
               onClick={() => onEditOrderPost(text)}
             ></i>
             <Popconfirm
-              disabled={value["ctv"]?.length > 0 ? true : false}
+              disabled={value["statusOrderPost"] === -1 ? false : true}
               title="Are you sure to delete this user?"
               onConfirm={() => confirm(text)}
               // onCancel={cancel}
@@ -196,7 +203,7 @@ const Orders = () => {
             >
               <i
                 className="ri-delete-bin-line action-icon"
-                // style={{ cursor: "not-allowed" }}
+                onClick={() => onDeleteClick(value)}
               ></i>
             </Popconfirm>
           </Space>
@@ -367,21 +374,22 @@ const Orders = () => {
             rowKey="_id"
           />
           <Row>
-            <Drawer
+            <Modal
               className="customDrawer"
               // closable={false}
               title={titleDrawer}
               placement="right"
-              onClose={onClose}
+              onCancel={onClose}
               open={open}
-              style={{ marginTop: "70px" }}
+              width={1000}
+              footer={null}
             >
               <AddEditOrderPost
                 dataDrawer={dataDrawer}
                 close={onClose}
                 getListData={getListData}
               />
-            </Drawer>
+            </Modal>
           </Row>
         </Container>
       </div>

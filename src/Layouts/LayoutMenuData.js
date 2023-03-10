@@ -344,6 +344,12 @@ const Navdata = () => {
           link: "/postOfYou",
           parentId: "postsOrder-management",
         },
+        {
+          id: "approved",
+          label: "Danh sách bài viết đã duyệt",
+          link: "/approved",
+          parentId: "postsOrder-management",
+        },
       ],
     },
     // {

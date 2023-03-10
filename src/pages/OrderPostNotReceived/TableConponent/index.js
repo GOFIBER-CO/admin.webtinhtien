@@ -21,7 +21,7 @@ const TableData = ({
     },
 
     {
-      title: "Money Per Word",
+      title: "Số tiền mỗi từ",
       dataIndex: "moneyPerWord",
       key: "moneyPerWord",
     },
@@ -51,17 +51,23 @@ const TableData = ({
       ),
     },
     {
-      title: "CreatedAt",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      title: "Hoàn thành trước",
+      dataIndex: "expired",
+      key: "expired",
       render: (_) => moment(_).format("DD-MM-YYYY"),
     },
-    {
-      title: "UpdatedAt",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render: (_) => moment(_).format("DD-MM-YYYY"),
-    },
+    // {
+    //   title: "CreatedAt",
+    //   dataIndex: "createdAt",
+    //   key: "createdAt",
+    //   render: (_) => moment(_).format("DD-MM-YYYY"),
+    // },
+    // {
+    //   title: "UpdatedAt",
+    //   dataIndex: "updatedAt",
+    //   key: "updatedAt",
+    //   render: (_) => moment(_).format("DD-MM-YYYY"),
+    // },
     {
       title: "Action",
       key: "action",
