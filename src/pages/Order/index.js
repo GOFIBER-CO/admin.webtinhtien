@@ -18,6 +18,7 @@ import {
   InputNumber,
   message,
   Modal,
+  Spin,
 } from "antd";
 
 import {
@@ -45,6 +46,7 @@ const Orders = () => {
   const [search, setSearch] = useState({});
   const [listCTV, setListCTV] = useState([]);
   const [checkRole, setCheckRole] = useState(true);
+  const [loading, setLoading] = useState(true);
   const checkScreen = async () => {
     const permission = await checkPermissionScreen(location.pathname);
     setCheckRole(permission.status);
@@ -64,7 +66,6 @@ const Orders = () => {
     checkScreen();
     getListCTV();
   }, []);
-
   const showDrawer = () => {
     setDataDrawer({});
     setTitleDrawer("Tạo mới");
@@ -212,9 +213,11 @@ const Orders = () => {
     },
   ];
   const getListData = async () => {
+    setLoading(true);
     const result = await getListOrderPosts(pageSize, pageIndex, search);
     setOrderPostData(result?.data);
     setTotalDocs(result?.totalItem);
+    setLoading(false);
   };
   useEffect(() => {
     getListData();
@@ -356,23 +359,25 @@ const Orders = () => {
               </Col>
             </Row>
           </Form>
+          <Spin spinning={loading}>
+            <Table
+              dataSource={orderPostData}
+              columns={columns}
+              pagination={{
+                total: totalDocs,
+                showSizeChanger: true,
+                pageSizeOptions: [5, 10, 20, 30, 40, 50],
+                pageSize: pageSize,
+                current: pageIndex,
+                onChange: (newIndex, newPageSize) => {
+                  setPageIndex(newIndex);
+                  setPageSize(newPageSize);
+                },
+              }}
+              rowKey="_id"
+            />
+          </Spin>
 
-          <Table
-            dataSource={orderPostData}
-            columns={columns}
-            pagination={{
-              total: totalDocs,
-              showSizeChanger: true,
-              pageSizeOptions: [5, 10, 20, 30, 40, 50],
-              pageSize: pageSize,
-              current: pageIndex,
-              onChange: (newIndex, newPageSize) => {
-                setPageIndex(newIndex);
-                setPageSize(newPageSize);
-              },
-            }}
-            rowKey="_id"
-          />
           <Row>
             <Modal
               className="customDrawer"

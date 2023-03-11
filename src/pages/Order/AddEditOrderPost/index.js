@@ -28,10 +28,11 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
   console.log("dataDrawer: ", dataDrawer);
   const desc = ["Quá tệ", "Tạm được", "Bình thường", "Tốt", "Tuyệt vời"];
   const [valueStar, setValueStar] = useState(0);
+  //Không cho phép chọn ngày trong quá khứ
   const disabledDate = (current) => {
-    // Không cho phép chọn ngày trong quá khứ
     return current && current < moment().endOf("day").subtract(1, "day");
   };
+  //
   const [form] = Form.useForm();
   useEffect(() => {
     if (Object.keys(dataDrawer)?.length === 0) {
@@ -52,6 +53,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
       });
     }
   }, [dataDrawer]);
+
   const openWebsite = () => {
     window.open(dataDrawer?.link, "_blank");
   };
@@ -128,7 +130,11 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
                   hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
                   // hidden={true}
                 >
-                  <Rate tooltips={desc} onChange={setValueStar} value={valueStar} />
+                  <Rate
+                    tooltips={desc}
+                    onChange={setValueStar}
+                    value={valueStar}
+                  />
                   {valueStar ? (
                     <span className="ant-rate-text">{desc[valueStar - 1]}</span>
                   ) : (
@@ -185,7 +191,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
                   ]}
                 >
                   <DatePicker
-                    disabledDate={disabledDate}
+                    // disabledDate={disabledDate}
                     format="DD/MM/YYYY"
 
                     // defaultValue={"10/3/2023"}
@@ -251,17 +257,15 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
               <Space>
                 <Button type="primary" htmlType="submit" disabled={false}>
                   {Object.keys(dataDrawer)?.length > 0
-                    ? "Chỉnh sửa"
+                    ? "Cập nhật"
                     : "Thêm mới"}
                 </Button>
-                {/* <Button
-                  htmlType="button"
-                  hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
-                  disabled={dataDrawer["statusOrderPost"] === 1 ? false : true}
-                >
-                  Chuyển tiền
-                </Button> */}
-                <Banking dataDrawer={dataDrawer} onclose={close} />
+
+                <Banking
+                  dataDrawer={dataDrawer}
+                  onclose={close}
+                  getListData={getListData}
+                />
               </Space>
             </Form.Item>
           </Col>

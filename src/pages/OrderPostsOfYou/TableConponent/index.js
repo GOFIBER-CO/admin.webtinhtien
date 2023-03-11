@@ -74,7 +74,7 @@ const TableData = ({
       ),
     },
     {
-      title: "Hạn",
+      title: "Hạn 000",
       dataIndex: "expired",
       key: "expired",
       render: (_) => moment(_).format("DD-MM-YYYY"),

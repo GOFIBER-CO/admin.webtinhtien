@@ -1,9 +1,10 @@
 import { Button, Drawer, Form, Input, InputNumber, Tag, message } from "antd";
 import { useEffect, useState } from "react";
 import { GrDocumentUpdate } from "react-icons/gr";
-import { countWord, updateOrderPost } from "../../../helpers/helper";
+import { countWord } from "../../../helpers/helper";
 
 const UpdatePost = ({ record }) => {
+  console.log("record: ", record);
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
@@ -76,10 +77,14 @@ const UpdatePost = ({ record }) => {
             ))}
           </Form.Item>
           <Form.Item label="Đường dẫn bài viết" name="link">
-            <Input style={{ width: "100%" }} />
+            <Input style={{ width: "100%" }} disabled={record?.paymentStatus} />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={record?.paymentStatus}
+            >
               Gửi
             </Button>
           </Form.Item>
