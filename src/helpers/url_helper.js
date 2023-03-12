@@ -106,3 +106,4 @@ export const API_USERS = "/api/users";
 export const GET_ALL_ROLE = "/api/roles";
 export const API_TEAMS = "/api/teams";
 export const API_ORDER_POST = "/api/order-post";
+export const API_COUNT_WORD_GG_DOCS = "/api/count";

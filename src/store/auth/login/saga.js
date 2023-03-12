@@ -27,7 +27,8 @@ function* loginUser({ payload: { user, history } }) {
       if (response && response.status !== 0) {
         sessionStorage.setItem("authUser", JSON.stringify(response.data));
         yield put(loginSuccess(response));
-        history.push("/dashboard-analytics");
+        if (response.data?.role === "CTV") history.push("/postOfYou");
+        else history.push("/dashboard-analytics");
       } else {
         yield put(apiError(response));
       }

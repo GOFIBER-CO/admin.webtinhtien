@@ -459,10 +459,25 @@ export const deleteRecord = (id) => {
 export const createOrderPost = (data) => {
   return axios.post(`${url.API_ORDER_POST}/insert`, data);
 };
+export const updateBankingOrderPost = (data) => {
+  return axios.patch(`${url.API_ORDER_POST}/update/banking`, data);
+};
 export const updateOrderPost = (data) => {
   return axios.patch(`${url.API_ORDER_POST}/update`, data);
 };
 
 export const receivedPost = (id) => {
   return axios.put(`${url.API_ORDER_POST}/received-post/${id}`);
+};
+
+export const checkPermissionScreen = (screen) => {
+  return axios.post(`${url.API_USERS}/user/permissionScreen`, { screen });
+};
+
+export const getCTV = () => {
+  return axios.get(`${url.API_USERS}/user/getCTV`);
+};
+//COUNT WORD
+export const countWord = (data) => {
+  return axios.post(`${url.API_COUNT_WORD_GG_DOCS}`, data);
 };

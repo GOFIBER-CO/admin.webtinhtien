@@ -314,7 +314,7 @@ const Navdata = () => {
     {
       // id: "postsLink-management",
       id: "postsOrder-management",
-      label: "QUẢN LÝ POSTS",
+      label: "ORDER POSTS",
       icon: "ri-bookmark-line",
       link: "/#",
       stateVariables: isOrder,
@@ -326,6 +326,7 @@ const Navdata = () => {
       },
       subItems: [
         {
+          disabled: user?.role === "CTV" ? true : false,
           id: "postsOrder",
           label: "Quản lí bài viết",
           link: "/postsOrder",
@@ -333,14 +334,20 @@ const Navdata = () => {
         },
         {
           id: "postsNotReceivedOrder",
-          label: "Bài viết chưa nhận",
+          label: "Danh sách bài biết mới",
           link: "/postsNotReceived",
           parentId: "postsOrder-management",
         },
         {
           id: "postOfYou",
-          label: "Bài viết của bạn",
+          label: "Danh sách bài viết của bạn",
           link: "/postOfYou",
+          parentId: "postsOrder-management",
+        },
+        {
+          id: "approved",
+          label: "Danh sách bài viết đã duyệt",
+          link: "/approved",
           parentId: "postsOrder-management",
         },
       ],

@@ -11,9 +11,9 @@ export default function OrderPostNotReceived() {
   const [pageIndex, setPageIndex] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
   const [data, setData] = useState([]);
-  const [search, setSearch] = useState({ status: -1 });
+  const [search, setSearch] = useState({ statusOrderPost: -1 });
   const handleSearch = (values) => {
-    values.status = -1;
+    values.statusOrderPost = -1;
     setSearch(values);
     getData(values);
   };
@@ -31,7 +31,7 @@ export default function OrderPostNotReceived() {
         <div className="page-content">
           <Container fluid>
             <BreadCrumb
-              title="Bài viết chưa nhận"
+              title="Danh sách bài biết mới"
               pageTitle="Quản lý OrderPost"
             />
             <Row gutter={[20, 20]}>

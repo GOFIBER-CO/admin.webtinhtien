@@ -34,6 +34,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { editProfile, resetProfileFlag } from "../../store/actions";
 import config from "../../config";
 import { uploadFileToBunny } from "../../helpers/api_bunny";
+import { ListBanks } from "../../common/listBank";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -45,6 +46,9 @@ const UserProfile = () => {
   const [avatarImg, SetAvatarimg] = useState("");
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [stk, setSTK] = useState("");
+  const [fullName, setFullName] = useState("");
   const [role, setRole] = useState("");
 
   const sessdata = JSON.parse(sessionStorage.getItem("authUser"));
@@ -142,6 +146,9 @@ const UserProfile = () => {
       firstname: firstName,
       lastname: lastName,
       idx: idx || "",
+      bank_name: bankName,
+      skt: stk,
+      fullName: fullName,
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("Please Enter Your UserName"),
@@ -157,6 +164,9 @@ const UserProfile = () => {
     formData.append("firstname", firstName);
     formData.append("lastname", lastName);
     formData.append("username", userName);
+    formData.append("bank_name", bankName);
+    formData.append("fullName", fullName);
+    formData.append("stk", stk);
     formData.append("id", idx);
     try {
       refLoading.current.continuousStart();
@@ -168,6 +178,9 @@ const UserProfile = () => {
       const obj = JSON.parse(sessionStorage.getItem("authUser"));
       obj.firstName = firstName;
       obj.lastName = lastName;
+      obj.stk = stk;
+      obj.bank_name = bankName;
+      obj.fullName = fullName;
       sessionStorage.removeItem("authUser");
       sessionStorage.setItem("authUser", JSON.stringify(obj));
       setFirstName(obj.firstName);
@@ -189,10 +202,12 @@ const UserProfile = () => {
         sessionStorage.removeItem("authUser");
         sessionStorage.setItem("authUser", JSON.stringify(obj));
       }
-
       setUserName(obj.username);
       setFirstName(obj.firstName);
       setLastName(obj.lastName);
+      setBankName(obj?.bank_name);
+      setFullName(obj?.fullName);
+      setSTK(obj?.stk);
       setemail(obj.email);
       setidx(obj.id || "1");
       SetAvatarimg(obj.avatar);
@@ -338,6 +353,72 @@ const UserProfile = () => {
                       validation.errors.lastname ? (
                         <FormFeedback type="invalid">
                           {validation.errors.lastname}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="d-flex" style={{ marginTop: "15px" }}>
+                    <div style={{ width: "100%" }}>
+                      <Input
+                        name="bank_name"
+                        type="select"
+                        placeholder="Tên ngân hàng"
+                        value={validation.values.bank_name || ""}
+                        onChange={(e) => {
+                          validation.handleChange(e);
+                          setBankName(e.target.value);
+                        }}
+                      >
+                        {ListBanks?.map((item) => (
+                          <option key={item?.bin} value={item?.short_name}>
+                            {item?.short_name} - {item?.name}
+                          </option>
+                        ))}
+                      </Input>
+                      {validation.touched.bank_name &&
+                      validation.errors.bank_name ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.bank_name}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                    <div style={{ width: "100%", marginRight: "15px" }}>
+                      <Input
+                        className="ms-20px"
+                        name="fullName"
+                        type="text"
+                        placeholder="Full Name"
+                        style={{ marginLeft: "15px" }}
+                        value={validation.values.fullName || ""}
+                        onChange={(e) => {
+                          validation.handleChange(e);
+                          setFullName(e.target.value);
+                        }}
+                      />
+                      {validation.touched.fullName &&
+                      validation.errors.fullName ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.fullName}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="d-flex" style={{ marginTop: "15px" }}>
+                    <div style={{ width: "100%" }}>
+                      <Input
+                        className="ms-20px"
+                        name="stk"
+                        type="text"
+                        placeholder="STK"
+                        value={stk || ""}
+                        onChange={(e) => {
+                          validation.handleChange(e);
+                          setSTK(e.target.value);
+                        }}
+                      />
+                      {validation.touched.stk && validation.errors.stk ? (
+                        <FormFeedback type="invalid">
+                          {validation.errors.stk}
                         </FormFeedback>
                       ) : null}
                     </div>

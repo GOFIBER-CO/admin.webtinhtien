@@ -1,10 +1,14 @@
 import { Button, Modal, Tooltip } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiReceiptRefund } from "react-icons/hi";
 const RefundPost = ({ record }) => {
+  console.log("record: ", record);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const showModal = () => {
-    setIsModalOpen(true);
+    if (!record?.paymentStatus) {
+      setIsModalOpen(true);
+    }
   };
   const handleOk = () => {
     setIsModalOpen(false);
@@ -18,7 +22,7 @@ const RefundPost = ({ record }) => {
         onClick={showModal}
         size={20}
         color={"green"}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: record?.paymentStatus ? "not-allowed" : "pointer" }}
       />
 
       <Modal
