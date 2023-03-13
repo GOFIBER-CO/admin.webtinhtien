@@ -1,8 +1,8 @@
-import { Button, Modal, Tooltip } from "antd";
-import { useEffect, useState } from "react";
+import { Button, message, Modal, Tooltip } from "antd";
+import { useState } from "react";
 import { HiReceiptRefund } from "react-icons/hi";
-const RefundPost = ({ record }) => {
-  console.log("record: ", record);
+import { refundPost } from "../../../helpers/helper";
+const RefundPost = ({ record, getData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -11,7 +11,18 @@ const RefundPost = ({ record }) => {
     }
   };
   const handleOk = () => {
-    setIsModalOpen(false);
+    refundPost(record?._id)
+      .then((data) => {
+        if (data.status === 200) message.success(data.message);
+        else {
+          message.error(data.message);
+        }
+        getData();
+        setIsModalOpen(false);
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
   };
   const handleCancel = () => {
     setIsModalOpen(false);

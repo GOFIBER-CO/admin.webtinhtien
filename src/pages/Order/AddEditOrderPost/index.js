@@ -191,7 +191,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
                   ]}
                 >
                   <DatePicker
-                    // disabledDate={disabledDate}
+                    disabledDate={disabledDate}
                     format="DD/MM/YYYY"
 
                     // defaultValue={"10/3/2023"}

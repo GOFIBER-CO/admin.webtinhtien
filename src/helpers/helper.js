@@ -470,6 +470,10 @@ export const receivedPost = (id) => {
   return axios.put(`${url.API_ORDER_POST}/received-post/${id}`);
 };
 
+export const refundPost = (id) => {
+  return axios.get(`${url.API_ORDER_POST}/refund/${id}`);
+};
+
 export const checkPermissionScreen = (screen) => {
   return axios.post(`${url.API_USERS}/user/permissionScreen`, { screen });
 };
