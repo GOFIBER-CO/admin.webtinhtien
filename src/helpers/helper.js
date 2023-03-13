@@ -481,3 +481,10 @@ export const getCTV = () => {
 export const countWord = (data) => {
   return axios.post(`${url.API_COUNT_WORD_GG_DOCS}`, data);
 };
+//SCHEDULE
+export const schedule = () => {
+  return axios.get(`${url.API_NOTIFICATION}/getPaging`);
+};
+export const updateStatusOfRead = () => {
+  return axios.patch(`${url.API_NOTIFICATION}/update-read-status`);
+};
