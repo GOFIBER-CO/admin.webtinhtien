@@ -62,6 +62,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
     window.open(dataDrawer?.link, "_blank");
   };
   const onFinish = async (value) => {
+    console.log(`aefh`)
     value["keyword"] = handleKeyWord(value?.keyword);
     value["star"] = valueStar;
     if (value?.id) {
