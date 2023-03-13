@@ -131,7 +131,7 @@ const CtvDashboard = () => {
         setEditingKey("");
       }
     } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
+      // console.log("Validate Failed:", errInfo);
     }
   };
 

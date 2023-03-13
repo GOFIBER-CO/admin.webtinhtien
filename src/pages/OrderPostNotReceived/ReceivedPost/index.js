@@ -9,7 +9,7 @@ const ReceivedPost = ({ record, getData }) => {
   };
   const handleOk = async () => {
     const received = await receivedPost(record?._id);
-    console.log(received.data);
+    // console.log(received.data);
     if (received.status === 200) {
       message.success("Nhận bài viết thành công!");
       getData();

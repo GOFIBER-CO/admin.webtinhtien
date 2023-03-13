@@ -48,7 +48,6 @@ const NotificationDropdown = () => {
 
   const updateStatusRead = async () => {
     const rs = await updateStatusOfRead();
-    console.log("rs:", rs);
   };
   const onSetCountDefault = () => {
     setCountNotification(0);
