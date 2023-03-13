@@ -9,7 +9,7 @@ const ReceivedPost = ({ record, getData }) => {
   };
   const handleOk = async () => {
     const received = await receivedPost(record?._id);
-    console.log(received.data);
+    // console.log(received.data);
     if (received.status === 200) {
       message.success("Nhận bài viết thành công!");
       getData();
@@ -31,9 +31,11 @@ const ReceivedPost = ({ record, getData }) => {
       />
 
       <Modal
-        title="Received Post"
+        title="Nhận bài viết"
         open={isModalOpen}
         onOk={handleOk}
+        okText="Nhận"
+        cancelText="Từ chối"
         onCancel={handleCancel}
       >
         <p>Bạn có chắc chắn muốn nhận bài viết?</p>

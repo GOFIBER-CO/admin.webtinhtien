@@ -14,7 +14,6 @@ import {
 import { updateBankingOrderPost } from "../../../helpers/helper";
 
 const Banking = ({ dataDrawer, onclose, getListData }) => {
-  console.log("dataDrawer: ", dataDrawer);
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {

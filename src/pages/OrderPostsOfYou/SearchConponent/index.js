@@ -26,12 +26,12 @@ export default function SearchConponent({ handleSearch }) {
         <Row gutter={[10, 10]} className={"order-post-not-received-search"}>
           <Col span={5}>
             <Form.Item label="Tên bài viết" name={"title"}>
-              <Input placeholder="Vui lòng nhập tên" />
+              <Input  />
             </Form.Item>
           </Col>
           <Col span={5}>
-            <Form.Item label="Keyword" name={"keyword"}>
-              <Input placeholder="Keyword" style={{ width: "100%" }} />
+            <Form.Item label="Từ khóa" name={"keyword"}>
+              <Input style={{ width: "100%" }} />
             </Form.Item>
           </Col>
 

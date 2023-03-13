@@ -16,7 +16,6 @@ export default function OrderPostsOfYou() {
     ctv: JSON.parse(user)?.id || "",
   });
   const handleSearch = async (values) => {
-    console.log(values, "search");
     setSearch({
       ...values,
       ctv: JSON.parse(user)?.id || "",
@@ -25,12 +24,12 @@ export default function OrderPostsOfYou() {
   const getData = async () => {
     // const getListPost = await getListOrderPosts(pageSize, pageIndex, search);
     const getListPost = await getListOrderPosts(pageSize, pageIndex, search);
-    console.log("getListPost: ", getListPost);
+    // console.log("getListPost: ", getListPost);
     setTotalDocs(getListPost?.totalItem);
     setData(getListPost.data);
   };
   useEffect(() => {
-    console.log(search, "search");
+    // console.log(search, "search");
     getData();
   }, [search, pageSize, pageIndex]);
   return (

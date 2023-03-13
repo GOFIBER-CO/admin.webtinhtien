@@ -2,16 +2,24 @@ import { Button, Drawer, Form, Input, InputNumber, Tag, message } from "antd";
 import { useEffect, useState } from "react";
 import { GrDocumentUpdate } from "react-icons/gr";
 import { countWord } from "../../../helpers/helper";
+import { IoOpenOutline } from "react-icons/io5";
 
 const UpdatePost = ({ record }) => {
-  console.log("record: ", record);
   const [form] = Form.useForm();
+  const [isLink, setIsLink] = useState(false);
+  const [link, setLink] = useState("");
+  console.log('link:', link)
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
     setOpen(true);
   };
   const onClose = () => {
     setOpen(false);
+  };
+  const onLinkChange = (value) => {
+    const rs = value?.target?.value?.length > 0 ? true : false;
+    setIsLink(rs);
+    setLink(value?.target?.value);
   };
   useEffect(() => {
     form.setFieldsValue(record);
@@ -25,6 +33,9 @@ const UpdatePost = ({ record }) => {
       message.warning("Số từ chưa đạt điều kiện " + rs?.message + " từ");
     }
   };
+  const openWebsite = () => {
+    window.open(link, "_blank");
+  };
   return (
     <>
       <GrDocumentUpdate
@@ -34,7 +45,7 @@ const UpdatePost = ({ record }) => {
         style={{ color: "blue", cursor: "pointer" }}
       />
       <Drawer
-        title="Update Post"
+        title="Cập nhật bài viết"
         style={{ marginTop: "70px" }}
         placement="right"
         onClose={onClose}
@@ -47,14 +58,14 @@ const UpdatePost = ({ record }) => {
           layout="vertical"
           onFinish={onFinish}
         >
-          <Form.Item label="Title" name="_id" hidden>
+          <Form.Item label="id" name="_id" hidden>
             <Input disabled />
           </Form.Item>
-          <Form.Item label="Title" name="title">
+          <Form.Item label="Tên bài viết" name="title">
             <Input disabled />
           </Form.Item>
 
-          <Form.Item label="Descriptions" name="desc">
+          <Form.Item label="Mô tả" name="desc">
             <Input.TextArea disabled />
           </Form.Item>
           <Form.Item label="Money Per Word" name="moneyPerWord">
@@ -69,7 +80,7 @@ const UpdatePost = ({ record }) => {
           <Form.Item label="Số từ tối thiểu" name="minWord">
             <InputNumber disabled />
           </Form.Item>
-          <Form.Item label="Keyword" name="keyword">
+          <Form.Item label="Từ khóa" name="keyword">
             {record?.keyword?.map((item) => (
               <Tag key={item} color={"cyan"}>
                 {item}
@@ -77,8 +88,30 @@ const UpdatePost = ({ record }) => {
             ))}
           </Form.Item>
           <Form.Item label="Đường dẫn bài viết" name="link">
-            <Input style={{ width: "100%" }} disabled={record?.paymentStatus} />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "1rem",
+              }}
+            >
+              <Input
+                style={{ width: "87%" }}
+                disabled={record?.paymentStatus}
+                onChange={onLinkChange}
+              />
+              <IoOpenOutline
+                size={25}
+                style={{
+                  cursor: "pointer",
+                  display: isLink ? "block" : " none",
+                }}
+                onClick={openWebsite}
+              />
+            </div>
           </Form.Item>
+
           <Form.Item>
             <Button
               type="primary"
