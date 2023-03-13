@@ -25,7 +25,6 @@ import { IoOpenOutline } from "react-icons/io5";
 import Banking from "../Banking";
 
 const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
-  console.log("dataDrawer: ", dataDrawer);
   const desc = ["Quá tệ", "Tạm được", "Bình thường", "Tốt", "Tuyệt vời"];
   const [valueStar, setValueStar] = useState(0);
   //Không cho phép chọn ngày trong quá khứ
