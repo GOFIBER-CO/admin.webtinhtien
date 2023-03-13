@@ -54,6 +54,7 @@ export default function OrderPostsOfYou() {
                   setPageSize={setPageSize}
                   setPageIndex={setPageIndex}
                   data={data}
+                  getData={getData}
                 />
               </Col>
             </Row>
