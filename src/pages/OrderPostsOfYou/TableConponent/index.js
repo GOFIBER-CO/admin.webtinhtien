@@ -10,38 +10,47 @@ const TableData = ({
   setPageSize,
   setPageIndex,
   data,
+  getData,
 }) => {
   const columns = [
     {
-      title: "Title",
+      title: "Tên bài viêt",
       dataIndex: "title",
       key: "name",
     },
 
     {
-      title: "Money Per Word",
+      title: "Số tiền cho mỗi từ",
       dataIndex: "moneyPerWord",
       key: "moneyPerWord",
     },
+    // {
+    //   title: "Status",
+    //   dataIndex: "status",
+    //   key: "status",
+    //   render: (_) => {
+    //     const rs = { "-1": "Chưa nhận", 0: "Đã nhận", 1: "Hoàn thành" }[_];
+    //     return <>{rs}</>;
+    //   },
+    // },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (_) => {
-        const rs = { "-1": "Chưa nhận", 0: "Đã nhận", 1: "Hoàn thành" }[_];
-        return <>{rs}</>;
-      },
-    },
-    {
-      title: "Payment Status",
+      title: "Trạng thái thanh toán",
       dataIndex: "paymentStatus",
       key: "paymentStatus",
+
       render: (_) =>
         _ ? (
-          <BsCheckCircle color="green" />
+          <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
+            <BsCheckCircle color="green" />
+            <span>Đã duyệt</span>
+          </div>
         ) : (
           <Popover content="Đang chờ thanh toán">
-            <MdPendingActions color="red" size={20} />
+            <MdPendingActions
+              color="red"
+              size={20}
+              style={{ cursor: "pointer" }}
+            />
           </Popover>
         ),
     },
@@ -66,23 +75,29 @@ const TableData = ({
       ),
     },
     {
+      title: "Hạn 000",
+      dataIndex: "expired",
+      key: "expired",
+      render: (_) => moment(_).format("DD-MM-YYYY"),
+    },
+    {
       title: "CreatedAt",
       dataIndex: "createdAt",
       key: "createdAt",
       render: (_) => moment(_).format("DD-MM-YYYY"),
     },
-    {
-      title: "UpdatedAt",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render: (_) => moment(_).format("DD-MM-YYYY"),
-    },
+    // {
+    //   title: "UpdatedAt",
+    //   dataIndex: "updatedAt",
+    //   key: "updatedAt",
+    //   render: (_) => moment(_).format("DD-MM-YYYY"),
+    // },
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <RefundPost record={record} />
+          <RefundPost record={record} getData={getData} />
           <UpdatePost record={record} />
         </Space>
       ),

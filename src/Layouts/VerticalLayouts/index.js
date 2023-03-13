@@ -137,120 +137,137 @@ const VerticalLayout = (props) => {
                       <ul className="nav nav-sm flex-column test">
                         {/* subItms  */}
                         {item.subItems &&
-                          (item.subItems || []).map((subItem, key) => (
-                            <React.Fragment key={key}>
-                              {!subItem.isChildItem ? (
-                                <li className="nav-item">
-                                  <Link
-                                    to={subItem.link ? subItem.link : "/#"}
-                                    className="nav-link"
-                                  >
-                                    {props.t(subItem.label)}
-                                    {subItem.badgeName ? (
-                                      <span
-                                        className={
-                                          "badge badge-pill bg-" +
-                                          subItem.badgeColor
-                                        }
-                                        data-key="t-new"
-                                      >
-                                        {subItem.badgeName}
-                                      </span>
-                                    ) : null}
-                                  </Link>
-                                </li>
-                              ) : (
-                                <li className="nav-item">
-                                  <Link
-                                    onClick={subItem.click}
-                                    className="nav-link"
-                                    to="/#"
-                                    data-bs-toggle="collapse"
-                                  >
-                                    {" "}
-                                    {props.t(subItem.label)}
-                                  </Link>
-                                  <Collapse
-                                    className="menu-dropdown"
-                                    isOpen={subItem.stateVariables}
-                                    id="sidebarEcommerce"
-                                  >
-                                    <ul className="nav nav-sm flex-column">
-                                      {/* child subItms  */}
-                                      {subItem.childItems &&
-                                        (subItem.childItems || []).map(
-                                          (childItem, key) => (
-                                            <React.Fragment key={key}>
-                                              {!childItem.childItems ? (
-                                                <li className="nav-item">
-                                                  <Link
-                                                    to={
-                                                      childItem.link
-                                                        ? childItem.link
-                                                        : "/#"
-                                                    }
-                                                    className="nav-link"
-                                                  >
-                                                    {props.t(childItem.label)}
-                                                  </Link>
-                                                </li>
-                                              ) : (
-                                                <li className="nav-item">
-                                                  <Link
-                                                    to="/#"
-                                                    className="nav-link"
-                                                    onClick={childItem.click}
-                                                    data-bs-toggle="collapse"
-                                                  >
-                                                    {props.t(childItem.label)}{" "}
-                                                    <span
-                                                      className="badge badge-pill bg-danger"
-                                                      data-key="t-new"
-                                                    >
-                                                      New
-                                                    </span>
-                                                  </Link>
-                                                  <Collapse
-                                                    className="menu-dropdown"
-                                                    isOpen={
-                                                      childItem.stateVariables
-                                                    }
-                                                    id="sidebaremailTemplates"
-                                                  >
-                                                    <ul className="nav nav-sm flex-column">
-                                                      {childItem.childItems.map(
-                                                        (subChildItem, key) => (
-                                                          <li
-                                                            className="nav-item"
-                                                            key={key}
+                          (item.subItems || []).map((subItem, key) => {
+                            return (
+                              <>
+                                {!subItem.disabled && (
+                                  <React.Fragment key={key}>
+                                    {!subItem.isChildItem ? (
+                                      <li className="nav-item">
+                                        <Link
+                                          to={
+                                            subItem.link ? subItem.link : "/#"
+                                          }
+                                          className="nav-link"
+                                        >
+                                          {props.t(subItem.label)}
+                                          {subItem.badgeName ? (
+                                            <span
+                                              className={
+                                                "badge badge-pill bg-" +
+                                                subItem.badgeColor
+                                              }
+                                              data-key="t-new"
+                                            >
+                                              {subItem.badgeName}
+                                            </span>
+                                          ) : null}
+                                        </Link>
+                                      </li>
+                                    ) : (
+                                      <li className="nav-item">
+                                        <Link
+                                          onClick={subItem.click}
+                                          className="nav-link"
+                                          to="/#"
+                                          data-bs-toggle="collapse"
+                                        >
+                                          {" "}
+                                          {props.t(subItem.label)}
+                                        </Link>
+                                        <Collapse
+                                          className="menu-dropdown"
+                                          isOpen={subItem.stateVariables}
+                                          id="sidebarEcommerce"
+                                        >
+                                          <ul className="nav nav-sm flex-column">
+                                            {/* child subItms  */}
+                                            {subItem.childItems &&
+                                              (subItem.childItems || []).map(
+                                                (childItem, key) => (
+                                                  <React.Fragment key={key}>
+                                                    {!childItem.childItems ? (
+                                                      <li className="nav-item">
+                                                        <Link
+                                                          to={
+                                                            childItem.link
+                                                              ? childItem.link
+                                                              : "/#"
+                                                          }
+                                                          className="nav-link"
+                                                        >
+                                                          {props.t(
+                                                            childItem.label
+                                                          )}
+                                                        </Link>
+                                                      </li>
+                                                    ) : (
+                                                      <li className="nav-item">
+                                                        <Link
+                                                          to="/#"
+                                                          className="nav-link"
+                                                          onClick={
+                                                            childItem.click
+                                                          }
+                                                          data-bs-toggle="collapse"
+                                                        >
+                                                          {props.t(
+                                                            childItem.label
+                                                          )}{" "}
+                                                          <span
+                                                            className="badge badge-pill bg-danger"
+                                                            data-key="t-new"
                                                           >
-                                                            <Link
-                                                              to={
-                                                                subChildItem.link
-                                                              }
-                                                              className="nav-link"
-                                                              data-key="t-basic-action"
-                                                            >
-                                                              {props.t(
-                                                                subChildItem.label
-                                                              )}{" "}
-                                                            </Link>
-                                                          </li>
-                                                        )
-                                                      )}
-                                                    </ul>
-                                                  </Collapse>
-                                                </li>
+                                                            New
+                                                          </span>
+                                                        </Link>
+                                                        <Collapse
+                                                          className="menu-dropdown"
+                                                          isOpen={
+                                                            childItem.stateVariables
+                                                          }
+                                                          id="sidebaremailTemplates"
+                                                        >
+                                                          <ul className="nav nav-sm flex-column">
+                                                            {childItem.childItems.map(
+                                                              (
+                                                                subChildItem,
+                                                                key
+                                                              ) => (
+                                                                <li
+                                                                  className="nav-item"
+                                                                  key={key}
+                                                                >
+                                                                  <Link
+                                                                    to={
+                                                                      subChildItem.link
+                                                                    }
+                                                                    className="nav-link"
+                                                                    data-key="t-basic-action"
+                                                                  >
+                                                                    {props.t(
+                                                                      subChildItem.label
+                                                                    )}{" "}
+                                                                  </Link>
+                                                                </li>
+                                                              )
+                                                            )}
+                                                          </ul>
+                                                        </Collapse>
+                                                      </li>
+                                                    )}
+                                                  </React.Fragment>
+                                                )
                                               )}
-                                            </React.Fragment>
-                                          )
-                                        )}
-                                    </ul>
-                                  </Collapse>
-                                </li>
-                              )}
-                            </React.Fragment>
-                          ))}
+                                          </ul>
+                                        </Collapse>
+                                      </li>
+                                    )}
+                                  </React.Fragment>
+                                )}
+                              </>
+                            );
+                          })}
                       </ul>
                     </Collapse>
                   </li>

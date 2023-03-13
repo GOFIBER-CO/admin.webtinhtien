@@ -11,12 +11,18 @@ import {
 } from "reactstrap";
 import "../../App.css";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { deleteBrands, insertBrands } from "../../helpers/helper";
+import {
+  checkPermissionScreen,
+  deleteBrands,
+  insertBrands,
+} from "../../helpers/helper";
 // import { Form } from "reactstrap";
 import { Form, message, Tooltip } from "antd";
 import { getPagingBrands, updateBrands } from "./../../helpers/helper";
 import * as XLSX from "xlsx";
 import * as FileSaver from "file-saver";
+import { useLocation } from "react-router-dom";
+import Page403 from "../403";
 const { Column } = Table;
 const Brands = () => {
   const [form] = Form.useForm();
@@ -29,7 +35,15 @@ const Brands = () => {
   const [totalItem, setTotalItem] = useState(1);
   const [search, setSearch] = useState("");
   const [sum, setSum] = useState(0);
-  // console.log(sum,'sum');
+  const [checkRole, setCheckRole] = useState(true);
+  const location = useLocation();
+  const checkScreen = async () => {
+    const permission = await checkPermissionScreen(location.pathname);
+    setCheckRole(permission.status);
+  };
+  useEffect(() => {
+    checkScreen();
+  }, []);
   const onClose = () => {
     setVisibleForm(false);
   };
@@ -141,236 +155,242 @@ const Brands = () => {
   };
   return (
     <React.Fragment>
-      <div className="page-content">
-        <Container fluid>
-          <BreadCrumb title="Thương hiệu" pageTitle="Quản lí Thương hiệu" />
-          <Row className="mb-3">
-            <Drawer
-              title={drawerTitle}
-              placement={"right"}
-              width={"30%"}
-              onClose={onClose}
-              open={visibleForm}
-              bodyStyle={{
-                paddingBottom: 80,
-              }}
-              style={{ marginTop: "70px" }}
-            >
-              <Form
-                form={form}
-                layout="vertical"
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
+      {checkRole === true ? (
+        <div className="page-content">
+          <Container fluid>
+            <BreadCrumb title="Thương hiệu" pageTitle="Quản lí Thương hiệu" />
+            <Row className="mb-3">
+              <Drawer
+                title={drawerTitle}
+                placement={"right"}
+                width={"30%"}
+                onClose={onClose}
+                open={visibleForm}
+                bodyStyle={{
+                  paddingBottom: 80,
+                }}
+                style={{ marginTop: "70px" }}
               >
-                <Row>
-                  <Col sm={4} hidden={true}>
-                    <Form.Item name="id" label="Id">
-                      <Input name="id" />
-                    </Form.Item>
-                  </Col>
-                  <Col>
-                    <Form.Item
-                      name="name"
-                      label="Thương hiệu"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Vui lòng nhập thương hiệu!",
-                        },
-                        {
-                          type: "name",
-                        },
-                        {
-                          type: "string",
-                          min: 1,
-                        },
-                      ]}
-                    >
-                      <Input
-                        placeholder="Thương hiệu"
+                <Form
+                  form={form}
+                  layout="vertical"
+                  onFinish={onFinish}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Row>
+                    <Col sm={4} hidden={true}>
+                      <Form.Item name="id" label="Id">
+                        <Input name="id" />
+                      </Form.Item>
+                    </Col>
+                    <Col>
+                      <Form.Item
                         name="name"
-                        allowClear={true}
-                        onChange={(e) =>
-                          form.setFieldsValue({
-                            name: e.target.value,
-                          })
-                        }
-                        // onChange={(e) => handleChangeTitle(e.target.value)}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Form.Item>
-                  <Space>
-                    {idEdit ? (
-                      <Button type="primary" htmlType="submit">
-                        Save
-                      </Button>
-                    ) : (
-                      <>
-                        {" "}
+                        label="Thương hiệu"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Vui lòng nhập thương hiệu!",
+                          },
+                          {
+                            type: "name",
+                          },
+                          {
+                            type: "string",
+                            min: 1,
+                          },
+                        ]}
+                      >
+                        <Input
+                          placeholder="Thương hiệu"
+                          name="name"
+                          allowClear={true}
+                          onChange={(e) =>
+                            form.setFieldsValue({
+                              name: e.target.value,
+                            })
+                          }
+                          // onChange={(e) => handleChangeTitle(e.target.value)}
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Form.Item>
+                    <Space>
+                      {idEdit ? (
                         <Button type="primary" htmlType="submit">
-                          Create
-                        </Button>{" "}
-                        <Button
-                          type="primary"
-                          htmlType="button"
-                          onClick={() => handleRefreshCreate()}
-                        >
-                          Refresh
-                        </Button>{" "}
-                      </>
-                    )}
-                  </Space>
-                </Form.Item>
-              </Form>
-            </Drawer>
-            <Col lg="5">
-              <div>
-                <InputGroup>
-                  <Input
-                    // value={searchText}
-                    onChange={(e) => {
-                      setSearch(e.target.value);
-                    }}
-                    placeholder="Tìm kiếm..."
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        // console.log(e.target.value);
+                          Save
+                        </Button>
+                      ) : (
+                        <>
+                          {" "}
+                          <Button type="primary" htmlType="submit">
+                            Create
+                          </Button>{" "}
+                          <Button
+                            type="primary"
+                            htmlType="button"
+                            onClick={() => handleRefreshCreate()}
+                          >
+                            Refresh
+                          </Button>{" "}
+                        </>
+                      )}
+                    </Space>
+                  </Form.Item>
+                </Form>
+              </Drawer>
+              <Col lg="5">
+                <div>
+                  <InputGroup>
+                    <Input
+                      // value={searchText}
+                      onChange={(e) => {
                         setSearch(e.target.value);
-                        getdata();
-                      }
+                      }}
+                      placeholder="Tìm kiếm..."
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          // console.log(e.target.value);
+                          setSearch(e.target.value);
+                          getdata();
+                        }
+                      }}
+                    />
+                    <InputGroupText
+                      onClick={onSearch}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <i className="ri-search-line"></i>
+                    </InputGroupText>
+                  </InputGroup>
+                  <div></div>
+                </div>
+              </Col>
+
+              <Col lg="7">
+                <div className="text-right">
+                  <Button
+                    style={
+                      dataBrands?.length !== 0
+                        ? {
+                            backgroundColor: "#026e39",
+                            border: "none",
+                            color: "white",
+                            marginRight: "10px",
+                          }
+                        : {
+                            backgroundColor: "gray",
+                            border: "none",
+                            color: "black",
+                            marginRight: "10px",
+                          }
+                    }
+                    onClick={() => exportExcel()}
+                    disabled={dataBrands?.length === 0}
+                  >
+                    Xuất excel
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setDrawerTitle("Thêm Thương hiệu Mới");
+                      showDrawer();
+                      // console.log(visibleForm);
+                      form.resetFields();
+                    }}
+                  >
+                    Thêm mới
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+            <Row>
+              <Col lg={12}>
+                <Table
+                  rowKey="_id"
+                  dataSource={dataBrands}
+                  // pagination={{
+                  //   total: totalPage,
+                  //   pageSize: pageSize,
+                  //   current: pageIndex,
+                  // }}
+                  // onChange={(e) => handleOnChangeTable(e)}
+                  pagination={false}
+                >
+                  <Column
+                    title="#"
+                    render={(val, rec, index) => {
+                      return index + 1;
                     }}
                   />
-                  <InputGroupText
-                    onClick={onSearch}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <i className="ri-search-line"></i>
-                  </InputGroupText>
-                </InputGroup>
-                <div></div>
-              </div>
-            </Col>
 
-            <Col lg="7">
-              <div className="text-right">
-                <Button
-                  style={
-                    dataBrands?.length !== 0
-                      ? {
-                          backgroundColor: "#026e39",
-                          border: "none",
-                          color: "white",
-                          marginRight: "10px",
-                        }
-                      : {
-                          backgroundColor: "gray",
-                          border: "none",
-                          color: "black",
-                          marginRight: "10px",
-                        }
-                  }
-                  onClick={() => exportExcel()}
-                  disabled={dataBrands?.length === 0}
-                >
-                  Xuất excel
-                </Button>
-                <Button
-                  onClick={() => {
-                    setDrawerTitle("Thêm Thương hiệu Mới");
-                    showDrawer();
-                    // console.log(visibleForm);
-                    form.resetFields();
-                  }}
-                >
-                  Thêm mới
-                </Button>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col lg={12}>
-              <Table
-                rowKey="_id"
-                dataSource={dataBrands}
-                // pagination={{
-                //   total: totalPage,
-                //   pageSize: pageSize,
-                //   current: pageIndex,
-                // }}
-                // onChange={(e) => handleOnChangeTable(e)}
-                pagination={false}
-              >
-                <Column
-                  title="#"
-                  render={(val, rec, index) => {
-                    return index + 1;
+                  <Column
+                    title="Thương hiệu"
+                    dataIndex="name"
+                    key="name"
+                    sorter={(a, b) => a?.name.localeCompare(b?.name)}
+                  />
+                  <Column
+                    title="Hoạt động"
+                    key="action"
+                    render={(val, record) => (
+                      <Space size="middle">
+                        <Tooltip title="Edit">
+                          <i
+                            className="ri-pencil-line action-icon"
+                            style={{ color: "blue" }}
+                            onClick={() => onEdit(val._id)}
+                          ></i>
+                        </Tooltip>
+
+                        <Popconfirm
+                          title="Bạn có chắc chắn muốn xóa brand này?"
+                          onConfirm={() => {
+                            deleteBrands(val._id)
+                              .then((res) => {
+                                // console.log(res,'res');
+                                // return ;
+                                getdata();
+                                if (res.success === true) {
+                                  return message.success(`Delete Success! `);
+                                }
+                              })
+                              .catch((err) =>
+                                message.error(
+                                  "Brand còn team nên không thể xóa!"
+                                )
+                              );
+                          }}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <i className="ri-delete-bin-line action-icon"></i>
+                        </Popconfirm>
+                      </Space>
+                    )}
+                  />
+                </Table>
+                <Pagination
+                  // showTotal={showTotal}
+                  style={{ marginTop: "30px" }}
+                  current={pageIndex}
+                  defaultCurrent={pageIndex}
+                  total={totalItem}
+                  pageSize={pageSize}
+                  showSizeChanger
+                  onChange={(page, pageSize) => {
+                    setPageIndex(page);
+                    setPageSize(pageSize);
                   }}
                 />
-
-                <Column
-                  title="Thương hiệu"
-                  dataIndex="name"
-                  key="name"
-                  sorter={(a, b) => a?.name.localeCompare(b?.name)}
-                />
-                <Column
-                  title="Hoạt động"
-                  key="action"
-                  render={(val, record) => (
-                    <Space size="middle">
-                      <Tooltip title="Edit">
-                        <i
-                          className="ri-pencil-line action-icon"
-                          style={{ color: "blue" }}
-                          onClick={() => onEdit(val._id)}
-                        ></i>
-                      </Tooltip>
-
-                      <Popconfirm
-                        title="Bạn có chắc chắn muốn xóa brand này?"
-                        onConfirm={() => {
-                          deleteBrands(val._id)
-                            .then((res) => {
-                              // console.log(res,'res');
-                              // return ;
-                              getdata();
-                              if (res.success === true) {
-                                return message.success(`Delete Success! `);
-                              }
-                            })
-                            .catch((err) =>
-                              message.error("Brand còn team nên không thể xóa!")
-                            );
-                        }}
-                        okText="Yes"
-                        cancelText="No"
-                      >
-                        <i className="ri-delete-bin-line action-icon"></i>
-                      </Popconfirm>
-                    </Space>
-                  )}
-                />
-              </Table>
-              <Pagination
-                // showTotal={showTotal}
-                style={{ marginTop: "30px" }}
-                current={pageIndex}
-                defaultCurrent={pageIndex}
-                total={totalItem}
-                pageSize={pageSize}
-                showSizeChanger
-                onChange={(page, pageSize) => {
-                  setPageIndex(page);
-                  setPageSize(pageSize);
-                }}
-              />
-            </Col>
-          </Row>
-        </Container>
-      </div>
+              </Col>
+            </Row>
+          </Container>
+        </div>
+      ) : (
+        <Page403 />
+      )}
     </React.Fragment>
   );
 };

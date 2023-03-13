@@ -60,6 +60,9 @@ const ViewDetailsPost = ({ record }) => {
               }
             />
           </Form.Item>
+          <Form.Item name="minWord" label="Số từ tối thiểu">
+            <Input />
+          </Form.Item>
           <Form.Item label="Keyword" name="keyword">
             {record?.keyword?.map((item) => (
               <Tag key={item} color={"cyan"}>
