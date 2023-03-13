@@ -76,7 +76,12 @@ const NotificationDropdown = () => {
           <i className="bx bx-bell fs-22" onClick={onSetCountDefault}></i>
           <span
             className="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"
-            style={{ display: countNotification === 0 ? "none" : "block" }}
+            style={{
+              display:
+                countNotification === 0 || countNotification == null
+                  ? "none"
+                  : "block",
+            }}
           >
             {countNotification}
             <span className="visually-hidden">unread messages</span>
