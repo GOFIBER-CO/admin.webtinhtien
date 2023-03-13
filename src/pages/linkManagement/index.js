@@ -1220,7 +1220,7 @@ const LinkManagement = (props) => {
                 form={form}
                 onFinish={onFinish}
                 // onFinishFailed={onFinishFailed}
-                onLoad={<Spin delay={500}></Spin>}
+                onLoad={<Spin delay={500} key="1"></Spin>}
                 autoComplete="off"
               >
                 {
@@ -1286,7 +1286,7 @@ const LinkManagement = (props) => {
                   </Button>
                   <Button type="primary" htmlType="submit" disabled={loading}>
                     <span>
-                      {loading ? <Spin /> : edit ? "Chỉnh sửa" : <>Thêm</>}
+                      {loading ? <Spin key="1"/> : edit ? "Chỉnh sửa" : <>Thêm</>}
                     </span>
                   </Button>
                 </Form.Item>

@@ -260,7 +260,10 @@ const Orders = () => {
             <Row gutter={[16, 16]} style={{ marginBottom: "1rem" }}>
               <Col span={6}>
                 <Form.Item label="Tên bài viết" name="title">
-                  <Input size="middle" placeholder="Tìm kiếm theo tiêu đề" />
+                  <Input
+                    size="middle"
+                    placeholder="Tìm kiếm theo tên bài viết"
+                  />
                 </Form.Item>
               </Col>
               <Col span={6}>
@@ -332,10 +335,10 @@ const Orders = () => {
                 </Form.Item>
               </Col>
               <Col span={6}>
-                <Form.Item name="ctv" label="CTV">
+                <Form.Item name="ctv" label="Cộng tác viên" initialValue={""}>
                   <Select className="select-ctv">
-                    <Select.Option value={""} key={"all"}>
-                      All
+                    <Select.Option value={""} key={"all"} >
+                      Tất cả
                     </Select.Option>
                     {listCTV?.map((item, index) => (
                       <Select.Option value={item?.id} key={index}>
@@ -359,7 +362,7 @@ const Orders = () => {
               </Col>
             </Row>
           </Form>
-          <Spin spinning={loading}>
+          <Spin spinning={loading} key="1">
             <Table
               dataSource={orderPostData}
               columns={columns}

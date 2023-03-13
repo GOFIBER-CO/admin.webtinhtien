@@ -32,7 +32,7 @@ const ViewDetailsPost = ({ record }) => {
         style={{ cursor: "pointer" }}
       />
       <Drawer
-        title="Details Post"
+        title="Chi tiết bài viết"
         placement="right"
         style={{ marginTop: "70px" }}
         onClose={onClose}
@@ -45,14 +45,14 @@ const ViewDetailsPost = ({ record }) => {
           layout="vertical"
           disabled
         >
-          <Form.Item label="Title" name="title">
+          <Form.Item label="Tên bài viết" name="title">
             <Input />
           </Form.Item>
 
-          <Form.Item label="Descriptions" name="desc">
+          <Form.Item label="Mô tả" name="desc">
             <Input.TextArea />
           </Form.Item>
-          <Form.Item label="Money Per Word" name="moneyPerWord">
+          <Form.Item label="Tiền cho mỗi từ" name="moneyPerWord">
             <InputNumber
               style={{ width: "100%" }}
               formatter={(value) =>
@@ -63,7 +63,7 @@ const ViewDetailsPost = ({ record }) => {
           <Form.Item name="minWord" label="Số từ tối thiểu">
             <Input />
           </Form.Item>
-          <Form.Item label="Keyword" name="keyword">
+          <Form.Item label="Từ khóa" name="keyword">
             {record?.keyword?.map((item) => (
               <Tag key={item} color={"cyan"}>
                 {item}

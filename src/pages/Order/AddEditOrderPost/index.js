@@ -10,6 +10,7 @@ import {
   Select,
   Rate,
   Space,
+  Switch,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 
@@ -27,6 +28,7 @@ import Banking from "../Banking";
 const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
   const desc = ["Quá tệ", "Tạm được", "Bình thường", "Tốt", "Tuyệt vời"];
   const [valueStar, setValueStar] = useState(0);
+  const [isAccept, setIsAccept] = useState(false);
   //Không cho phép chọn ngày trong quá khứ
   const disabledDate = (current) => {
     return current && current < moment().endOf("day").subtract(1, "day");
@@ -52,7 +54,10 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
       });
     }
   }, [dataDrawer]);
-
+  const onHandleChange = (value) => {
+    console.log("value:", value);
+    setIsAccept(true);
+  };
   const openWebsite = () => {
     window.open(dataDrawer?.link, "_blank");
   };
@@ -113,32 +118,13 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
               </Col>
               <Col span={24}>
                 <Form.Item
-                  label={`Keyword (Mỗi keyword cách nhau bởi "Enter")`}
+                  label={`Từ khóa chính (Mỗi từ khóa cách nhau bởi "Enter")`}
                   name="keyword"
                   rules={[
                     { required: true, message: "Vui lòng nhập từ khóa !" },
                   ]}
                 >
                   <TextArea rows={4} />
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item
-                  label="Đánh giá"
-                  name="star"
-                  hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
-                  // hidden={true}
-                >
-                  <Rate
-                    tooltips={desc}
-                    onChange={setValueStar}
-                    value={valueStar}
-                  />
-                  {valueStar ? (
-                    <span className="ant-rate-text">{desc[valueStar - 1]}</span>
-                  ) : (
-                    ""
-                  )}
                 </Form.Item>
               </Col>
             </Row>
@@ -239,8 +225,44 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
                   </div>
                 </Form.Item>
               </Col>
-
-              <Col span={24}>
+              <Col span={8}>
+                <Form.Item
+                  label="Chấp nhận bài viết"
+                  name="accept"
+                  hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Không được bỏ trống",
+                    },
+                  ]}
+                >
+                  <Select disabled={false} onChange={onHandleChange}>
+                    <Select.Option value="0">Chấp nhận</Select.Option>
+                    <Select.Option value="1">Từ chối</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24} style={{ display: isAccept ? "block" : "none" }}>
+                <Form.Item
+                  label="Đánh giá"
+                  name="star"
+                  hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
+                  // hidden={true}
+                >
+                  <Rate
+                    tooltips={desc}
+                    onChange={setValueStar}
+                    value={valueStar}
+                  />
+                  {valueStar ? (
+                    <span className="ant-rate-text">{desc[valueStar - 1]}</span>
+                  ) : (
+                    ""
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={24} style={{ display: isAccept ? "block" : "none" }}>
                 <Form.Item
                   label="Nội dung đánh giá"
                   name="note"

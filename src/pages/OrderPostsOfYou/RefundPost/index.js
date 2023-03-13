@@ -37,10 +37,12 @@ const RefundPost = ({ record, getData }) => {
       />
 
       <Modal
-        title="Refund Post"
+        title="Hoàn trả bài viết"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
+        okText="Đồng ý"
+        cancelText="Hủy"
       >
         <p>
           Bài viết sẽ được trả về trạng thái chưa có người nhận và bạn sẽ bị hạ
