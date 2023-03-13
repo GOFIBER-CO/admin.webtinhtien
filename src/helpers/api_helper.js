@@ -6,7 +6,7 @@ axios.defaults.baseURL = api.API_URL;
 // content type
 axios.defaults.headers.post["Content-Type"] = "application/json";
 // credentials
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
 
 // axios.defaults.headers["Access-Control-Allow-Origin"] = true;
 
