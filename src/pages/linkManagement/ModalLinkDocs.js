@@ -13,7 +13,7 @@ const ModalLinkDocs = ({ isModalOpen, handleOk, handleCancel }) => {
       const data = await res.json();
       // console.log(data, 'data');
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   useEffect(() => {

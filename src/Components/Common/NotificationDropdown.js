@@ -139,7 +139,9 @@ const NotificationDropdown = () => {
             <TabPane tabId="1" className="py-2 ps-2">
               <SimpleBar style={{ maxHeight: "300px" }} className="pe-2">
                 {notifications.length === 0 ? (
-                  <p style={{ textAlign: "center",marginBottom:"0" }}>Trống</p>
+                  <p style={{ textAlign: "center", marginBottom: "0" }}>
+                    Trống
+                  </p>
                 ) : (
                   notifications?.map((item) => (
                     <>

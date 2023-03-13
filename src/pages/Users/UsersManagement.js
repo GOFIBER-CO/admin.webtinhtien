@@ -70,7 +70,6 @@ const UsersManagement = () => {
   };
 
   const cancel = (e) => {
-    console.log(e);
   };
 
   const showModal = () => {

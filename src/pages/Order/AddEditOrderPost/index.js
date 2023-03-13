@@ -26,9 +26,9 @@ import { IoOpenOutline } from "react-icons/io5";
 import Banking from "../Banking";
 
 const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
+  console.log("dataDrawer:", dataDrawer);
   const desc = ["Quá tệ", "Tạm được", "Bình thường", "Tốt", "Tuyệt vời"];
   const [valueStar, setValueStar] = useState(0);
-  const [isAccept, setIsAccept] = useState(false);
   //Không cho phép chọn ngày trong quá khứ
   const disabledDate = (current) => {
     return current && current < moment().endOf("day").subtract(1, "day");
@@ -36,7 +36,6 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
   //
   const [form] = Form.useForm();
 
-  
   useEffect(() => {
     if (Object.keys(dataDrawer)?.length === 0) {
       form.resetFields();
@@ -56,28 +55,24 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
       });
     }
   }, [dataDrawer]);
-  const onHandleChange = (value) => {
-    console.log("value:", value);
-    setIsAccept(true);
-  };
+
   const openWebsite = () => {
     window.open(dataDrawer?.link, "_blank");
   };
   const onFinish = async (value) => {
-    console.log(`aefh`)
     value["keyword"] = handleKeyWord(value?.keyword);
     value["star"] = valueStar;
     if (value?.id) {
       const result = await updateOrderPost(value);
       if (result?.status === 200) {
         close();
-        message.success(`Update Success! `);
+        message.success(`Cập nhật thành công! `);
       }
     } else {
       const result = await createOrderPost(value);
       if (result?.status === 200) {
         close();
-        message.success(`Create Success! `);
+        message.success(`Thêm mới thành công! `);
       }
     }
     getListData();
@@ -228,25 +223,8 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
                   </div>
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item
-                  label="Chấp nhận bài viết"
-                  name="accept"
-                  hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Không được bỏ trống",
-                    },
-                  ]}
-                >
-                  <Select disabled={false} onChange={onHandleChange}>
-                    <Select.Option value="0">Chấp nhận</Select.Option>
-                    <Select.Option value="1">Từ chối</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={24} style={{ display: isAccept ? "block" : "none" }}>
+
+              <Col span={24}>
                 <Form.Item
                   label="Đánh giá"
                   name="star"
@@ -265,7 +243,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
                   )}
                 </Form.Item>
               </Col>
-              <Col span={24} style={{ display: isAccept ? "block" : "none" }}>
+              <Col span={24}>
                 <Form.Item
                   label="Nội dung đánh giá"
                   name="note"

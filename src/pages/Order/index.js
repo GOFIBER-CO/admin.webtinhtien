@@ -318,7 +318,7 @@ const Orders = () => {
                   <Input placeholder="Tìm kiếm theo từ khóa" />
                 </Form.Item>
               </Col>
-              <Col span={6}>
+              {/* <Col span={6}>
                 <Form.Item
                   label="Số tiền mỗi từ"
                   name="moneyPerWord"
@@ -328,7 +328,7 @@ const Orders = () => {
                     <InputNumber min={1} controls={false} />
                   </div>
                 </Form.Item>
-              </Col>
+              </Col> */}
               <Col span={6}>
                 <Form.Item name="range-picker" label="Thời gian">
                   <RangePicker style={{ width: "100%" }} />

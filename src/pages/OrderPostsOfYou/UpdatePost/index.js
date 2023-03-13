@@ -8,7 +8,6 @@ const UpdatePost = ({ record }) => {
   const [form] = Form.useForm();
   const [isLink, setIsLink] = useState(false);
   const [link, setLink] = useState("");
-  console.log('link:', link)
   const [open, setOpen] = useState(false);
   const showDrawer = () => {
     setOpen(true);

@@ -121,7 +121,6 @@ const LinkManagement = (props) => {
       dataIndex: "domains",
       // width: "10%",
       render: (_, record) => {
-        console.log(record, "asdasd");
         return record?.domain?.manager?.toString();
       },
       sorter: (a, b) =>
