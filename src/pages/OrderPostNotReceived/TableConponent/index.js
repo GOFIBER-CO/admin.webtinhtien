@@ -15,7 +15,7 @@ const TableData = ({
 }) => {
   const columns = [
     {
-      title: "Title",
+      title: "Tên bài viết",
       dataIndex: "title",
       key: "name",
     },
@@ -31,7 +31,7 @@ const TableData = ({
       key: "minWord",
     },
     {
-      title: "Keyword",
+      title: "Từ khóa",
       key: "keyword",
       dataIndex: "keyword",
       render: (_, { keyword }) => (
@@ -69,7 +69,7 @@ const TableData = ({
     //   render: (_) => moment(_).format("DD-MM-YYYY"),
     // },
     {
-      title: "Action",
+      title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Space size="middle">

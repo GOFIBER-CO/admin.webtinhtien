@@ -45,17 +45,14 @@ const TableData = ({
             <span>Đã duyệt</span>
           </div>
         ) : (
-          <Popover content="Đang chờ thanh toán">
-            <MdPendingActions
-              color="red"
-              size={20}
-              style={{ cursor: "pointer" }}
-            />
-          </Popover>
+          <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
+            <MdPendingActions color="red" size={18} />
+            <span>Đang chờ thanh toán</span>
+          </div>
         ),
     },
     {
-      title: "Keyword",
+      title: "Từ khóa",
       key: "keyword",
       dataIndex: "keyword",
       render: (_, { keyword }) => (
@@ -75,25 +72,21 @@ const TableData = ({
       ),
     },
     {
-      title: "Hạn 000",
+      title: "Hoàn thành trước",
       dataIndex: "expired",
       key: "expired",
-      render: (_) => moment(_).format("DD-MM-YYYY"),
+      render: (_) => (
+        <>
+          <span style={{ fontWeight: "500", fontStyle: "italic" }}>
+            23h:59p:59s
+          </span>{" "}
+          {moment(_).format("DD-MM-YYYY")}
+        </>
+      ),
     },
+
     {
-      title: "CreatedAt",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (_) => moment(_).format("DD-MM-YYYY"),
-    },
-    // {
-    //   title: "UpdatedAt",
-    //   dataIndex: "updatedAt",
-    //   key: "updatedAt",
-    //   render: (_) => moment(_).format("DD-MM-YYYY"),
-    // },
-    {
-      title: "Action",
+      title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Space size="middle">

@@ -263,7 +263,7 @@ const UserProfile = () => {
                       <CardBody>
                         <div className="d-flex">
                           <div className="mx-3">
-                            <Upload
+                            {/* <Upload
                               customRequest={uploadImage}
                               listType="picture-card"
                               fileList={fileList}
@@ -273,7 +273,7 @@ const UserProfile = () => {
                               // beforeUpload={onbeforeUpload}
                             >
                               {fileList.length < 1 && "+ Upload"}
-                            </Upload>
+                            </Upload> */}
                             {/* </ImgCrop> */}
                           </div>
                           <div className="flex-grow-1 align-self-center">
@@ -289,7 +289,7 @@ const UserProfile = () => {
                   </Col>
                 </Row>
 
-                <h4 className="card-title mb-4">Change User Name</h4>
+                <h4 className="card-title mb-4">Thông tin cơ bản</h4>
 
                 <div className="form-group">
                   <Label className="form-label">User Name</Label>
@@ -430,7 +430,7 @@ const UserProfile = () => {
                     onClick={(e) => handleUpdateProfile(e)}
                     color="danger"
                   >
-                    Update Profile
+                    Cập nhật
                   </Button>
                 </div>
               </Form>

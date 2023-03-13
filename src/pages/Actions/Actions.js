@@ -40,7 +40,7 @@ const Roles = () => {
       setRoles([...roles, result.role]);
       toast.success("Add success");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error("Add Failed");
       refLoading.current.complete();
     } finally {
@@ -61,7 +61,7 @@ const Roles = () => {
     } catch (error) {
       refLoading.current.complete();
       toast.error("Delete Failed");
-      console.log(error);
+      // console.log(error);
     } finally {
       refLoading.current.complete();
     }

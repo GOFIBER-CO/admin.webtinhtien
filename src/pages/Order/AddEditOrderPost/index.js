@@ -10,6 +10,7 @@ import {
   Select,
   Rate,
   Space,
+  Switch,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 
@@ -25,6 +26,7 @@ import { IoOpenOutline } from "react-icons/io5";
 import Banking from "../Banking";
 
 const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
+  console.log("dataDrawer:", dataDrawer);
   const desc = ["Quá tệ", "Tạm được", "Bình thường", "Tốt", "Tuyệt vời"];
   const [valueStar, setValueStar] = useState(0);
   //Không cho phép chọn ngày trong quá khứ
@@ -33,6 +35,7 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
   };
   //
   const [form] = Form.useForm();
+
   useEffect(() => {
     if (Object.keys(dataDrawer)?.length === 0) {
       form.resetFields();
@@ -63,13 +66,13 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
       const result = await updateOrderPost(value);
       if (result?.status === 200) {
         close();
-        message.success(`Update Success! `);
+        message.success(`Cập nhật thành công! `);
       }
     } else {
       const result = await createOrderPost(value);
       if (result?.status === 200) {
         close();
-        message.success(`Create Success! `);
+        message.success(`Thêm mới thành công! `);
       }
     }
     getListData();
@@ -113,32 +116,13 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
               </Col>
               <Col span={24}>
                 <Form.Item
-                  label={`Keyword (Mỗi keyword cách nhau bởi "Enter")`}
+                  label={`Từ khóa chính (Mỗi từ khóa cách nhau bởi "Enter")`}
                   name="keyword"
                   rules={[
                     { required: true, message: "Vui lòng nhập từ khóa !" },
                   ]}
                 >
                   <TextArea rows={4} />
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item
-                  label="Đánh giá"
-                  name="star"
-                  hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
-                  // hidden={true}
-                >
-                  <Rate
-                    tooltips={desc}
-                    onChange={setValueStar}
-                    value={valueStar}
-                  />
-                  {valueStar ? (
-                    <span className="ant-rate-text">{desc[valueStar - 1]}</span>
-                  ) : (
-                    ""
-                  )}
                 </Form.Item>
               </Col>
             </Row>
@@ -240,6 +224,25 @@ const AddEditOrderPost = ({ dataDrawer, close, getListData }) => {
                 </Form.Item>
               </Col>
 
+              <Col span={24}>
+                <Form.Item
+                  label="Đánh giá"
+                  name="star"
+                  hidden={dataDrawer["statusOrderPost"] === 1 ? false : true}
+                  // hidden={true}
+                >
+                  <Rate
+                    tooltips={desc}
+                    onChange={setValueStar}
+                    value={valueStar}
+                  />
+                  {valueStar ? (
+                    <span className="ant-rate-text">{desc[valueStar - 1]}</span>
+                  ) : (
+                    ""
+                  )}
+                </Form.Item>
+              </Col>
               <Col span={24}>
                 <Form.Item
                   label="Nội dung đánh giá"

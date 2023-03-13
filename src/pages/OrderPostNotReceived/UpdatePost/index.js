@@ -18,9 +18,9 @@ const UpdatePost = ({ record }) => {
         style={{ color: "blue", cursor: "pointer" }}
       />
       <Drawer
-        title="Update Post"
+        title="Cập nhật bài viết"
         style={{ marginTop: "70px" }}
-        placement="right"
+        placement="right"s
         onClose={onClose}
         open={open}
       >

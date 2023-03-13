@@ -31,9 +31,11 @@ const ReceivedPost = ({ record, getData }) => {
       />
 
       <Modal
-        title="Received Post"
+        title="Nhận bài viết"
         open={isModalOpen}
         onOk={handleOk}
+        okText="Nhận"
+        cancelText="Từ chối"
         onCancel={handleCancel}
       >
         <p>Bạn có chắc chắn muốn nhận bài viết?</p>
