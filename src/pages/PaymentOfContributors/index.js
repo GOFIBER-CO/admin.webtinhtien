@@ -303,18 +303,15 @@ const PaymentOfContributors = () => {
             >
               <AiOutlineEdit />
             </Typography.Link>
-            <Popconfirm
-              title="Sure to delete?"
-              onConfirm={() => handleDelete(record)}
-            >
-              <ImBin2
-                style={{
-                  color: "#e93600",
-                  cursor: "pointer",
-                  marginLeft: "5px",
-                }}
-              />
-            </Popconfirm>
+
+            <ImBin2
+              style={{
+                color: "#e93600",
+                cursor: "pointer",
+                marginLeft: "5px",
+              }}
+              onClick={() => handleDelete(record)}
+            />
           </>
         );
       },
